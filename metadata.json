@@ -1,0 +1,5 @@
+{
+  "name": "IT Hardware Rental Calculator",
+  "description": "An application for IT hardware rental services partners to create calculations and offers for customers. It includes an admin panel for managing access rights and lease rate factors.",
+  "requestFramePermissions": []
+}
