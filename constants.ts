@@ -37,6 +37,7 @@ export const INITIAL_LEASE_RATE_FACTORS_DATA: LeaseRateFactorsData = {
   updatedByUserId: adminUserId,
   notificationAdminId: adminUserId,
   nonReturnUpliftFactor: 0.008,
+  packingServiceCost: 15,
   updateLog: [
     {
       timestamp: new Date().toISOString(),

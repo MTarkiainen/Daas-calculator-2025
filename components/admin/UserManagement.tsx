@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Profile, UserRole, Quote, LeaseRateFactorsData, CalculationItem } from '../../types';
 import { Button } from '../ui/Button';
@@ -7,7 +8,7 @@ import { Select } from '../ui/Select';
 import { Modal } from '../ui/Modal';
 import PlusIcon from '../ui/icons/PlusIcon';
 import UploadIcon from '../ui/icons/UploadIcon';
-import { getLeaseRateFactor } from '../calculation/CalculationSheet';
+import { getLeaseRateFactor } from '../../utils/calculationUtils';
 import { COUNTRIES } from '../../constants';
 import PasswordInput from '../ui/PasswordInput';
 import { useLanguage } from '../../i18n/LanguageContext';

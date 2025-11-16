@@ -7,7 +7,7 @@ import {
   INITIAL_WORKFLOW_SETTINGS,
   INITIAL_TCO_SETTINGS
 } from './constants';
-import { UserRole } from "./types";
+import { AssetType, Brand, Condition, OperatingSystem, UserRole, AdditionalService } from "./types";
 
 
 // Very loose types on purpose so this compiles even if your app types change
@@ -60,14 +60,7 @@ const initialAdminUser: User = {
 } as unknown as User;
 
 
-let currentSession: MockSession | null = {
-  access_token: "mock-token",
-  token_type: "bearer",
-  expires_in: 3600,
-  expires_at: Math.floor(Date.now() / 1000) + 3600,
-  refresh_token: "mock-refresh",
-  user: initialAdminUser,
-} as unknown as MockSession;
+let currentSession: MockSession | null = null;
 
 const authSubscribers = new Set<AuthChangeCallback>();
 

@@ -59,6 +59,7 @@ const initialFormState: Omit<CalculationItem, 'id'> = {
   hardwareCost: BASE_HARDWARE_COSTS[AssetType.Laptop],
   quantity: 1,
   nonReturnPercentage: 0,
+  packingServiceApplied: false,
   customDescription: '',
   country: '',
 };
@@ -230,7 +231,23 @@ const CalculationWizard: React.FC<CalculationWizardProps> = ({ isOpen, onClose, 
                     </button>
                 </div>
             )}
-            <div className="space-y-3">
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('calculation.packingServiceOption')}</label>
+                <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, packingServiceApplied: !formData.packingServiceApplied })}
+                    className="flex items-center cursor-pointer"
+                >
+                    <div className="relative">
+                        <div className={`block w-10 h-6 rounded-full transition-colors ${formData.packingServiceApplied ? 'bg-brand-600' : 'bg-gray-300'}`}></div>
+                        <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.packingServiceApplied ? 'translate-x-4' : ''}`}></div>
+                    </div>
+                    <div className="ml-3 text-sm text-gray-700">
+                        {formData.packingServiceApplied ? t('common.yes') : t('common.no')}
+                    </div>
+                </button>
+            </div>
+            <div className="space-y-3 pt-4 border-t">
                 {ADDITIONAL_SERVICE_KEYS.map(serviceKey => {
                     const serviceValue = AdditionalService[serviceKey];
                     const selection = formData.additionalServices.find(s => s.service === serviceValue);

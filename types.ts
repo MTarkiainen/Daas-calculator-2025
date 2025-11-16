@@ -39,7 +39,6 @@ export enum AdditionalService {
   PreConfiguration = "Pre-configuration (staging)",
   Delivery = "Delivery",
   Support = "Support (24h Swap)",
-  PackingService = "Packing service (End of lease)",
 }
 
 export type LeaseTerm = 12 | 24 | 36 | 48 | 60;
@@ -63,6 +62,7 @@ export interface CalculationItem {
   quantity: number;
   nonReturnPercentage?: number;
   country?: string; // NEW: Added to associate item with a country
+  packingServiceApplied: boolean;
 }
 
 export interface CartItem {
@@ -82,6 +82,22 @@ export interface QuoteOption {
   id: string;
   name: string;
   items: CalculationItem[];
+}
+
+// FIX: Added missing LibraryAsset interface.
+// This interface defines the structure for pre-configured assets that can be saved and reused.
+export interface LibraryAsset {
+  id: string; // UUID from Supabase
+  name: string; // User-defined name for this asset configuration
+  assetType: AssetType;
+  brand: Brand;
+  operatingSystem: OperatingSystem | null;
+  condition: Condition;
+  hardwareCost: number;
+  additionalServices: ServiceSelection[];
+  customDescription?: string;
+  country?: string;
+  userId?: string; // Can be scoped to a user (partner) or be global (null)
 }
 
 // NEW: Interface for country-specific customer details
@@ -165,6 +181,7 @@ export interface LeaseRateFactorsData {
   notificationAdminId: string;
   updateLog: LeaseRateUpdateLogEntry[];
   nonReturnUpliftFactor?: number;
+  packingServiceCost?: number;
 }
 
 export interface TcoSettings {
@@ -180,6 +197,14 @@ export interface TcoSettings {
   eoldCostPerDevice: number;
   residualValuePercentage: number;
 }
+
+// NEW: Interface for AI-powered TCO suggestions
+export interface TcoSuggestion {
+  parameter: keyof TcoSettings;
+  suggestedValue: number;
+  reasoning: string;
+}
+
 
 // Supabase will handle login attempts in its logs, this might be deprecated
 export interface LoginAttempt {

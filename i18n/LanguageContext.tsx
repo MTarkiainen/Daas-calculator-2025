@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 import { translations } from './translations';
 import { Language, languages } from './languages';
@@ -13,12 +12,6 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-const getNestedTranslation = (language: LanguageCode, key: string): string | undefined => {
-  return key.split('.').reduce((obj: any, k: string) => {
-    return obj?.[k];
-  }, translations[language]);
-};
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
@@ -36,18 +29,27 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const t = useCallback((key: string, replacements?: Record<string, string | number>): string => {
     const langCode = language.code as LanguageCode;
-    let translation = getNestedTranslation(langCode, key);
 
-    // Fallback to English if translation is not found
-    if (translation === undefined) {
-      translation = getNestedTranslation('en', key);
+    // Helper to safely traverse a nested object based on a dot-separated key.
+    const findTranslation = (langObj: any, key: string): string | undefined => {
+        return key.split('.').reduce((obj: any, k: string) => obj?.[k], langObj);
+    };
+
+    // 1. Try to find the translation in the currently selected language.
+    let translation = findTranslation(translations[langCode], key);
+
+    // 2. If it's not found and the selected language is not English, fall back to English.
+    if (translation === undefined && langCode !== 'en') {
+        translation = findTranslation(translations.en, key);
     }
 
+    // 3. If it's still not found, warn the developer and return the key.
     if (translation === undefined) {
-      console.warn(`Translation key "${key}" not found.`);
-      return key;
+        console.warn(`Translation key "${key}" not found for language "${langCode}" or fallback "en".`);
+        return key;
     }
     
+    // 4. Handle replacements (e.g., {name}).
     if (replacements) {
         Object.entries(replacements).forEach(([placeholder, value]) => {
             translation = translation!.replace(`{${placeholder}}`, String(value));

@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { CalculationItem, AssetType, Brand, OperatingSystem, Condition, AdditionalService, PriceViewMode } from '../../types';
+import { CalculationItem, AssetType, Brand, OperatingSystem, Condition, AdditionalService, PriceViewMode, ServiceSelection } from '../../types';
 import TrashIcon from '../ui/icons/TrashIcon';
 import DuplicateIcon from '../ui/icons/DuplicateIcon';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -21,18 +21,32 @@ interface CalculationRowProps {
   onDuplicate: (id: string) => void;
   priceViewMode: PriceViewMode;
   currency: string;
+  packingServiceCost: number;
 }
 
-const CalculationRow: React.FC<CalculationRowProps> = ({ item, leaseRateFactor, onRemove, onEdit, onDuplicate, priceViewMode, currency }) => {
+const CalculationRow: React.FC<CalculationRowProps> = ({ item, leaseRateFactor, onRemove, onEdit, onDuplicate, priceViewMode, currency, packingServiceCost }) => {
   const { t, locale } = useLanguage();
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(value);
   };
 
+  const servicesToDisplay: (ServiceSelection | { service: string, cost: number })[] = [...item.additionalServices];
+  if (item.packingServiceApplied) {
+    servicesToDisplay.push({
+      service: t('calculation.packingService'),
+      cost: packingServiceCost
+    });
+  }
+
   const monthlyHardwareCostPerUnit = item.hardwareCost * leaseRateFactor;
   const totalMonthlyCost = monthlyHardwareCostPerUnit * item.quantity;
-  const totalServicesCostPerUnit = item.additionalServices.reduce((sum, service) => sum + service.cost, 0);
+  
+  let totalServicesCostPerUnit = item.additionalServices.reduce((sum, service) => sum + service.cost, 0);
+  if (item.packingServiceApplied) {
+    totalServicesCostPerUnit += packingServiceCost;
+  }
+
   const totalLeaseCostPerUnit = (monthlyHardwareCostPerUnit * item.leaseTerm) + totalServicesCostPerUnit;
   const totalLeaseCost = totalLeaseCostPerUnit * item.quantity;
   
@@ -69,14 +83,14 @@ const CalculationRow: React.FC<CalculationRowProps> = ({ item, leaseRateFactor, 
         {(item.nonReturnPercentage || 0) > 0 && (
           <div className="font-semibold text-slate-700">{t('calculation.table.nonReturn')}: {t('common.yes')} (5%)</div>
         )}
-        {item.additionalServices.length > 0 && (
+        {servicesToDisplay.length > 0 && (
           <div className="mt-2 pt-2 border-t border-slate-100">
             <span className="text-xs font-semibold text-slate-600">{t('calculation.table.servicesLabel')}:</span>
             <ul className="list-disc list-inside text-xs text-slate-800 mt-1">
-              {item.additionalServices.map((s, i) => {
+              {servicesToDisplay.map((s, i) => {
                 return (
                   <li key={i}>
-                    {s.service === 'Other' ? s.description || "Other Service" : s.service}
+                    {'description' in s && s.description ? s.description : s.service}
                     {priceViewMode === 'detailed' && `: ${formatCurrency(s.cost)}`}
                   </li>
                 )

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -12,7 +10,7 @@ import { COUNTRIES, COUNTRY_CURRENCY_MAP } from '../../constants';
 import { Select } from '../ui/Select';
 import { useLanguage } from '../../i18n/LanguageContext';
 import SparklesIcon from '../ui/icons/SparklesIcon';
-import { getLeaseRateFactor } from './CalculationSheet';
+import { getLeaseRateFactor } from '../../utils/calculationUtils';
 import ChevronLeftIcon from '../ui/icons/ChevronLeftIcon';
 
 interface CreditRequestModalProps {
@@ -82,6 +80,8 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
     if (!aiText.trim()) return;
     setIsAiLoading(true);
     try {
+        // FIX: Use process.env.API_KEY as per @google/genai guidelines.
+        // The value is provided through the define plugin in vite.config.ts.
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",

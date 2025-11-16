@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { LeaseRateFactorsData, LeaseTerm, Profile, UserRole, LeaseRateFactorsMap, AssetType, OperatingSystem, Brand } from '../../types';
 import { LEASE_TERMS, ASSET_TYPE_KEYS, USED_ASSET_LRF_KEY, RELEVANT_OS_MAP_KEYS, BRAND_KEYS } from '../../constants';
@@ -58,6 +59,7 @@ const LeaseRateManagement: React.FC<LeaseRateManagementProps> = ({ lrfData, setL
   const [factors, setFactors] = useState<LeaseRateFactorsMap>(lrfData.factors);
   const [notificationAdminId, setNotificationAdminId] = useState(lrfData.notificationAdminId);
   const [nonReturnUplift, setNonReturnUplift] = useState(lrfData.nonReturnUpliftFactor || 0.008);
+  const [packingServiceCost, setPackingServiceCost] = useState(lrfData.packingServiceCost || 0);
   const [isDirty, setIsDirty] = useState(false);
   const [collapsedRows, setCollapsedRows] = useState<Set<string>>(new Set());
 
@@ -65,6 +67,7 @@ const LeaseRateManagement: React.FC<LeaseRateManagementProps> = ({ lrfData, setL
     setFactors(lrfData.factors);
     setNotificationAdminId(lrfData.notificationAdminId);
     setNonReturnUplift(lrfData.nonReturnUpliftFactor || 0.008);
+    setPackingServiceCost(lrfData.packingServiceCost || 0);
     setIsDirty(false);
   }, [lrfData]);
 
@@ -116,6 +119,7 @@ const LeaseRateManagement: React.FC<LeaseRateManagementProps> = ({ lrfData, setL
       factors,
       notificationAdminId,
       nonReturnUpliftFactor: nonReturnUplift,
+      packingServiceCost: packingServiceCost,
       lastUpdatedAt: new Date().toISOString(),
       updatedByUserId: currentUser.id,
       updateLog: [newLogEntry, ...prev.updateLog],
@@ -345,25 +349,40 @@ const LeaseRateManagement: React.FC<LeaseRateManagementProps> = ({ lrfData, setL
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t">
          <div>
             <h3 className="text-lg font-semibold mb-2">Global Calculation Settings</h3>
-            <div className="max-w-sm space-y-1">
-               <label htmlFor="non-return-uplift" className="block text-sm font-medium text-gray-700 mb-1">Non-Return Uplift (% per 1% non-return)</label>
-                <div className="relative">
+            <div className="max-w-sm space-y-4">
+               <div>
+                    <label htmlFor="non-return-uplift" className="block text-sm font-medium text-gray-700 mb-1">Non-Return Uplift (% per 1% non-return)</label>
+                    <div className="relative">
+                        <Input
+                            id="non-return-uplift"
+                            type="number"
+                            step="0.1"
+                            className="pr-8"
+                            value={nonReturnUplift * 100}
+                            onChange={e => {
+                            setNonReturnUplift(parseFloat(e.target.value) / 100);
+                            setIsDirty(true);
+                            }}
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">%</span>
+                        </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">e.g., enter 0.8 for a 0.8% uplift on the LRF per 1% non-return. A 5% option will increase the LRF by 4%.</p>
+               </div>
+               <div>
+                    <label htmlFor="packing-service-cost" className="block text-sm font-medium text-gray-700 mb-1">Packing Service Cost per Asset</label>
                     <Input
-                        id="non-return-uplift"
+                        id="packing-service-cost"
                         type="number"
-                        step="0.1"
-                        className="pr-8"
-                        value={nonReturnUplift * 100}
+                        step="1"
+                        value={packingServiceCost}
                         onChange={e => {
-                        setNonReturnUplift(parseFloat(e.target.value) / 100);
-                        setIsDirty(true);
+                            setPackingServiceCost(parseFloat(e.target.value) || 0);
+                            setIsDirty(true);
                         }}
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        <span className="text-gray-500 sm:text-sm">%</span>
-                    </div>
-                </div>
-              <p className="text-xs text-gray-500">e.g., enter 0.8 for a 0.8% uplift on the LRF per 1% non-return. A 5% option will increase the LRF by 4%.</p>
+               </div>
             </div>
         </div>
         <div>

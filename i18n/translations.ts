@@ -42,7 +42,6 @@ const en = {
       PreConfiguration: "Pre-configuration (staging)",
       Delivery: "Delivery",
       Support: "Support (24h Swap)",
-      PackingService: "Packing service (End of lease)",
     }
   },
   password: {
@@ -77,6 +76,8 @@ const en = {
     title: "Create Calculation",
     option: "Option",
     removeOption: "Remove",
+    packingService: "Packing service (End of lease)",
+    packingServiceOption: "Packing Service Option",
     disclaimer: "(*) All pricing shown is indicative only and is not an offer capable of acceptance. Applicants are subject to credit assessment by CHG-MERDIAN and a minimum order quantity of 100 devices is required.",
     buttons: {
       new: "New",
@@ -85,6 +86,7 @@ const en = {
       generatePdf: "Generate PDF",
       addItemTo: "Add Item to {optionName}",
       requestCreditApproval: "Request Credit Approval",
+      addOption: "Add Option",
     },
     creditRequestAdminTooltip: "This feature is for Partner users to request credit approval.",
     creditRequestPartnerDisabledTooltip: "Please add a customer name and at least one item to the quote to enable this feature.",
@@ -205,6 +207,13 @@ const en = {
     confirmDeleteQuote: "Are you sure you want to delete this quote?",
     confirmDeleteTemplate: "Are you sure you want to delete this template?",
   },
+  aiSummary: {
+    button: "Generate Summary",
+    modalTitle: "AI-Generated Quote Summary",
+    loadingText: "Generating summary, please wait...",
+    copyButton: "Copy to Clipboard",
+    copied: "Copied!",
+  },
   lrf: {
     expiredOn: "Rates Expired on: {date}",
     validUntil: "Rates valid until: {date}",
@@ -253,6 +262,19 @@ const en = {
         assumption: "Assumption",
         value: "Value"
       }
+    },
+    tuning: {
+      button: "Tune with AI",
+      modalTitle: "AI-Powered TCO Tuning",
+      description: "Based on your quote and industry, the AI has suggested the following adjustments to create a more realistic TCO comparison.",
+      table: {
+        parameter: "Parameter",
+        current: "Current",
+        suggested: "Suggested",
+        reasoning: "AI's Reasoning",
+      },
+      applyButton: "Apply Selected ({count})",
+      noSuggestions: "The AI reviewed your current assumptions and found them to be reasonable for the provided quote context. No changes are suggested at this time.",
     },
     chart: {
       title: "Lease vs. Purchase Cost Comparison",
@@ -389,6 +411,7 @@ const en = {
         title: "Global Calculation Settings",
         nonReturnUpliftLabel: "Non-Return Uplift (% per 1% non-return)",
         nonReturnUpliftHelp: "e.g., enter 0.8 for a 0.8% uplift on the LRF per 1% non-return. A 5% option will increase the LRF by 4%.",
+        packingServiceCostLabel: "Packing Service Cost per Asset",
       },
       notifications: {
         title: "Notification Settings",
@@ -510,6 +533,11 @@ const en = {
     totalMonthlyBundled: "Total Bundled Monthly",
     totalBundledCost: "Total Bundled Cost",
     fileName: "Quote",
+    serviceSummary: {
+      title: "Service Summary (One-Time Costs)",
+      service: "Service",
+      totalCost: "Total Cost"
+    },
     serviceDescriptions: {
       title: "Included Service Descriptions",
       Deployment: "On-site or remote setup and installation of devices, ensuring they are ready for immediate use by employees.",
@@ -518,6 +546,21 @@ const en = {
       Support: "A 24-hour replacement service for defective devices to minimize employee downtime.",
       PackingService: "Our team will handle the professional packing of all assets at the end of the lease, ensuring they are secure for transport.",
       Other: "Custom services as described in the quote."
+    },
+    standardServices: {
+      title: "Standard Included Services",
+      invoice: {
+        title: "Invoice Management",
+        desc: "Comprehensive invoice management with automated data capture for seamless financial tracking and reporting."
+      },
+      tesma: {
+        title: "TESMA® Asset & Contract Management",
+        desc: "Full access to our TESMA® platform, providing transparent, real-time management of your assets, contracts, and financial data."
+      },
+      eol: {
+        title: "Secure End-of-Life Services",
+        desc: "Certified data erasure and professional handling of assets at the end of the lease, including secure logistics and matching to ensure full compliance and security."
+      }
     },
     tco: {
       summary: "Based on a value-weighted average term of {term} and a WACC of {wacc}.",
@@ -688,7 +731,6 @@ const de = {
       PreConfiguration: "Vorkonfiguration (Staging)",
       Delivery: "Lieferung",
       Support: "Support (24h Austausch)",
-      PackingService: "Verpackungsservice (Ende der Laufzeit)",
     }
   },
   password: {
@@ -699,13 +741,6 @@ const de = {
     updatePasswordButton: "Passwort aktualisieren & Anmelden",
     error: {
       mismatch: "Die neuen Passwörter stimmen nicht überein.",
-      minLength: "Muss mindestens 10 Zeichen lang sein.",
-      uppercase: "Muss mindestens einen Großbuchstaben enthalten.",
-      lowercase: "Muss mindestens einen Kleinbuchstaben enthalten.",
-      number: "Muss mindestens eine Zahl enthalten.",
-      specialChar: "Muss mindestens ein Sonderzeichen enthalten.",
-      allFieldsRequired: "Alle Passwortfelder sind erforderlich.",
-      incorrectOld: "Das alte Passwort, das Sie eingegeben haben, ist falsch.",
     },
   },
   login: {
@@ -715,7 +750,6 @@ const de = {
     passwordPlaceholder: "Passwort",
     signInButton: "Anmelden",
     error: {
-      bothFieldsRequired: "Bitte geben Sie sowohl E-Mail als auch Passwort ein.",
       invalidCredentials: "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
     },
   },
@@ -723,7 +757,8 @@ const de = {
     title: "Kalkulation erstellen",
     option: "Option",
     removeOption: "Entfernen",
-    disclaimer: "(*) Alle angegebenen Preise sind nur Richtwerte und stellen kein verbindliches Angebot dar. Antragsteller unterliegen einer Bonitätsprüfung durch CHG-MERIDIAN und es ist eine Mindestbestellmenge von 100 Geräten erforderlich.",
+    packingService: "Verpackungsservice (Ende der Laufzeit)",
+    packingServiceOption: "Option Verpackungsservice",
     buttons: {
       new: "Neu",
       dashboard: "Dashboard",
@@ -731,22 +766,21 @@ const de = {
       generatePdf: "PDF generieren",
       addItemTo: "Artikel zu {optionName} hinzufügen",
       requestCreditApproval: "Kreditgenehmigung anfordern",
+      addOption: "Option hinzufügen",
     },
-    creditRequestAdminTooltip: "Diese Funktion ist für Partnerbenutzer, um eine Kreditgenehmigung anzufordern.",
-    creditRequestPartnerDisabledTooltip: "Bitte fügen Sie einen Kundennamen und mindestens einen Artikel zum Angebot hinzu, um diese Funktion zu aktivieren.",
     priceView: {
       label: "Preisanzeige",
-      detailed: "Detailliert",
-      bundled: "Gebündelt",
+      detailed: "Detaillierte Aufschlüsselung",
+      bundled: "Paketpreis",
     },
     customerName: "Kundenname",
-    customerNamePlaceholder: "Geben Sie den Namen des Kunden ein",
+    customerNamePlaceholder: "Namen des Kunden eingeben",
     projectName: "Projektname",
-    projectNamePlaceholder: "Geben Sie den Projektnamen ein",
+    projectNamePlaceholder: "Projektnamen eingeben",
     expectedStartDate: "Erwartetes Vertragsstartdatum",
     empty: {
-      title: "Diese Option ist leer.",
-      description: 'Klicken Sie auf "Artikel hinzufügen", um zu beginnen.',
+        title: "Diese Option ist leer.",
+        description: 'Klicken Sie auf "Artikel hinzufügen", um zu beginnen.',
     },
     table: {
       asset: "Gerät",
@@ -755,144 +789,16 @@ const de = {
       qty: "Menge",
       monthlyCost: "Monatl. Kosten",
       totalCost: "Gesamtkosten",
-      monthlyBundled: "Monatl. Rate (geb.)",
-      totalBundled: "Gesamt (geb.)",
-      commission: "Provision",
       actions: "Aktionen",
-      os: "BS",
-      condition: "Zustand",
-      country: "Land",
-      nonReturn: "Keine Rückgabe",
-      servicesLabel: "Services (einmalig)",
-      unit: "Einheit",
-    },
-    actions: {
-      duplicate: "Artikel duplizieren",
-      edit: "Artikel bearbeiten",
-      remove: "Artikel entfernen",
-    },
-    editModal: {
-      title: "Artikel bearbeiten",
-      servicesLabel: "Zusätzliche Dienstleistungen (Einmalkosten)",
-    },
-    templateModal: {
-      title: "Als Vorlage speichern",
-      nameLabel: "Vorlagenname",
-      namePlaceholder: "z.B. Standard-Mitarbeiterausstattung",
-      saveButton: "Vorlage speichern",
-    },
-    wizard: {
-      title: "Assistent zum Hinzufügen von Artikeln",
-      assetType: "Gerätetyp",
-      brand: "Marke",
-      os: "Betriebssystem",
-      condition: "Zustand",
-      country: "Land",
-      selectCountry: "Land auswählen...",
-      hardwareCost: "Hardware-Stückpreis ({currency})",
-      quantity: "Anzahl der Einheiten",
-      leaseTerm: "Laufzeit (Monate)",
-      nonReturnOption: "Option zur Nichtrückgabe",
-      customDescriptionLabel: "Gerätebeschreibung",
-      customDescriptionPlaceholder: "z.B. Hochleistungsscanner",
-      submitButton: "Zur Kalkulation hinzufügen",
-      step1: {
-        title: "Schritt 1: Hardware-Details",
-      },
-      step2: {
-        title: "Schritt 2: Dienstleistungen",
-        description: "Alle hier eingegebenen Kosten sind Einmalkosten pro Gerät.",
-        supportHelpText: "Hinweis: Gesamtkosten pro Gerät für die gesamte Laufzeit.",
-        otherServiceDescription: "Andere Dienstleistung",
-        otherServicePlaceholder: "z.B. Benutzerdefinierte Software-Einrichtung",
-      },
-      step3: {
-        title: "Schritt 3: Laufzeit & Zusammenfassung",
-        summaryTitle: "Artikelzusammenfassung",
-        asset: "Gerät",
-        quantity: "Menge",
-        totalUnitCost: "Gesamteinheitskosten",
-        leaseTerm: "Laufzeit",
-      },
-    },
-    error: {
-      cannotDeleteLastOption: "Sie können die letzte Option nicht löschen.",
-      templateNameAndItemsRequired: "Bitte geben Sie einen Namen an und stellen Sie sicher, dass die aktive Option Artikel enthält.",
-    },
-    confirm: {
-      deleteOption: "Sind Sie sicher, dass Sie diese Option löschen möchten?",
     },
   },
-  summary: {
-    hardwareValue: "Hardwarewert",
-    oneTimeServices: "Einmalige Services gesamt",
-    totalCommission: "Provision gesamt",
-    totalMonthlyCost: "Monatliche Kosten gesamt",
-    totalLeaseCost: "Leasingkosten gesamt",
-    totalMonthlyBundled: "Monatliche Rate (geb.) gesamt",
-    totalBundledCost: "Leasingkosten (geb.) gesamt",
+  aiSummary: {
+    button: "Zusammenfassung erstellen",
+  },
+  lrf: {
+    validUntil: "Preise gültig bis: {date}",
   },
   tco: {
-    title: "Total Cost of Ownership Analyse",
-    empty: {
-      title: "Die Kalkulation ist leer.",
-      description: 'Bitte fügen Sie Artikel im "Rechner"-Tab hinzu, um die TCO-Analyse zu sehen.',
-    },
-    assumptions: {
-      title: "TCO-Annahmen",
-      operationalCosts: "Betriebskosten",
-      deploymentCost: "Bereitstellungskosten / Gerät",
-      supportHours: "IT-Support-Stunden / Gerät / Jahr",
-      staffRate: "Stundensatz IT-Personal",
-      eoldCost: "End-of-Life-Kosten / Gerät",
-      downtimeProductivity: "Ausfallzeit & Produktivität",
-      failures: "Ausfälle / Gerät / Jahr",
-      downtimeHours: "Ausfallzeit / Ausfall (Std.)",
-      employeeCost: "Durchschn. Mitarbeiterkosten / Stunde",
-      assetValue: "Anlagenwert",
-      residualValue: "Restwert (%)",
-      table: {
-        assumption: "Annahme",
-        value: "Wert",
-      }
-    },
-    chart: {
-      title: "Kostenvergleich: Miete vs. Kauf",
-      leaseCostLabel: "Gesamtmietkosten",
-      purchaseCostLabel: "Gesamtbetriebskosten",
-    },
-    breakdown: {
-      title: "Detaillierte Kostenaufstellung",
-      averageLeaseTerm: "Durchschnittliche Laufzeit (wertgewichtet)",
-    },
-    table: {
-      category: "Kostenkategorie",
-      purchase: "Kaufszenario",
-      lease: "Mietszenario",
-      hardwareCost: "Hardwarekosten (Anschaffung)",
-      capitalCost: "Kapitalkosten (WACC)",
-      deployment: "Bereitstellungskosten",
-      support: "Laufender IT-Support",
-      downtime: "Produktivitätsverlust (Ausfallzeit)",
-      eold: "End-of-Life-Entsorgung",
-      residualValue: "Abzgl. Restwert",
-      leasePayments: "Leasingzahlungen gesamt",
-      totalTco: "Total Cost of Ownership",
-    },
-    savingsWithLease: "Ersparnis mit Leasing",
-    included: "Inkludiert",
-    mitigated: "Gemindert",
-    wacc: {
-      title: "Kapitalkosten (WACC)",
-      industry: "Branche",
-      industryAverage: "WACC (Branchendurchschnitt)",
-      applyIndividual: "WACC (Individuell) anwenden",
-      individualWacc: "WACC (Individuell) in %",
-    },
-    glossary: {
-      title: "Glossar",
-      wacc: "WACC = Gewichteter durchschnittlicher Kapitalkostensatz. Der WACC wird verwendet, um den Zeitwert des Geldes zu berechnen, was einen genaueren 'effektiven Kaufpreis' ergibt. Dies ist ein vereinfachtes Modell zu Veranschaulichungszwecken.",
-    },
     industries: {
       Automotive: "Automobil",
       Banking: "Bankwesen",
@@ -911,328 +817,12 @@ const de = {
     }
   },
   admin: {
-    branding: {
-      title: "Branding-Management",
-      appLogo: "Anwendungslogo (Anmeldeseite)",
-      currentLogo: "Aktuelles Logo",
-      uploadNewLabel: "Ein neues Logo hochladen",
-      uploadButton: "Logo hochladen",
-      removeButton: "Benutzerdefiniertes Logo entfernen",
-      uploadHint: "Empfohlen: SVG oder PNG mit transparentem Hintergrund.",
-      confirmRemoveLogo: "Sind Sie sicher, dass Sie das benutzerdefinierte Logo entfernen und zum Standard zurückkehren möchten?"
-    },
-    users: {
-      title: "Benutzerverwaltung",
-      addUserButton: "Benutzer hinzufügen",
-      table: {
-        name: "Name",
-        emailCompany: "E-Mail / Firma",
-        role: "Rolle",
-        totalCalculatedValue: "Berechneter Gesamtwert",
-        totalCommissionEarned: "Verdiente Gesamtprovision",
-        actions: "Aktionen",
-      },
-      modal: {
-        addTitle: "Neuen Benutzer hinzufügen",
-        editTitle: "Benutzer bearbeiten",
-        name: "Name",
-        email: "Email",
-        password: "Passwort",
-        resetPassword: "Passwort zurücksetzen",
-        sendResetLink: "Link zum Zurücksetzen senden",
-        passwordPlaceholderEdit: "Leer lassen, um unverändert zu lassen",
-        forceResetNote: "Dies erfordert, dass der Benutzer sein Passwort bei der nächsten Anmeldung ändert.",
-        role: "Rolle",
-        selectRole: "Wählen Sie eine Rolle",
-        partnerDetailsTitle: "Partnerdetails",
-        companyName: "Firmenname",
-        phone: "Telefon",
-        country: "Land",
-        selectCountry: "Land auswählen",
-        commission: "Provision (%)",
-        commissionHelpText: "Die Provision wird auf die Hardwarekosten berechnet und über die Leasingdauer verteilt, was den monatlichen Leasingfaktor erhöht.",
-        companyLogo: "Firmenlogo",
-        uploadLogoButton: "Logo hochladen",
-      },
-      error: {
-        fillRequiredFields: "Bitte füllen Sie Name, E-Mail und Rolle aus.",
-        passwordRequired: "Passwort ist für neue Benutzer erforderlich.",
-        commissionRange: "Provision muss ein gültiger Prozentsatz sein.",
-        updateFailed: "Profil konnte nicht aktualisiert werden",
-        profileSavedButResetFailed: "Profil gespeichert, aber das Senden der Passwort-Reset-E-Mail ist fehlgeschlagen",
-        createUserFailed: "Benutzer konnte nicht erstellt werden",
-        createProfileFailed: "Benutzer-Auth-Datensatz erstellt, aber Profilerstellung fehlgeschlagen. Bitte manuell beheben.",
-      },
-      success: {
-        profileSavedAndResetSent: "Profil gespeichert. Ein Link zum Zurücksetzen des Passworts wurde an {email} gesendet.",
-      },
-      warning: {
-        adminLogoutOnCreate: "Warnung: Das Erstellen eines neuen Benutzers wird Sie von Ihrem Administratorkonto abmelden. Sie müssen sich danach manuell wieder anmelden.",
-      },
-      inviteSuccess: "Einladung an {email} gesendet. Sie erhalten eine E-Mail, um ihr Passwort festzulegen.",
-      resetSuccess: "Link zum Zurücksetzen des Passworts an {email} gesendet.",
-      userCreationNote: "Der Benutzer erhält eine E-Mail, um sein Passwort einzurichten und sich anzumelden.",
-    },
     lrf: {
-      title: "Leasingraten-Faktor-Management",
-      description: "Legen Sie spezifische Leasingraten fest. Leere Felder verwenden automatisch die Rate der übergeordneten Kategorie (z.B. verwendet 'Laptop-Windows' die 'Laptop'-Raten, wenn das eigene Feld leer ist).",
-      table: {
-        categoryOsBrand: "Kategorie / BS / Marke",
-        termMonths: "{term} Monate",
-      },
-      allUsedAssets: "Alle gebrauchten Geräte",
-      globalSettings: {
-        title: "Globale Berechnungseinstellungen",
-        nonReturnUpliftLabel: "Aufschlag bei Nichtrückgabe (% pro 1% Nichtrückgabe)",
-        nonReturnUpliftHelp: "z.B. geben Sie 0,8 für einen 0,8%igen Aufschlag auf den LRF pro 1% Nichtrückgabe ein. Eine 5%-Option erhöht den LRF um 4%.",
-      },
-      notifications: {
-        title: "Benachrichtigungseinstellungen",
-        description: "Wählen Sie einen Administrator aus, der E-Mail-Benachrichtigungen erhält, wenn Partner eine LRF-Aktualisierung anfordern.",
-        recipientLabel: "Benachrichtigungsempfänger",
-      },
-      history: {
-        title: "Verlaufsprotokoll",
-        date: "Datum",
-        admin: "Admin",
-      },
-      upload: {
-          button: "CSV hochladen",
-          sampleLink: "CSV-Vorlage herunterladen.",
-          excelHint: "(Sie können dies in Excel bearbeiten und als .csv-Datei speichern).",
-          confirm: "Dies überschreibt alle aktuellen LRFs mit Daten aus der Datei. Sind Sie sicher, dass Sie fortfahren möchten?",
-          success: "LRFs erfolgreich importiert. Klicken Sie auf 'Änderungen speichern', um sie anzuwenden.",
-          error: {
-            generic: "Fehler beim Parsen der CSV-Datei",
-            header: "Ungültiger CSV-Header. Der Header muss 'key' gefolgt von den Leasinglaufzeiten (12, 24, usw.) enthalten.",
-            noData: "Keine gültigen LRF-Daten in der Datei gefunden."
-          }
-      }
-    },
-    loginHistory: {
-      title: "Anmeldeverlauf",
-      table: {
-        date: "Datum",
-        user: "Benutzer",
-        status: "Status",
-        attemptedEmail: "Versuchte E-Mail",
-      },
-      statuses: {
-        Success: "Erfolg",
-        Failure: "Fehler",
-      },
-      noHistory: "Es wurden noch keine Anmeldeversuche aufgezeichnet.",
-    },
-    workflow: {
-      title: "Workflow & Benachrichtigungen",
-      currentRecipient: "Aktueller Empfänger",
-      primaryEmail: {
-        title: "Empfänger für Kreditgenehmigung",
-        description: "Diese E-Mail-Adresse erhält alle von Partnern gesendeten Kreditgenehmigungsanfragen.",
-      },
-      substitutes: {
-        title: "Urlaubs- / Vertretungsweiterleitung",
-        description: "Fügen Sie eine Vertreter-E-Mail-Adresse für einen bestimmten Zeitraum hinzu. Anfragen werden automatisch weitergeleitet, wenn das Datum in den Bereich fällt.",
-        add: "Neuen Vertreter hinzufügen",
-        email: "Vertreter-E-Mail",
-        startDate: "Startdatum",
-        endDate: "Enddatum",
-        addButton: "Vertreter hinzufügen",
-        status: "Status",
-        statuses: {
-          active: "Aktiv",
-          past: "Vergangen",
-          upcoming: "Bevorstehend",
-        },
-        error: {
-          allFieldsRequired: "Bitte füllen Sie alle Felder für den Vertreter aus.",
-        },
-        confirmRemove: "Sind Sie sicher, dass Sie diesen Vertreter entfernen möchten?",
-      },
-    },
-    activityLog: {
-      title: "Aktivitätsprotokoll",
-      table: {
-        date: "Datum",
-        user: "Benutzer",
-        activity: "Aktivität",
-        details: "Details",
-      },
-      activities: {
-        CreditRequestSent: "Kreditanfrage gesendet",
-      },
-      noActivity: "Es wurde noch keine Aktivität aufgezeichnet.",
-    },
-  },
-  pdf: {
-    quoteFor: "Angebot für: {customerName}",
-    project: "Projekt: {projectName}",
-    customerStatus: "Kundenstatus",
-    currency: "Währung",
-    startDate: "Erstmöglicher Starttermin",
-    assetSummary: {
-      title: "Zusammenfassung der Anlagen",
-      assetClass: "Anlagenklasse",
-      totalValue: "Gesamtwert",
-      leaseTerms: "Laufzeiten (Monate)",
-    },
-    customerDetails: {
-      title: "Kundendetails",
-      companyName: "Firmenname",
-      address: "Adresse",
-      city: "Stadt",
-      postalCode: "Postleitzahl",
-      country: "Land",
-      vatId: "USt-IdNr. / Firmen-ID",
-      contactName: "Ansprechpartner",
-      contactEmail: "E-Mail des Kontakts",
-      contactPhone: "Telefon des Kontakts"
-    },
-    optionsSummary: "Zusammenfassung der Optionen",
-    totalMonthlyCost: "Monatliche Gesamtkosten",
-    totalLeaseCost: "Gesamtleasingkosten",
-    fileName: "Angebot",
-    serviceDescriptions: {
-      title: "Inkludierte Servicebeschreibungen",
-      Deployment: "Vor-Ort- oder Remote-Einrichtung und Installation von Geräten, um deren sofortige Einsatzbereitschaft für Mitarbeiter zu gewährleisten.",
-      PreConfiguration: "Vorladen von unternehmensspezifischen Software-Images, Anwendungen und Sicherheitseinstellungen vor der Auslieferung.",
-      Delivery: "Sichere Logistik und Lieferung von Hardware direkt an Bürostandorte oder zu Mitarbeitern nach Hause.",
-      Support: "Ein 24-Stunden-Austauschservice für defekte Geräte zur Minimierung der Ausfallzeiten von Mitarbeitern.",
-      PackingService: "Unser Team kümmert sich um die professionelle Verpackung aller Assets am Ende der Leasinglaufzeit, um einen sicheren Transport zu gewährleisten.",
-      Other: "Benutzerdefinierte Dienstleistungen wie im Angebot beschrieben."
-    },
-    tco: {
-      summary: "Basierend auf einer wertgewichteten durchschnittlichen Laufzeit von {term} und einem WACC von {wacc}.",
-      savings: "Leasing bietet ein potenzielles Einsparungspotenzial von {amount} ({percent}) gegenüber dem Kauf.",
-    },
-    table: {
-      asset: "Gerät",
-      details: "Details",
-      term: "Laufzeit",
-      qty: "Menge",
-      monthly: "Monatlich",
-      total: "Gesamt",
-      monthlyBundled: "Gebündelt Monatlich",
-      totalBundled: "Gebündelt Gesamt",
-    },
-    subtotalFor: "Zwischensumme für",
-    subtotalBundledFor: "Gebündelte Zwischensumme für",
-    totalMonthlyBundled: "Gesamt Gebündelt Monatlich",
-    totalBundledCost: "Gesamt Gebündelt Kosten",
-  },
-  creditModal: {
-    title: "Kreditgenehmigung anfordern",
-    multiCountryTitle: "Kreditgenehmigungs-Hub für mehrere Länder",
-    hub: {
-      description: "Dieses Projekt umfasst Geräte für mehrere Länder. Bitte geben Sie die Kundendaten für jedes Land unten an und senden Sie die Anfragen einzeln.",
-      description_consolidated: "Dieses Projekt umfasst Geräte für mehrere Länder. Bitte geben Sie die rechtlichen Unternehmensdetails für jedes Land unten ein. Sobald alle Details vollständig sind, können Sie eine einzige konsolidierte Anfrage vorbereiten, die Sie zur internen Koordination an Ihr primäres Kredit-Team senden.",
-      assetsForCountry: "Geräte für {country}",
-      itemSummary: "{count} Artikel, Gesamtwert {value}",
-      status: "Status",
-      statusNeeded: "Details erforderlich",
-      statusComplete: "Details vollständig",
-      statusReady: "Bereit zum Senden",
-      statusSent: "Anfrage gesendet",
-      enterDetailsButton: "Kundendaten eingeben",
-      editDetailsButton: "Details bearbeiten",
-      sendButton: "Anfrage vorbereiten & senden",
-      consolidatedButton: "Konsolidierte Anfrage vorbereiten",
-      consolidatedButtonTooltip: "Bitte geben Sie die Details für alle Länder ein, bevor Sie die Anfrage vorbereiten.",
-      noCountryWarning: "Einigen Artikeln in diesem Angebot ist kein Land zugewiesen. Bitte bearbeiten Sie jeden Artikel und wählen Sie ein Land aus, bevor Sie eine Genehmigung anfordern.",
-    },
-    form: {
-      title: "Kundendaten für {country} eingeben",
-    },
-    customerDetails: "Kundendetails",
-    companyName: "Firmenname",
-    address: "Vollständige Straßenadresse",
-    city: "Stadt",
-    postalCode: "Postleitzahl",
-    country: "Land",
-    vatId: "USt-IdNr. / Firmen-ID",
-    creditType: "Neukredit oder bestehender CHG-Kunde?",
-    creditTypeNew: "Neukredit",
-    creditTypeExisting: "Bestehender Kunde",
-    currency: "Währung",
-    contactPerson: "Hauptansprechpartner",
-    contactName: "Name des Ansprechpartners",
-    contactEmail: "E-Mail des Ansprechpartners",
-    contactPhone: "Telefon des Ansprechpartners",
-    sendRequestButton: "Anfrage vorbereiten",
-    ai: {
-      label: "Automatisch mit KI ausfüllen",
-      description: "Fügen Sie Kundendetails aus einer E-Mail-Signatur oder einem Dokument ein, um das Formular automatisch auszufüllen.",
-      placeholder: "Text hier einfügen...",
-      button: "Aus Text ausfüllen"
-    },
-    email: {
-      subject: "Kreditgenehmigungsanfrage für {customer} von {partner}",
-      multiCountrySubject: "Kreditgenehmigungsanfrage für {customer} ({country}) von {partner}",
-      bodyWithAttachment: "Sehr geehrtes Kredit-Team,\n\nanbei finden Sie das Angebot zur Prüfung und Genehmigung.\n\nProjekt: {projectName}\nKunde: {customerName}\n\nVielen Dank,\n{partnerName}",
-    },
-    error: {
-      title: "Fehlende Informationen",
-      missingFields: "Bitte füllen Sie die folgenden Pflichtfelder aus: {fields}"
+        globalSettings: {
+            packingServiceCostLabel: "Kosten für Verpackungsservice pro Gerät",
+        }
     }
   },
-  legal: {
-      checkboxLabel: "Ich habe die",
-      termsLink: "Allgemeinen Geschäftsbedingungen",
-      modal: {
-        title: "Allgemeine Geschäftsbedingungen",
-        close: "Schließen",
-      },
-      terms: {
-          legalDisclaimer: "RECHTLICHER HINWEIS: Die folgenden Allgemeinen Geschäftsbedingungen dienen nur zur Veranschaulichung und stellen keine Rechtsberatung dar. Sie müssen sich an einen qualifizierten Rechtsbeistand wenden, um Geschäftsbedingungen zu entwerfen, die für Ihr spezifisches Geschäft, Ihre Gerichtsbarkeit und Ihre rechtlichen Anforderungen geeignet sind.",
-          lastUpdated: "Zuletzt aktualisiert: {date}",
-          acceptance: {
-              title: "1. Annahme der Bedingungen",
-              p1: "Durch die Anmeldung und Nutzung dieses IT-Hardware-Mietportals (der „Dienst“) erklären Sie sich mit diesen Allgemeinen Geschäftsbedingungen („AGB“) einverstanden. Wenn Sie diesen Bedingungen nicht zustimmen, nutzen Sie den Dienst nicht."
-          },
-          useOfService: {
-              title: "2. Nutzung des Dienstes",
-              p1: "Der Dienst wird bereitgestellt, um Partner von CHG-MERIDIAN bei der Erstellung von Kalkulationen und Angeboten für ihre Kunden zu unterstützen. Sie erklären sich damit einverstanden, den Dienst nur für den vorgesehenen Zweck und in Übereinstimmung mit allen geltenden Gesetzen und Vorschriften zu nutzen."
-          },
-          data: {
-              title: "3. Verwaltung personenbezogener Daten",
-              p1: "In Übereinstimmung mit der Datenschutz-Grundverordnung (DSGVO) und anderen geltenden Datenschutzgesetzen verpflichten wir uns, Ihre Privatsphäre zu schützen. Durch die Nutzung des Dienstes erkennen Sie an und stimmen zu, dass Ihre Daten sicher übertragen und in einer zentralen Cloud-Datenbank gespeichert werden.",
-              listTitle: "Daten, die wir erheben:",
-              li1: "Benutzerkontoinformationen: Ihr Name, Ihre E-Mail-Adresse, Ihr Firmenname, Ihre Telefonnummer und verschlüsselte Passwortinformationen.",
-              li2: "Angebotsinformationen: Kundennamen, Projektnamen und Details zu den von Ihnen erstellten Kalkulationen.",
-              li3: "Anmeldeverlauf: Wir zeichnen Zeitstempel und Erfolgs-/Fehlgeschlagen-Status von Anmeldeversuchen zu Sicherheitszwecken auf.",
-              purposeTitle: "Zweck der Datenerhebung:",
-              purposeLi1: "Um den Dienst bereitzustellen, zu pflegen und zu verbessern.",
-              purposeLi2: "Um Sie als Benutzer zu identifizieren und Ihr Konto zu verwalten.",
-              purposeLi3: "Um Ihnen die Erstellung, Speicherung und Verwaltung von Mietangeboten zu ermöglichen.",
-              purposeLi4: "Zur Sicherheitsüberprüfung und zur Verhinderung betrügerischer Aktivitäten.",
-              storageTitle: "Datenspeicherung und -sicherheit:",
-              storageLi1: "Ihre Daten werden auf sicheren Servern gespeichert, die von unserem Datenbankanbieter (Supabase) verwaltet werden. Wir ergreifen angemessene Maßnahmen, um Ihre Informationen vor unbefugtem Zugriff, unbefugter Nutzung oder Offenlegung zu schützen.",
-              storageLi2: "Sie sind für die Wahrung der Vertraulichkeit Ihres Kontopassworts verantwortlich.",
-              rightsTitle: "Ihre Rechte:",
-              rightsLi1: "Sie haben das Recht, auf Ihre personenbezogenen Daten zuzugreifen, sie zu berichtigen oder deren Löschung zu verlangen. Um diese Rechte auszuüben, wenden Sie sich bitte an den Administrator dieses Portals in Ihrer Organisation."
-          },
-          intellectualProperty: {
-              title: "4. Geistiges Eigentum",
-              p1: "Der Dienst und sein ursprünglicher Inhalt, seine Merkmale und seine Funktionalität sind und bleiben das alleinige Eigentum von CHG-MERIDIAN und seinen Lizenzgebern."
-          },
-          disclaimer: {
-              title: "5. Gewährleistungsausschluss",
-              p1: "Der Dienst wird „wie besehen“ und „wie verfügbar“ ohne jegliche ausdrückliche oder stillschweigende Gewährleistungen bereitgestellt. Alle Berechnungen sind indikativ und unverbindlich."
-          },
-          liability: {
-              title: "6. Haftungsbeschränkung",
-              p1: "In keinem Fall haften CHG-MERIDIAN, seine Direktoren, Mitarbeiter oder Partner für indirekte, zufällige, besondere, Folge- oder Strafschäden, die sich aus Ihrer Nutzung des Dienstes ergeben."
-          },
-          governingLaw: {
-              title: "7. Geltendes Recht",
-              p1: "Diese AGB unterliegen den Gesetzen der Gerichtsbarkeit, in der CHG-MERIDIAN tätig ist, ohne Rücksicht auf die Kollisionsnormen."
-          },
-          changes: {
-              title: "8. Änderungen der Bedingungen",
-              p1: "Wir behalten uns das Recht vor, diese AGB jederzeit zu ändern oder zu ersetzen. Wir werden über alle Änderungen informieren, indem wir das Datum „Zuletzt aktualisiert“ aktualisieren. Ihre fortgesetzte Nutzung des Dienstes nach solchen Änderungen stellt Ihre Annahme der neuen AGB dar."
-          }
-      }
-  }
 };
 
 const fi = {
@@ -1278,7 +868,6 @@ const fi = {
       PreConfiguration: "Esiasennus (staging)",
       Delivery: "Toimitus",
       Support: "Tuki (24h vaihtolaite)",
-      PackingService: "Pakkauspalvelu (sopimuskauden päättyessä)",
     }
   },
   password: {
@@ -1288,14 +877,7 @@ const fi = {
     confirmNewPassword: "Vahvista uusi salasana",
     updatePasswordButton: "Päivitä salasana & kirjaudu sisään",
     error: {
-      allFieldsRequired: "Kaikki salasanakentät vaaditaan.",
       mismatch: "Uudet salasanat eivät täsmää.",
-      incorrectOld: "Antamasi vanha salasana on virheellinen.",
-      minLength: "Salasanan on oltava vähintään 10 merkkiä pitkä.",
-      uppercase: "Salasanan on sisällettävä vähintään yksi iso kirjain.",
-      lowercase: "Salasanan on sisällettävä vähintään yksi pieni kirjain.",
-      number: "Salasanan on sisällettävä vähintään yksi numero.",
-      specialChar: "Salasanan on sisällettävä vähintään yksi erikoismerkki.",
     },
   },
   login: {
@@ -1305,25 +887,23 @@ const fi = {
     passwordPlaceholder: "Salasana",
     signInButton: "Kirjaudu sisään",
     error: {
-      bothFieldsRequired: "Syötä sähköpostiosoite ja salasana.",
       invalidCredentials: "Virheellinen sähköpostiosoite tai salasana. Yritä uudelleen.",
     },
   },
   calculation: {
     title: "Luo laskelma",
     option: "Vaihtoehto",
-    removeOption: "Poista",
-    disclaimer: "(*) Kaikki esitetyt hinnat ovat suuntaa-antavia eivätkä ole sitova tarjous. Hakijat ovat CHG-MERIDIANin luottotarkastuksen alaisia ja vähimmäistilausmäärä on 100 laitetta.",
+    packingService: "Pakkauspalvelu (sopimuskauden päättyessä)",
+    packingServiceOption: "Pakkauspalvelu",
     buttons: {
       new: "Uusi",
       dashboard: "Kojelauta",
       saveTemplate: "Tallenna mallina",
       generatePdf: "Luo PDF",
-      addItemTo: "Lisää nimike {optionName}",
+      addItemTo: "Lisää tuote {optionName}",
       requestCreditApproval: "Pyydä luottohyväksyntää",
+      addOption: "Lisää vaihtoehto",
     },
-    creditRequestAdminTooltip: "Tämä toiminto on tarkoitettu kumppanikäyttäjille luottohyväksynnän pyytämiseen.",
-    creditRequestPartnerDisabledTooltip: "Lisää asiakkaan nimi ja vähintään yksi nimike tarjoukseen ottaaksesi tämän toiminnon käyttöön.",
     priceView: {
       label: "Hinnan näyttö",
       detailed: "Yksityiskohtainen erittely",
@@ -1333,156 +913,28 @@ const fi = {
     customerNamePlaceholder: "Syötä asiakkaan nimi",
     projectName: "Projektin nimi",
     projectNamePlaceholder: "Syötä projektin nimi",
-    expectedStartDate: "Arvioitu sopimuksen alkamispäivä",
+    expectedStartDate: "Odotettu sopimuksen alkamispäivä",
     empty: {
       title: "Tämä vaihtoehto on tyhjä.",
-      description: 'Aloita napsauttamalla "Lisää nimike".',
+      description: 'Aloita napsauttamalla "Lisää tuote".',
     },
     table: {
       asset: "Laite",
       details: "Tiedot",
       term: "Kausi",
       qty: "Määrä",
-      monthlyCost: "Kuukausikustannus",
+      monthlyCost: "Kuukausihinta",
       totalCost: "Kokonaiskustannus",
-      monthlyBundled: "Paketin kk-hinta",
-      totalBundled: "Paketin kokonaishinta",
-      commission: "Provisio",
       actions: "Toiminnot",
-      os: "Käyttöjärj.",
-      condition: "Kunto",
-      country: "Maa",
-      nonReturn: "Ei palautusta",
-      servicesLabel: "Palvelut (kertamaksu)",
-      unit: "Yksikkö",
-    },
-    actions: {
-      duplicate: "Monista nimike",
-      edit: "Muokkaa nimikettä",
-      remove: "Poista nimike",
-    },
-    editModal: {
-      title: "Muokkaa nimikettä",
-      servicesLabel: "Lisäpalvelut (kertamaksu)",
-    },
-    templateModal: {
-      title: "Tallenna mallina",
-      nameLabel: "Mallin nimi",
-      namePlaceholder: "esim. Työntekijän vakiokokoonpano",
-      saveButton: "Tallenna malli",
-    },
-    wizard: {
-      title: "Ohjattu nimikkeen lisäys",
-      assetType: "Laitetyyppi",
-      brand: "Merkki",
-      os: "Käyttöjärjestelmä",
-      condition: "Kunto",
-      country: "Maa",
-      selectCountry: "Valitse maa...",
-      hardwareCost: "Laitteen yksikköhinta ({currency})",
-      quantity: "Yksiköiden määrä",
-      leaseTerm: "Vuokra-aika (kuukautta)",
-      nonReturnOption: "Palauttamattomuusvaihtoehto",
-      customDescriptionLabel: "Laitteen kuvaus",
-      customDescriptionPlaceholder: "esim. Tehokas skanneri",
-      submitButton: "Lisää laskelmaan",
-      step1: {
-        title: "Vaihe 1: Laitteen tiedot",
-      },
-      step2: {
-        title: "Vaihe 2: Palvelut",
-        description: "Kaikki tähän syötetyt kustannukset ovat kertaluonteisia kustannuksia laitetta kohti.",
-        supportHelpText: "Huom: Kokonaiskustannus per laite koko vuokra-ajalta.",
-        otherServiceDescription: "Muu palvelu",
-        otherServicePlaceholder: "esim. Mukautettu ohjelmistoasennus",
-      },
-      step3: {
-        title: "Vaihe 3: Vuokra-aika & yhteenveto",
-        summaryTitle: "Nimikkeen yhteenveto",
-        asset: "Laite",
-        quantity: "Määrä",
-        totalUnitCost: "Yksikön kokonaiskustannus",
-        leaseTerm: "Vuokra-aika",
-      },
-    },
-    error: {
-      cannotDeleteLastOption: "Et voi poistaa viimeistä vaihtoehtoa.",
-      templateNameAndItemsRequired: "Anna nimi ja varmista, että aktiivisessa vaihtoehdossa on nimikkeitä.",
-    },
-    confirm: {
-      deleteOption: "Haluatko varmasti poistaa tämän vaihtoehdon?",
     },
   },
-  summary: {
-    hardwareValue: "Laitteiston arvo",
-    oneTimeServices: "Kertaluonteiset palvelut yhteensä",
-    totalCommission: "Provisio yhteensä",
-    totalMonthlyCost: "Kuukausikustannukset yhteensä",
-    totalLeaseCost: "Vuokrakustannukset yhteensä",
-    totalMonthlyBundled: "Paketin kuukausihinta yhteensä",
-    totalBundledCost: "Paketin vuokrakustannukset yhteensä",
+  aiSummary: {
+    button: "Luo yhteenveto",
+  },
+  lrf: {
+    validUntil: "Hinnat voimassa asti: {date}",
   },
   tco: {
-    title: "Kokonaiskustannusanalyysi (TCO)",
-    empty: {
-      title: "Laskelma on tyhjä.",
-      description: 'Lisää nimikkeitä "Laskuri"-välilehdellä nähdäksesi TCO-analyysin.',
-    },
-    assumptions: {
-      title: "TCO-oletukset",
-      operationalCosts: "Toiminnalliset kustannukset",
-      deploymentCost: "Käyttöönottokustannus / laite",
-      supportHours: "IT-tukitunnit / laite / vuosi",
-      staffRate: "IT-henkilöstön tuntihinta",
-      eoldCost: "Elinkaaren lopun kustannus / laite",
-      downtimeProductivity: "Seisokit & tuottavuus",
-      failures: "Viat / laite / vuosi",
-      downtimeHours: "Seisokkitunnit / vika",
-      employeeCost: "Keskim. työntekijän kustannus / tunti",
-      assetValue: "Omaisuuden arvo",
-      residualValue: "Jäännösarvo (%)",
-      table: {
-        assumption: "Oletus",
-        value: "Arvo"
-      }
-    },
-    chart: {
-      title: "Vuokrauksen ja ostamisen kustannusvertailu",
-      leaseCostLabel: "Vuokrakustannukset yhteensä",
-      purchaseCostLabel: "Omistamisen kokonaiskustannukset",
-    },
-    breakdown: {
-      title: "Yksityiskohtainen kustannuserittely",
-      averageLeaseTerm: "Keskimääräinen vuokra-aika (arvopainotettu)",
-    },
-    table: {
-      category: "Kustannusluokka",
-      purchase: "Ostoskenaario",
-      lease: "Vuokraskenaario",
-      hardwareCost: "Laitteistokustannus (alussa)",
-      capitalCost: "Pääomakustannus (WACC)",
-      deployment: "Käyttöönottokustannukset",
-      support: "Jatkuva IT-tuki",
-      downtime: "Tuottavuuden menetys (seisokit)",
-      eold: "Elinkaaren lopun hävittäminen",
-      residualValue: "Vähennettynä: Jäännösarvo",
-      leasePayments: "Vuokramaksut yhteensä",
-      totalTco: "Omistamisen kokonaiskustannukset",
-    },
-    savingsWithLease: "Säästöt vuokrauksella",
-    included: "Sisältyy",
-    mitigated: "Lievitetty",
-    wacc: {
-      title: "Pääomakustannus (WACC)",
-      industry: "Toimiala",
-      industryAverage: "WACC (toimialan keskiarvo)",
-      applyIndividual: "Sovella yksilöllistä WACCia",
-      individualWacc: "Yksilöllinen WACC (%)",
-    },
-    glossary: {
-      title: "Sanasto",
-      wacc: "WACC = Pääoman painotettu keskimääräinen kustannus. WACCia käytetään rahan aika-arvon laskemiseen, mikä antaa tarkemman 'tehokkaan ostohinnan'. Tämä on yksinkertaistettu malli havainnollistamistarkoituksessa.",
-    },
     industries: {
       Automotive: "Autoteollisuus",
       Banking: "Pankkitoiminta",
@@ -1501,334 +953,12 @@ const fi = {
     }
   },
   admin: {
-    branding: {
-      title: "Brändinhallinta",
-      appLogo: "Sovelluksen logo (kirjautumissivu)",
-      currentLogo: "Nykyinen logo",
-      uploadNewLabel: "Lataa uusi logo",
-      uploadButton: "Lataa logo",
-      removeButton: "Poista mukautettu logo",
-      uploadHint: "Suositus: SVG tai PNG läpinäkyvällä taustalla.",
-      confirmRemoveLogo: "Haluatko varmasti poistaa mukautetun logon ja palata oletusarvoon?"
-    },
-    users: {
-      title: "Käyttäjähallinta",
-      addUserButton: "Lisää käyttäjä",
-      table: {
-        name: "Nimi",
-        emailCompany: "Sähköposti / Yritys",
-        role: "Rooli",
-        totalCalculatedValue: "Laskettu kokonaisarvo",
-        totalCommissionEarned: "Ansaittu provisio yhteensä",
-        actions: "Toiminnot",
-      },
-      modal: {
-        addTitle: "Lisää uusi käyttäjä",
-        editTitle: "Muokkaa käyttäjää",
-        name: "Nimi",
-        email: "Sähköposti",
-        password: "Salasana",
-        resetPassword: "Nollaa salasana",
-        sendResetLink: "Lähetä nollauslinkki",
-        passwordPlaceholderEdit: "Jätä tyhjäksi säilyttääksesi nykyisen",
-        forceResetNote: "Tämä vaatii käyttäjää vaihtamaan salasanansa seuraavalla kirjautumiskerralla.",
-        role: "Rooli",
-        selectRole: "Valitse rooli",
-        partnerDetailsTitle: "Kumppanin tiedot",
-        companyName: "Yrityksen nimi",
-        phone: "Puhelin",
-        country: "Maa",
-        selectCountry: "Valitse maa",
-        commission: "Provisio (%)",
-        commissionHelpText: "Provisio lasketaan laitteiston hinnasta ja jaetaan vuokra-ajalle, mikä nostaa kuukausittaista vuokrauskerrointa.",
-        companyLogo: "Yrityksen logo",
-        uploadLogoButton: "Lataa logo",
-      },
-      error: {
-        fillRequiredFields: "Täytä nimi, sähköposti ja rooli.",
-        passwordRequired: "Salasana vaaditaan uusille käyttäjille.",
-        commissionRange: "Provision on oltava kelvollinen prosenttiarvo.",
-        updateFailed: "Profiilin päivitys epäonnistui",
-        profileSavedButResetFailed: "Profiili tallennettu, mutta salasanan nollausviestin lähetys epäonnistui",
-        createUserFailed: "Käyttäjän luonti epäonnistui",
-        createProfileFailed: "Käyttäjän tunnistetieto luotu, mutta profiilin luonti epäonnistui. Korjaa manuaalisesti.",
-      },
-      success: {
-        profileSavedAndResetSent: "Profiili tallennettu. Salasanan nollauslinkki on lähetetty osoitteeseen {email}.",
-      },
-      warning: {
-        adminLogoutOnCreate: "Varoitus: Uuden käyttäjän luominen kirjaa sinut ulos järjestelmänvalvojan tililtäsi. Sinun on kirjauduttava uudelleen sisään manuaalisesti.",
-      },
-      inviteSuccess: "Kutsu lähetetty osoitteeseen {email}. Hän saa sähköpostiviestin salasanan asettamista varten.",
-      resetSuccess: "Salasanan nollauslinkki lähetetty osoitteeseen {email}.",
-      userCreationNote: "Käyttäjä saa sähköpostiviestin, jossa on ohjeet salasanan asettamiseen ja sisäänkirjautumiseen.",
-    },
-    lrf: {
-      title: "Vuokrauskertoimien hallinta",
-      description: "Aseta tietyt vuokrauskertoimet. Tyhjät kentät käyttävät automaattisesti yläkategorian kerrointa (esim. 'Kannettava-Windows' käyttää 'Kannettava'-kertoimia, jos sen oma kenttä on tyhjä).",
-      table: {
-        categoryOsBrand: "Kategoria / Käyttöjärj. / Merkki",
-        termMonths: "{term} kuukautta",
-      },
-      allUsedAssets: "Kaikki käytetyt laitteet",
-      globalSettings: {
-        title: "Yleiset laskenta-asetukset",
-        nonReturnUpliftLabel: "Palauttamattomuuslisä (% per 1% ei-palautus)",
-        nonReturnUpliftHelp: "esim. syötä 0,8 saadaksesi 0,8 %:n korotuksen LRF:ään per 1 % ei-palautus. 5 %:n vaihtoehto nostaa LRF:ää 4 %.",
-      },
-      notifications: {
-        title: "Ilmoitusasetukset",
-        description: "Valitse ylläpitäjä, joka saa sähköposti-ilmoituksia, kun kumppanit pyytävät LRF-päivitystä.",
-        recipientLabel: "Ilmoituksen vastaanottaja",
-      },
-      history: {
-        title: "Historialoki",
-        date: "Päivämäärä",
-        admin: "Ylläpitäjä",
-      },
-      upload: {
-          button: "Lataa CSV",
-          sampleLink: "Lataa CSV-malli.",
-          excelHint: "(Voit muokata tätä Excelissä ja tallentaa .csv-tiedostona).",
-          confirm: "Tämä korvaa kaikki nykyiset LRF:t tiedoston tiedoilla. Haluatko varmasti jatkaa?",
-          success: "LRF:t tuotu onnistuneesti. Napsauta 'Tallenna muutokset' ottaaksesi ne käyttöön.",
-          error: {
-            generic: "Virhe CSV-tiedoston jäsentämisessä",
-            header: "Virheellinen CSV-otsikko. Otsikon on sisällettävä 'key' ja sen jälkeen vuokra-ajat (12, 24 jne.).",
-            noData: "Tiedostosta ei löytynyt kelvollisia LRF-tietoja."
-          }
-      }
-    },
-    loginHistory: {
-      title: "Kirjautumishistoria",
-      table: {
-        date: "Päivämäärä",
-        user: "Käyttäjä",
-        status: "Tila",
-        attemptedEmail: "Yritetty sähköposti",
-      },
-      statuses: {
-        Success: "Onnistui",
-        Failure: "Epäonnistui",
-      },
-      noHistory: "Kirjautumisyrityksiä ei ole vielä kirjattu.",
-    },
-    workflow: {
-      title: "Työnkulku & ilmoitukset",
-      currentRecipient: "Nykyinen vastaanottaja",
-      primaryEmail: {
-        title: "Luottohyväksynnän vastaanottaja",
-        description: "Tämä sähköpostiosoite vastaanottaa kaikki kumppaneiden lähettämät luottohyväksyntäpyynnöt.",
-      },
-      substitutes: {
-        title: "Loma / sijaisen edelleenlähetys",
-        description: "Lisää sijaisen sähköpostiosoite tietylle ajanjaksolle. Pyynnöt välitetään automaattisesti, jos päivämäärä osuu kyseiselle aikavälille.",
-        add: "Lisää uusi sijainen",
-        email: "Sijaisen sähköposti",
-        startDate: "Alkamispäivä",
-        endDate: "Päättymispäivä",
-        addButton: "Lisää sijainen",
-        status: "Tila",
-        statuses: {
-          active: "Aktiivinen",
-          past: "Menneet",
-          upcoming: "Tulevat",
-        },
-        error: {
-          allFieldsRequired: "Täytä kaikki sijaisen kentät.",
-        },
-        confirmRemove: "Haluatko varmasti poistaa tämän sijaisen?",
-      },
-    },
-    activityLog: {
-      title: "Aktiviteettiloki",
-      table: {
-        date: "Päivämäärä",
-        user: "Käyttäjä",
-        activity: "Aktiviteetti",
-        details: "Tiedot",
-      },
-      activities: {
-        CreditRequestSent: "Luottopyyntö lähetetty",
-      },
-      noActivity: "Aktiviteettia ei ole vielä kirjattu.",
-    },
-  },
-  pdf: {
-    quoteFor: "Tarjous: {customerName}",
-    project: "Projekti: {projectName}",
-    customerStatus: "Asiakkaan tila",
-    currency: "Valuutta",
-    startDate: "Ensimmäinen mahdollinen alkamispäivä",
-    assetSummary: {
-      title: "Omaisuuden yhteenveto",
-      assetClass: "Omaisuusluokka",
-      totalValue: "Kokonaisarvo",
-      leaseTerms: "Vuokra-aika (kuukautta)",
-    },
-    customerDetails: {
-      title: "Asiakkaan tiedot",
-      companyName: "Yrityksen nimi",
-      address: "Osoite",
-      city: "Kaupunki",
-      postalCode: "Postinumero",
-      country: "Maa",
-      vatId: "ALV- / Y-tunnus",
-      contactName: "Yhteyshenkilön nimi",
-      contactEmail: "Yhteyshenkilön sähköposti",
-      contactPhone: "Yhteyshenkilön puhelin"
-    },
-    table: {
-      asset: "Laite",
-      details: "Tiedot",
-      term: "Kausi",
-      qty: "Määrä",
-      monthly: "Kuukausittain",
-      total: "Yhteensä",
-      monthlyBundled: "Paketti kk",
-      totalBundled: "Paketti yhteensä",
-    },
-    subtotalFor: "Välisumma",
-    subtotalBundledFor: "Paketin välisumma",
-    optionsSummary: "Vaihtoehtojen yhteenveto",
-    totalMonthlyCost: "Kuukausikustannukset yhteensä",
-    totalLeaseCost: "Vuokrakustannukset yhteensä",
-    totalMonthlyBundled: "Paketin kuukausihinta yhteensä",
-    totalBundledCost: "Paketin kokonaiskustannus",
-    fileName: "Tarjous",
-    serviceDescriptions: {
-      title: "Sisältyvien palveluiden kuvaukset",
-      Deployment: "Laitteiden asennus paikan päällä tai etänä, varmistaen niiden välittömän käyttövalmiuden työntekijöille.",
-      PreConfiguration: "Yrityskohtaisten ohjelmistokuvien, sovellusten ja turvallisuusasetusten esilataus ennen toimitusta.",
-      Delivery: "Turvallinen logistiikka ja laitteiston toimitus suoraan toimipisteisiin tai työntekijöiden koteihin.",
-      Support: "24 tunnin vaihtopalvelu viallisille laitteille työntekijöiden seisokkien minimoimiseksi.",
-      PackingService: "Tiimimme hoitaa kaikkien laitteiden ammattimaisen pakkaamisen vuokra-ajan päättyessä, varmistaen niiden turvallisen kuljetuksen.",
-      Other: "Mukautetut palvelut tarjouksen mukaisesti."
-    },
-    tco: {
-      summary: "Perustuu arvopainotettuun {term} kuukauden keskivuokra-aikaan ja {wacc} WACC-arvoon.",
-      savings: "Vuokraus tarjoaa potentiaalisia säästöjä {amount} ({percent}) verrattuna ostamiseen.",
+     lrf: {
+        globalSettings: {
+            packingServiceCostLabel: "Pakkauspalvelun hinta per laite",
+        }
     }
   },
-  creditModal: {
-    title: "Pyydä luottohyväksyntää",
-    multiCountryTitle: "Monen maan luottohyväksyntäkeskus",
-    hub: {
-      description: "Tämä projekti sisältää laitteita useisiin maihin. Anna asiakastiedot kullekin maalle alla ja lähetä pyynnöt erikseen.",
-      description_consolidated: "Tämä projekti sisältää laitteita useisiin maihin. Anna kunkin maan oikeushenkilön tiedot alla. Kun kaikki tiedot ovat valmiita, voit valmistella yhden konsolidoidun pyynnön lähetettäväksi ensisijaiselle luottotiimillesi sisäistä koordinointia varten.",
-      assetsForCountry: "Laitteet maalle {country}",
-      itemSummary: "{count} nimikettä, kokonaisarvo {value}",
-      status: "Tila",
-      statusNeeded: "Tiedot puuttuvat",
-      statusComplete: "Tiedot täydelliset",
-      statusReady: "Valmis lähetettäväksi",
-      statusSent: "Pyyntö lähetetty",
-      enterDetailsButton: "Syötä asiakastiedot",
-      editDetailsButton: "Muokkaa tietoja",
-      sendButton: "Valmistele & lähetä pyyntö",
-      consolidatedButton: "Valmistele konsolidoitu pyyntö",
-      consolidatedButtonTooltip: "Syötä kaikkien maiden tiedot ennen pyynnön valmistelua.",
-      noCountryWarning: "Joillakin tämän tarjouksen nimikkeillä ei ole maata määritettynä. Muokkaa jokaista nimikettä ja valitse maa ennen hyväksynnän pyytämistä.",
-    },
-    form: {
-      title: "Syötä asiakastiedot maalle {country}",
-    },
-    customerDetails: "Asiakasyrityksen tiedot",
-    companyName: "Yrityksen nimi",
-    address: "Koko katuosoite",
-    city: "Kaupunki",
-    postalCode: "Postinumero",
-    country: "Maa",
-    vatId: "ALV- / Y-tunnus",
-    creditType: "Uusi luotto vai nykyinen CHG-asiakas?",
-    creditTypeNew: "Uusi luotto",
-    creditTypeExisting: "Nykyinen asiakas",
-    currency: "Valuutta",
-    contactPerson: "Ensisijainen yhteyshenkilö",
-    contactName: "Yhteyshenkilön nimi",
-    contactEmail: "Yhteyshenkilön sähköposti",
-    contactPhone: "Yhteyshenkilön puhelin",
-    sendRequestButton: "Valmistele pyyntö",
-    ai: {
-      label: "Täytä automaattisesti tekoälyllä",
-      description: "Liitä asiakastiedot sähköpostin allekirjoituksesta tai asiakirjasta täyttääksesi lomakkeen automaattisesti.",
-      placeholder: "Liitä teksti tähän...",
-      button: "Täytä tekstistä"
-    },
-    email: {
-      subject: "Luottohyväksyntäpyyntö asiakkaalle {customer} kumppanilta {partner}",
-      multiCountrySubject: "Luottohyväksyntäpyyntö asiakkaalle {customer} ({country}) kumppanilta {partner}",
-      bodyWithAttachment: "Hyvä luottotiimi,\n\nOhessa tarjous tarkistettavaksi ja hyväksyttäväksi.\n\nProjekti: {projectName}\nAsiakas: {customerName}\n\nKiitos,\n{partnerName}",
-    },
-    error: {
-      title: "Puuttuvat tiedot",
-      missingFields: "Täytä seuraavat vaaditut kentät: {fields}"
-    }
-  },
-  cart: {
-    title: "Ostoskori",
-    empty: "Ostoskorisi on tyhjä.",
-    subtotalMonthly: "Välisumma (kuukausittain)",
-    proceedToOrder: "Jatka tilaukseen",
-  },
-  legal: {
-    checkboxLabel: "Olen lukenut ja hyväksyn",
-    termsLink: "käyttöehdot",
-    modal: {
-      title: "Käyttöehdot",
-      close: "Sulje",
-    },
-    terms: {
-      legalDisclaimer: "OIKEUDELLINEN VASTUUVAPAUSLAUSEKE: Seuraavat ehdot ovat vain havainnollistavia eivätkä ne ole oikeudellista neuvontaa. Sinun on neuvoteltava pätevän oikeudellisen ammattilaisen kanssa laatiaksesi ehdot, jotka soveltuvat omaan liiketoimintaasi, lainkäyttöalueeseesi ja oikeudellisiin vaatimuksiisi.",
-      lastUpdated: "Viimeksi päivitetty: {date}",
-      acceptance: {
-        title: "1. Ehtojen hyväksyminen",
-        p1: "Kirjautumalla sisään ja käyttämällä tätä IT-laitteiden vuokrausportaalia ('Palvelu'), sitoudut noudattamaan näitä käyttöehtoja ('Ehdot'). Jos et hyväksy näitä ehtoja, älä käytä Palvelua."
-      },
-      useOfService: {
-        title: "2. Palvelun käyttö",
-        p1: "Palvelu on tarkoitettu auttamaan CHG-MERIDIANin kumppaneita luomaan laskelmia ja tarjouksia asiakkailleen. Sitoudut käyttämään Palvelua vain sen aiottuun tarkoitukseen ja noudattaen kaikkia sovellettavia lakeja ja määräyksiä."
-      },
-      data: {
-        title: "3. Henkilötietojen hallinta",
-        p1: "Yleisen tietosuoja-asetuksen (GDPR) ja muiden sovellettavien tietosuojalakien mukaisesti olemme sitoutuneet suojaamaan yksityisyyttäsi. Käyttämällä Palvelua hyväksyt, että tietosi siirretään ja tallennetaan turvallisesti keskitettyyn pilvitietokantaan.",
-        listTitle: "Keräämämme tiedot:",
-        li1: "Käyttäjätilin tiedot: Nimesi, sähköpostiosoitteesi, yrityksesi nimi, puhelinnumerosi ja salatut salasanatietosi.",
-        li2: "Tarjoustiedot: Asiakkaiden nimet, projektien nimet ja luomiesi laskelmien tiedot.",
-        li3: "Kirjautumishistoria: Tallennamme kirjautumisyritysten aikaleimat ja onnistumis-/epäonnistumistilat turvallisuussyistä.",
-        purposeTitle: "Tietojen keräämisen tarkoitus:",
-        purposeLi1: "Palvelun tarjoaminen, ylläpito ja parantaminen.",
-        purposeLi2: "Käyttäjän tunnistaminen ja tilin hallinta.",
-        purposeLi3: "Mahdollistaa vuokratarjousten luominen, tallentaminen ja hallinta.",
-        purposeLi4: "Turvallisuustarkastuksia ja petosten ehkäisyä varten.",
-        storageTitle: "Tietojen tallennus ja turvallisuus:",
-        storageLi1: "Tietosi tallennetaan turvallisille palvelimille, joita hallinnoi tietokantatoimittajamme (Supabase). Ryhdymme kohtuullisiin toimenpiteisiin tietojesi suojaamiseksi luvattomalta käytöltä, käytöltä tai paljastamiselta.",
-        storageLi2: "Olet vastuussa tilisi salasanan luottamuksellisuuden säilyttämisestä.",
-        rightsTitle: "Oikeutesi:",
-        rightsLi1: "Sinulla on oikeus pyytää pääsyä henkilötietoihisi, niiden oikaisemista tai poistamista. Käyttääksesi näitä oikeuksia, ota yhteyttä tämän portaalin ylläpitäjään organisaatiossasi."
-      },
-      intellectualProperty: {
-          title: "4. Immateriaalioikeudet",
-          p1: "Palvelu ja sen alkuperäinen sisältö, ominaisuudet ja toiminnallisuus ovat ja pysyvät CHG-MERIDIANin ja sen lisenssinantajien yksinomaisena omaisuutena."
-      },
-      disclaimer: {
-          title: "5. Takuun poissulkeminen",
-          p1: "Palvelu tarjotaan 'sellaisenaan' ja 'saatavuuden mukaan' ilman minkäänlaisia takuita, joko nimenomaisia tai oletettuja. Kaikki laskelmat ovat suuntaa-antavia ja ei-sitovia."
-      },
-      liability: {
-          title: "6. Vastuunrajoitus",
-          p1: "Missään tapauksessa CHG-MERIDIAN, sen johtajat, työntekijät tai kumppanit eivät ole vastuussa mistään epäsuorista, satunnaisista, erityisistä, välillisistä tai rankaisevista vahingoista, jotka johtuvat Palvelun käytöstäsi."
-      },
-      governingLaw: {
-          title: "7. Sovellettava laki",
-          p1: "Nämä ehdot ovat sen lainkäyttöalueen lakien alaisia, jossa CHG-MERIDIAN toimii, sen lainvalintasäännöksistä riippumatta."
-      },
-      changes: {
-          title: "8. Ehtojen muutokset",
-          p1: "Pidätämme oikeuden muuttaa tai korvata näitä ehtoja milloin tahansa. Ilmoitamme kaikista muutoksista päivittämällä 'Viimeksi päivitetty' -päivämäärän. Jatkamalla Palvelun käyttöä tällaisten muutosten jälkeen hyväksyt uudet ehdot."
-      }
-    }
-  }
 };
 
 const sv = {
@@ -1874,7 +1004,6 @@ const sv = {
       PreConfiguration: "Förkonfiguration (staging)",
       Delivery: "Leverans",
       Support: "Support (24h utbyte)",
-      PackingService: "Packningstjänst (vid hyresavtalets slut)",
     }
   },
   password: {
@@ -1884,14 +1013,7 @@ const sv = {
     confirmNewPassword: "Bekräfta nytt lösenord",
     updatePasswordButton: "Uppdatera lösenord & logga in",
     error: {
-      allFieldsRequired: "Alla lösenordsfält måste fyllas i.",
       mismatch: "De nya lösenorden matchar inte.",
-      incorrectOld: "Det gamla lösenordet du angav är felaktigt.",
-      minLength: "Måste vara minst 10 tecken långt.",
-      uppercase: "Måste innehålla minst en versal.",
-      lowercase: "Måste innehålla minst en gemen.",
-      number: "Måste innehålla minst en siffra.",
-      specialChar: "Måste innehålla minst ett specialtecken.",
     },
   },
   login: {
@@ -1901,25 +1023,23 @@ const sv = {
     passwordPlaceholder: "Lösenord",
     signInButton: "Logga in",
     error: {
-      bothFieldsRequired: "Vänligen ange både e-post och lösenord.",
       invalidCredentials: "Ogiltig e-post eller lösenord. Försök igen.",
     },
   },
   calculation: {
     title: "Skapa kalkyl",
     option: "Alternativ",
-    removeOption: "Ta bort",
-    disclaimer: "(*) Alla priser som visas är endast vägledande och utgör inte ett anbud som kan accepteras. Sökande är föremål för kreditbedömning av CHG-MERIDIAN och en minsta beställningskvantitet på 100 enheter krävs.",
+    packingService: "Packningstjänst (vid hyresavtalets slut)",
+    packingServiceOption: "Packningstjänst",
     buttons: {
       new: "Ny",
       dashboard: "Översikt",
       saveTemplate: "Spara som mall",
-      generatePdf: "Generera PDF",
-      addItemTo: "Lägg till objekt i {optionName}",
+      generatePdf: "Skapa PDF",
+      addItemTo: "Lägg till artikel i {optionName}",
       requestCreditApproval: "Begär kreditgodkännande",
+      addOption: "Lägg till alternativ",
     },
-    creditRequestAdminTooltip: "Denna funktion är för partneranvändare att begära kreditgodkännande.",
-    creditRequestPartnerDisabledTooltip: "Lägg till ett kundnamn och minst ett objekt i offerten för att aktivera denna funktion.",
     priceView: {
       label: "Prisvisning",
       detailed: "Detaljerad specifikation",
@@ -1929,156 +1049,28 @@ const sv = {
     customerNamePlaceholder: "Ange kundens namn",
     projectName: "Projektnamn",
     projectNamePlaceholder: "Ange projektnamn",
-    expectedStartDate: "Förväntat startdatum för kontrakt",
+    expectedStartDate: "Förväntat startdatum för avtal",
     empty: {
-      title: "Detta alternativ är tomt.",
-      description: 'Klicka på "Lägg till objekt" för att komma igång.',
+        title: "Det här alternativet är tomt.",
+        description: 'Klicka på "Lägg till artikel" för att börja.',
     },
     table: {
       asset: "Tillgång",
       details: "Detaljer",
-      term: "Löptid",
+      term: "Period",
       qty: "Antal",
       monthlyCost: "Månadskostnad",
       totalCost: "Total kostnad",
-      monthlyBundled: "Paketpris/mån",
-      totalBundled: "Paketpris totalt",
-      commission: "Provision",
       actions: "Åtgärder",
-      os: "OS",
-      condition: "Skick",
-      country: "Land",
-      nonReturn: "Ej retur",
-      servicesLabel: "Tjänster (engångs)",
-      unit: "Enhet",
-    },
-    actions: {
-      duplicate: "Duplicera objekt",
-      edit: "Redigera objekt",
-      remove: "Ta bort objekt",
-    },
-    editModal: {
-      title: "Redigera objekt",
-      servicesLabel: "Tilläggstjänster (engångskostnad)",
-    },
-    templateModal: {
-      title: "Spara som mall",
-      nameLabel: "Mallnamn",
-      namePlaceholder: "t.ex. Standarduppsättning för anställda",
-      saveButton: "Spara mall",
-    },
-    wizard: {
-      title: "Guide för att lägga till objekt",
-      assetType: "Typ av tillgång",
-      brand: "Märke",
-      os: "Operativsystem",
-      condition: "Skick",
-      country: "Land",
-      selectCountry: "Välj land...",
-      hardwareCost: "Hårdvarukostnad per enhet ({currency})",
-      quantity: "Antal enheter",
-      leaseTerm: "Hyresperiod (månader)",
-      nonReturnOption: "Alternativ för ej retur",
-      customDescriptionLabel: "Beskrivning av tillgång",
-      customDescriptionPlaceholder: "t.ex. Högpresterande skanner",
-      submitButton: "Lägg till i kalkyl",
-      step1: {
-        title: "Steg 1: Hårdvarudetaljer",
-      },
-      step2: {
-        title: "Steg 2: Tjänster",
-        description: "Alla kostnader som anges här är engångskostnader per tillgång.",
-        supportHelpText: "Obs: Total kostnad per tillgång för hela hyresperioden.",
-        otherServiceDescription: "Annan tjänst",
-        otherServicePlaceholder: "t.ex. Anpassad programvaruinstallation",
-      },
-      step3: {
-        title: "Steg 3: Hyresperiod & Sammanfattning",
-        summaryTitle: "Objektsammanfattning",
-        asset: "Tillgång",
-        quantity: "Antal",
-        totalUnitCost: "Total enhetskostnad",
-        leaseTerm: "Hyresperiod",
-      },
-    },
-    error: {
-      cannotDeleteLastOption: "Du kan inte ta bort det sista alternativet.",
-      templateNameAndItemsRequired: "Vänligen ange ett namn och se till att det aktiva alternativet har objekt.",
-    },
-    confirm: {
-      deleteOption: "Är du säker på att du vill ta bort detta alternativ?",
     },
   },
-  summary: {
-    hardwareValue: "Hårdvaruvärde",
-    oneTimeServices: "Totala engångstjänster",
-    totalCommission: "Total provision",
-    totalMonthlyCost: "Total månadskostnad",
-    totalLeaseCost: "Total hyreskostnad",
-    totalMonthlyBundled: "Totalt paketpris per månad",
-    totalBundledCost: "Total paketkostnad för hyra",
+  aiSummary: {
+    button: "Generera sammanfattning",
+  },
+  lrf: {
+    validUntil: "Priser giltiga till: {date}",
   },
   tco: {
-    title: "Total Cost of Ownership-analys",
-    empty: {
-      title: "Kalkylen är tom.",
-      description: 'Lägg till objekt i fliken "Kalkylator" för att se TCO-analysen.',
-    },
-    assumptions: {
-      title: "TCO-antaganden",
-      operationalCosts: "Driftskostnader",
-      deploymentCost: "Driftsättningskostnad / enhet",
-      supportHours: "IT-supporttimmar / enhet / år",
-      staffRate: "Timtaxa för IT-personal",
-      eoldCost: "End-of-life-kostnad / enhet",
-      downtimeProductivity: "Stillestånd & produktivitet",
-      failures: "Fel / enhet / år",
-      downtimeHours: "Stilleståndstimmar / fel",
-      employeeCost: "Genomsnittlig personalkostnad / timme",
-      assetValue: "Tillgångsvärde",
-      residualValue: "Restvärde (%)",
-      table: {
-        assumption: "Antagande",
-        value: "Värde"
-      }
-    },
-    chart: {
-      title: "Kostnadsjämförelse: Hyra vs. Köp",
-      leaseCostLabel: "Total hyreskostnad",
-      purchaseCostLabel: "Total ägandekostnad",
-    },
-    breakdown: {
-      title: "Detaljerad kostnadsspecifikation",
-      averageLeaseTerm: "Genomsnittlig hyresperiod (värdeviktad)",
-    },
-    table: {
-      category: "Kostnadskategori",
-      purchase: "Köpscenario",
-      lease: "Hyresscenario",
-      hardwareCost: "Hårdvarukostnad (initial)",
-      capitalCost: "Kapitalkostnad (WACC)",
-      deployment: "Driftsättningskostnader",
-      support: "Löpande IT-support",
-      downtime: "Produktivitetsförlust (stillestånd)",
-      eold: "End-of-life-hantering",
-      residualValue: "Minus: Restvärde",
-      leasePayments: "Totala hyresbetalningar",
-      totalTco: "Total ägandekostnad",
-    },
-    savingsWithLease: "Besparingar med hyra",
-    included: "Inkluderat",
-    mitigated: "Minskat",
-    wacc: {
-      title: "Kapitalkostnad (WACC)",
-      industry: "Bransch",
-      industryAverage: "WACC (branschgenomsnitt)",
-      applyIndividual: "Tillämpa individuell WACC",
-      individualWacc: "Individuell WACC (%)",
-    },
-    glossary: {
-      title: "Ordlista",
-      wacc: "WACC = Vägd genomsnittlig kapitalkostnad. WACC används för att beräkna pengars tidsvärde, vilket ger ett mer exakt 'effektivt inköpspris'. Detta är en förenklad modell i illustrativt syfte.",
-    },
     industries: {
       Automotive: "Fordonsindustri",
       Banking: "Bankväsende",
@@ -2097,334 +1089,12 @@ const sv = {
     }
   },
   admin: {
-    branding: {
-      title: "Varumärkeshantering",
-      appLogo: "Applikationslogotyp (inloggningssida)",
-      currentLogo: "Nuvarande logotyp",
-      uploadNewLabel: "Ladda upp en ny logotyp",
-      uploadButton: "Ladda upp logotyp",
-      removeButton: "Ta bort anpassad logotyp",
-      uploadHint: "Rekommenderat: SVG eller PNG med transparent bakgrund.",
-      confirmRemoveLogo: "Är du säker på att du vill ta bort den anpassade logotypen och återgå till standard?"
-    },
-    users: {
-      title: "Användarhantering",
-      addUserButton: "Lägg till användare",
-      table: {
-        name: "Namn",
-        emailCompany: "E-post / Företag",
-        role: "Roll",
-        totalCalculatedValue: "Totalt kalkylerat värde",
-        totalCommissionEarned: "Total intjänad provision",
-        actions: "Åtgärder",
-      },
-      modal: {
-        addTitle: "Lägg till ny användare",
-        editTitle: "Redigera användare",
-        name: "Namn",
-        email: "E-post",
-        password: "Lösenord",
-        resetPassword: "Återställ lösenord",
-        sendResetLink: "Skicka återställningslänk",
-        passwordPlaceholderEdit: "Lämna tomt för att behålla oförändrat",
-        forceResetNote: "Detta kommer att kräva att användaren byter lösenord vid nästa inloggning.",
-        role: "Roll",
-        selectRole: "Välj en roll",
-        partnerDetailsTitle: "Partneruppgifter",
-        companyName: "Företagsnamn",
-        phone: "Telefon",
-        country: "Land",
-        selectCountry: "Välj ett land",
-        commission: "Provision (%)",
-        commissionHelpText: "Provisionen beräknas på hårdvarukostnaden och fördelas över hyresperioden, vilket ökar den månatliga hyresfaktorn.",
-        companyLogo: "Företagslogotyp",
-        uploadLogoButton: "Ladda upp logotyp",
-      },
-      error: {
-        fillRequiredFields: "Vänligen fyll i namn, e-post och roll.",
-        passwordRequired: "Lösenord krävs för nya användare.",
-        commissionRange: "Provisionen måste vara en giltig procentsats.",
-        updateFailed: "Det gick inte att uppdatera profilen",
-        profileSavedButResetFailed: "Profilen sparades, men det gick inte att skicka e-post för återställning av lösenord",
-        createUserFailed: "Det gick inte att skapa användare",
-        createProfileFailed: "Användarens autentiseringspost skapades, men det gick inte att skapa profilen. Vänligen åtgärda manuellt.",
-      },
-      success: {
-        profileSavedAndResetSent: "Profilen sparades. En länk för återställning av lösenord har skickats till {email}.",
-      },
-      warning: {
-        adminLogoutOnCreate: "Varning: Att skapa en ny användare kommer att logga ut dig från ditt administratörskonto. Du måste logga in manuellt igen efteråt.",
-      },
-      inviteSuccess: "Inbjudan skickad till {email}. De kommer att få ett e-postmeddelande för att ställa in sitt lösenord.",
-      resetSuccess: "Länk för återställning av lösenord skickad till {email}.",
-      userCreationNote: "Användaren kommer att få ett e-postmeddelande för att ställa in sitt lösenord och logga in.",
-    },
-    lrf: {
-      title: "Hantering av hyresfaktorer",
-      description: "Ange specifika hyresfaktorer. Tomma fält kommer automatiskt att använda faktorn från den överordnade kategorin (t.ex. 'Laptop-Windows' kommer att använda 'Laptop'-faktorer om dess eget fält är tomt).",
-      table: {
-        categoryOsBrand: "Kategori / OS / Märke",
-        termMonths: "{term} månader",
-      },
-      allUsedAssets: "Alla begagnade tillgångar",
-      globalSettings: {
-        title: "Globala kalkylinställningar",
-        nonReturnUpliftLabel: "Påslag för ej retur (% per 1% ej retur)",
-        nonReturnUpliftHelp: "t.ex. ange 0,8 för ett 0,8% påslag på LRF per 1% ej retur. Ett 5% alternativ kommer att öka LRF med 4%.",
-      },
-      notifications: {
-        title: "Aviseringsinställningar",
-        description: "Välj en administratör som ska ta emot e-postaviseringar när partners begär en uppdatering av LRF.",
-        recipientLabel: "Mottagare av avisering",
-      },
-      history: {
-        title: "Historiklogg",
-        date: "Datum",
-        admin: "Administratör",
-      },
-      upload: {
-          button: "Ladda upp CSV",
-          sampleLink: "Ladda ner CSV-mall.",
-          excelHint: "(Du kan redigera detta i Excel och spara som en .csv-fil).",
-          confirm: "Detta kommer att skriva över alla nuvarande LRF:er med data från filen. Är du säker på att du vill fortsätta?",
-          success: "LRF:er importerades framgångsrikt. Klicka på 'Spara ändringar' för att tillämpa dem.",
-          error: {
-            generic: "Fel vid tolkning av CSV-fil",
-            header: "Ogiltig CSV-rubrik. Rubriken måste innehålla 'key' följt av hyresperioderna (12, 24, etc.).",
-            noData: "Inga giltiga LRF-data hittades i filen."
-          }
-      }
-    },
-    loginHistory: {
-      title: "Inloggningshistorik",
-      table: {
-        date: "Datum",
-        user: "Användare",
-        status: "Status",
-        attemptedEmail: "Försökt e-post",
-      },
-      statuses: {
-        Success: "Lyckades",
-        Failure: "Misslyckades",
-      },
-      noHistory: "Inga inloggningsförsök har registrerats ännu.",
-    },
-    workflow: {
-      title: "Arbetsflöde & aviseringar",
-      currentRecipient: "Nuvarande mottagare",
-      primaryEmail: {
-        title: "Mottagare för kreditgodkännande",
-        description: "Denna e-postadress kommer att ta emot alla förfrågningar om kreditgodkännande som skickas av partners.",
-      },
-      substitutes: {
-        title: "Semester / Vikarie-vidarebefordran",
-        description: "Lägg till en vikarierande e-postadress för en specifik tidsperiod. Förfrågningar kommer automatiskt att vidarebefordras om datumet infaller inom intervallet.",
-        add: "Lägg till ny vikarie",
-        email: "Vikariens e-post",
-        startDate: "Startdatum",
-        endDate: "Slutdatum",
-        addButton: "Lägg till vikarie",
-        status: "Status",
-        statuses: {
-          active: "Aktiv",
-          past: "Passerad",
-          upcoming: "Kommande",
-        },
-        error: {
-          allFieldsRequired: "Vänligen fyll i alla fält för vikarien.",
-        },
-        confirmRemove: "Är du säker på att du vill ta bort denna vikarie?",
-      },
-    },
-    activityLog: {
-      title: "Aktivitetslogg",
-      table: {
-        date: "Datum",
-        user: "Användare",
-        activity: "Aktivitet",
-        details: "Detaljer",
-      },
-      activities: {
-        CreditRequestSent: "Kreditförfrågan skickad",
-      },
-      noActivity: "Ingen aktivitet har registrerats ännu.",
-    },
-  },
-  pdf: {
-    quoteFor: "Offert för: {customerName}",
-    project: "Projekt: {projectName}",
-    customerStatus: "Kundstatus",
-    currency: "Valuta",
-    startDate: "Första möjliga startdatum",
-    assetSummary: {
-      title: "Tillgångssammanfattning",
-      assetClass: "Tillgångsklass",
-      totalValue: "Totalt värde",
-      leaseTerms: "Hyresperiod (månader)",
-    },
-    customerDetails: {
-      title: "Kunduppgifter",
-      companyName: "Företagsnamn",
-      address: "Adress",
-      city: "Stad",
-      postalCode: "Postnummer",
-      country: "Land",
-      vatId: "Moms- / Organisationsnummer",
-      contactName: "Kontaktpersonens namn",
-      contactEmail: "Kontaktpersonens e-post",
-      contactPhone: "Kontaktpersonens telefon"
-    },
-    table: {
-      asset: "Tillgång",
-      details: "Detaljer",
-      term: "Löptid",
-      qty: "Antal",
-      monthly: "Månadsvis",
-      total: "Totalt",
-      monthlyBundled: "Paket/mån",
-      totalBundled: "Paket totalt",
-    },
-    subtotalFor: "Delsumma för",
-    subtotalBundledFor: "Paketdelsumma för",
-    optionsSummary: "Alternativsammanfattning",
-    totalMonthlyCost: "Total månadskostnad",
-    totalLeaseCost: "Total hyreskostnad",
-    totalMonthlyBundled: "Totalt paketpris per månad",
-    totalBundledCost: "Total paketkostnad",
-    fileName: "Offert",
-    serviceDescriptions: {
-      title: "Inkluderade tjänstebeskrivningar",
-      Deployment: "Installation och konfiguration på plats eller på distans av enheter, för att säkerställa att de är redo för omedelbar användning av anställda.",
-      PreConfiguration: "Förinstallation av företagsspecifika programvaruavbilder, applikationer och säkerhetsinställningar före leverans.",
-      Delivery: "Säker logistik och leverans av hårdvara direkt till kontorsplatser eller anställdas hem.",
-      Support: "En 24-timmars utbytestjänst för defekta enheter för att minimera anställdas stilleståndstid.",
-      PackingService: "Vårt team hanterar den professionella packningen av alla tillgångar i slutet av hyresperioden, för att säkerställa att de är säkra för transport.",
-      Other: "Anpassade tjänster enligt beskrivning i offerten."
-    },
-    tco: {
-      summary: "Baserat på en värdeviktad genomsnittlig löptid på {term} och en WACC på {wacc}.",
-      savings: "Hyra erbjuder potentiella besparingar på {amount} ({percent}) jämfört med köp.",
+     lrf: {
+        globalSettings: {
+            packingServiceCostLabel: "Kostnad för packningstjänst per enhet",
+        }
     }
   },
-  creditModal: {
-    title: "Begär kreditgodkännande",
-    multiCountryTitle: "Nav för kreditgodkännande i flera länder",
-    hub: {
-      description: "Detta projekt inkluderar tillgångar för flera länder. Vänligen ange kunduppgifter för varje land nedan och skicka förfrågningarna individuellt.",
-      description_consolidated: "Detta projekt inkluderar tillgångar för flera länder. Vänligen ange juridiska enhetsuppgifter för varje land nedan. När alla uppgifter är kompletta kan du förbereda en enda konsoliderad förfrågan att skicka till ditt primära kreditteam för intern samordning.",
-      assetsForCountry: "Tillgångar för {country}",
-      itemSummary: "{count} objekt, totalt värde {value}",
-      status: "Status",
-      statusNeeded: "Uppgifter behövs",
-      statusComplete: "Uppgifter kompletta",
-      statusReady: "Redo att skickas",
-      statusSent: "Förfrågan skickad",
-      enterDetailsButton: "Ange kunduppgifter",
-      editDetailsButton: "Redigera uppgifter",
-      sendButton: "Förbered & skicka förfrågan",
-      consolidatedButton: "Förbered konsoliderad förfrågan",
-      consolidatedButtonTooltip: "Vänligen ange uppgifter för alla länder innan du förbereder förfrågan.",
-      noCountryWarning: "Vissa objekt i denna offert har inget land tilldelat. Vänligen redigera varje objekt och välj ett land innan du begär godkännande.",
-    },
-    form: {
-      title: "Ange kunduppgifter för {country}",
-    },
-    customerDetails: "Kundens företagsuppgifter",
-    companyName: "Företagsnamn",
-    address: "Fullständig gatuadress",
-    city: "Stad",
-    postalCode: "Postnummer",
-    country: "Land",
-    vatId: "Moms- / Organisationsnummer",
-    creditType: "Ny kredit eller befintlig CHG-kund?",
-    creditTypeNew: "Ny kredit",
-    creditTypeExisting: "Befintlig kund",
-    currency: "Valuta",
-    contactPerson: "Primär kontaktperson",
-    contactName: "Kontaktpersonens namn",
-    contactEmail: "Kontaktpersonens e-post",
-    contactPhone: "Kontaktpersonens telefon",
-    sendRequestButton: "Förbered förfrågan",
-    ai: {
-      label: "Autofyll med AI",
-      description: "Klistra in kunduppgifter från en e-postsignatur eller ett dokument för att fylla i formuläret automatiskt.",
-      placeholder: "Klistra in text här...",
-      button: "Fyll i från text"
-    },
-    email: {
-      subject: "Begäran om kreditgodkännande för {customer} från {partner}",
-      multiCountrySubject: "Begäran om kreditgodkännande för {customer} ({country}) från {partner}",
-      bodyWithAttachment: "Bästa kreditteam,\n\nVänligen hitta offerten bifogad för er granskning och godkännande.\n\nProjekt: {projectName}\nKund: {customerName}\n\nTack,\n{partnerName}",
-    },
-    error: {
-      title: "Information saknas",
-      missingFields: "Vänligen fyll i följande obligatoriska fält: {fields}"
-    }
-  },
-  cart: {
-    title: "Varukorg",
-    empty: "Din varukorg är tom.",
-    subtotalMonthly: "Delsumma (månadsvis)",
-    proceedToOrder: "Fortsätt till beställning",
-  },
-  legal: {
-    checkboxLabel: "Jag har läst och godkänner",
-    termsLink: "villkoren",
-    modal: {
-      title: "Villkor",
-      close: "Stäng",
-    },
-    terms: {
-      legalDisclaimer: "JURIDISK FRISKRIVNING: Följande villkor är endast för illustrativa ändamål och utgör inte juridisk rådgivning. Du måste rådfråga en kvalificerad juridisk expert för att utarbeta villkor som är lämpliga för din specifika verksamhet, jurisdiktion och juridiska krav.",
-      lastUpdated: "Senast uppdaterad: {date}",
-      acceptance: {
-        title: "1. Godkännande av villkor",
-        p1: "Genom att logga in och använda denna portal för uthyrning av IT-hårdvara ('Tjänsten') godkänner du att vara bunden av dessa villkor ('Villkoren'). Om du inte godkänner dessa villkor, använd inte Tjänsten."
-      },
-      useOfService: {
-        title: "2. Användning av Tjänsten",
-        p1: "Tjänsten tillhandahålls för att hjälpa partners till CHG-MERIDIAN att skapa kalkyler och offerter för sina kunder. Du samtycker till att endast använda Tjänsten för dess avsedda syfte och i enlighet med alla tillämpliga lagar och förordningar."
-      },
-      data: {
-        title: "3. Hantering av personuppgifter",
-        p1: "I enlighet med den allmänna dataskyddsförordningen (GDPR) och andra tillämpliga dataskyddslagar är vi fast beslutna att skydda din integritet. Genom att använda Tjänsten bekräftar och godkänner du att dina uppgifter överförs och lagras säkert i en centraliserad molndatabas.",
-        listTitle: "Uppgifter vi samlar in:",
-        li1: "Användarkontoinformation: Ditt namn, din e-postadress, ditt företagsnamn, ditt telefonnummer och krypterad lösenordsinformation.",
-        li2: "Offertinformation: Kundnamn, projektnamn och detaljer om de kalkyler du skapar.",
-        li3: "Inloggningshistorik: Vi registrerar tidsstämplar och status (lyckad/misslyckad) för inloggningsförsök av säkerhetsskäl.",
-        purposeTitle: "Syftet med datainsamlingen:",
-        purposeLi1: "Att tillhandahålla, underhålla och förbättra Tjänsten.",
-        purposeLi2: "Att identifiera dig som användare och hantera ditt konto.",
-        purposeLi3: "Att låta dig skapa, spara och hantera hyresofferter.",
-        purposeLi4: "För säkerhetsgranskning och för att förhindra bedräglig aktivitet.",
-        storageTitle: "Datalagring och säkerhet:",
-        storageLi1: "Dina uppgifter lagras på säkra servrar som hanteras av vår databasleverantör (Supabase). Vi vidtar rimliga åtgärder för att skydda din information från obehörig åtkomst, användning eller avslöjande.",
-        storageLi2: "Du är ansvarig för att upprätthålla sekretessen för ditt kontolösenord.",
-        rightsTitle: "Dina rättigheter:",
-        rightsLi1: "Du har rätt att begära tillgång till, rättelse av eller radering av dina personuppgifter. För att utöva dessa rättigheter, vänligen kontakta administratören för denna portal inom din organisation."
-      },
-      intellectualProperty: {
-          title: "4. Immateriella rättigheter",
-          p1: "Tjänsten och dess ursprungliga innehåll, funktioner och funktionalitet är och kommer att förbli den exklusiva egendomen för CHG-MERIDIAN och dess licensgivare."
-      },
-      disclaimer: {
-          title: "5. Friskrivning från garantier",
-          p1: "Tjänsten tillhandahålls 'i befintligt skick' och 'som tillgänglig' utan några garantier av något slag, vare sig uttryckliga eller underförstådda. Alla kalkyler är vägledande och icke-bindande."
-      },
-      liability: {
-          title: "6. Ansvarsbegränsning",
-          p1: "Under inga omständigheter ska CHG-MERIDIAN, dess styrelseledamöter, anställda eller partners vara ansvariga för några indirekta, tillfälliga, särskilda, följd- eller straffskador som uppstår till följd av din användning av Tjänsten."
-      },
-      governingLaw: {
-          title: "7. Tillämplig lag",
-          p1: "Dessa villkor ska regleras av lagarna i den jurisdiktion där CHG-MERIDIAN verkar, utan hänsyn till dess lagvalsregler."
-      },
-      changes: {
-          title: "8. Ändringar av villkor",
-          p1: "Vi förbehåller oss rätten att när som helst ändra eller ersätta dessa villkor. Vi kommer att meddela eventuella ändringar genom att uppdatera datumet 'Senast uppdaterad'. Din fortsatta användning av Tjänsten efter sådana ändringar utgör ditt godkännande av de nya villkoren."
-      }
-    }
-  }
 };
 
 const no = {
@@ -2470,7 +1140,6 @@ const no = {
       PreConfiguration: "Forhåndskonfigurering (staging)",
       Delivery: "Levering",
       Support: "Support (24t bytte)",
-      PackingService: "Pakketjeneste (ved leieavtalens slutt)",
     }
   },
   password: {
@@ -2480,14 +1149,7 @@ const no = {
     confirmNewPassword: "Bekreft nytt passord",
     updatePasswordButton: "Oppdater passord & logg inn",
     error: {
-      allFieldsRequired: "Alle passordfelt må fylles ut.",
       mismatch: "De nye passordene stemmer ikke overens.",
-      incorrectOld: "Det gamle passordet du skrev inn er feil.",
-      minLength: "Må være minst 10 tegn.",
-      uppercase: "Må inneholde minst én stor bokstav.",
-      lowercase: "Må inneholde minst én liten bokstav.",
-      number: "Må inneholde minst ett tall.",
-      specialChar: "Må inneholde minst ett spesialtegn.",
     },
   },
   login: {
@@ -2497,15 +1159,12 @@ const no = {
     passwordPlaceholder: "Passord",
     signInButton: "Logg inn",
     error: {
-      bothFieldsRequired: "Vennligst skriv inn både e-post og passord.",
       invalidCredentials: "Ugyldig e-post eller passord. Prøv igjen.",
     },
   },
   calculation: {
     title: "Opprett kalkyle",
     option: "Alternativ",
-    removeOption: "Fjern",
-    disclaimer: "(*) Alle priser som vises er kun veiledende og er ikke et tilbud som kan aksepteres. Søkere er underlagt kredittvurdering av CHG-MERIDIAN, og det kreves en minimumsbestilling på 100 enheter.",
     buttons: {
       new: "Ny",
       dashboard: "Dashbord",
@@ -2513,168 +1172,39 @@ const no = {
       generatePdf: "Generer PDF",
       addItemTo: "Legg til vare i {optionName}",
       requestCreditApproval: "Be om kredittgodkjenning",
+      addOption: "Legg til alternativ",
     },
-    creditRequestAdminTooltip: "Denne funksjonen er for partnerbrukere for å be om kredittgodkjenning.",
-    creditRequestPartnerDisabledTooltip: "Vennligst legg til et kundenavn og minst én vare i tilbudet for å aktivere denne funksjonen.",
     priceView: {
       label: "Prisvisning",
       detailed: "Detaljert oversikt",
       bundled: "Pakkepris",
     },
     customerName: "Kundenavn",
-    customerNamePlaceholder: "Skriv inn kundens navn",
+    customerNamePlaceholder: "Skriv inn kundenavn",
     projectName: "Prosjektnavn",
     projectNamePlaceholder: "Skriv inn prosjektnavn",
     expectedStartDate: "Forventet startdato for kontrakt",
     empty: {
-      title: "Dette alternativet er tomt.",
-      description: 'Klikk "Legg til vare" for å komme i gang.',
+        title: "Dette alternativet er tomt.",
+        description: 'Klikk "Legg til vare" for å starte.',
     },
     table: {
-      asset: "Utstyr",
+      asset: "Eiendel",
       details: "Detaljer",
       term: "Periode",
       qty: "Antall",
       monthlyCost: "Månedlig kostnad",
       totalCost: "Total kostnad",
-      monthlyBundled: "Månedlig pakkepris",
-      totalBundled: "Total pakkepris",
-      commission: "Provisjon",
       actions: "Handlinger",
-      os: "OS",
-      condition: "Tilstand",
-      country: "Land",
-      nonReturn: "Ikke-retur",
-      servicesLabel: "Tjenester (engangs)",
-      unit: "Enhet",
-    },
-    actions: {
-      duplicate: "Dupliser vare",
-      edit: "Rediger vare",
-      remove: "Fjern vare",
-    },
-    editModal: {
-      title: "Rediger vare",
-      servicesLabel: "Tilleggstjenester (engangskostnad)",
-    },
-    templateModal: {
-      title: "Lagre som mal",
-      nameLabel: "Malnavn",
-      namePlaceholder: "f.eks. Standard ansattoppsett",
-      saveButton: "Lagre mal",
-    },
-    wizard: {
-      title: "Veiviser for å legge til vare",
-      assetType: "Utstyrstype",
-      brand: "Merke",
-      os: "Operativsystem",
-      condition: "Tilstand",
-      country: "Land",
-      selectCountry: "Velg land...",
-      hardwareCost: "Maskinvarepris per enhet ({currency})",
-      quantity: "Antall enheter",
-      leaseTerm: "Leieperiode (måneder)",
-      nonReturnOption: "Ikke-retur-alternativ",
-      customDescriptionLabel: "Utstyrsbeskrivelse",
-      customDescriptionPlaceholder: "f.eks. Høyytelsesskanner",
-      submitButton: "Legg til i kalkyle",
-      step1: {
-        title: "Steg 1: Maskinvaredetaljer",
-      },
-      step2: {
-        title: "Steg 2: Tjenester",
-        description: "Alle kostnader som legges inn her er engangskostnader per utstyr.",
-        supportHelpText: "Merk: Total kostnad per utstyr for hele leieperioden.",
-        otherServiceDescription: "Annen tjeneste",
-        otherServicePlaceholder: "f.eks. Egendefinert programvareoppsett",
-      },
-      step3: {
-        title: "Steg 3: Leieperiode & Sammendrag",
-        summaryTitle: "Varesammendrag",
-        asset: "Utstyr",
-        quantity: "Antall",
-        totalUnitCost: "Total enhetskostnad",
-        leaseTerm: "Leieperiode",
-      },
-    },
-    error: {
-      cannotDeleteLastOption: "Du kan ikke slette det siste alternativet.",
-      templateNameAndItemsRequired: "Vennligst oppgi et navn og sørg for at det aktive alternativet har varer.",
-    },
-    confirm: {
-      deleteOption: "Er du sikker på at du vil slette dette alternativet?",
     },
   },
-  summary: {
-    hardwareValue: "Maskinvareverdi",
-    oneTimeServices: "Totale engangstjenester",
-    totalCommission: "Total provisjon",
-    totalMonthlyCost: "Total månedlig kostnad",
-    totalLeaseCost: "Total leiekostnad",
-    totalMonthlyBundled: "Total månedlig pakkepris",
-    totalBundledCost: "Total pakkepris for leie",
+  aiSummary: {
+    button: "Generer sammendrag",
+  },
+  lrf: {
+    validUntil: "Priser gyldige til: {date}",
   },
   tco: {
-    title: "Analyse av totale eierkostnader (TCO)",
-    empty: {
-      title: "Kalkylen er tom.",
-      description: 'Vennligst legg til varer i "Kalkulator"-fanen for å se TCO-analysen.',
-    },
-    assumptions: {
-      title: "TCO-forutsetninger",
-      operationalCosts: "Driftskostnader",
-      deploymentCost: "Utrullingskostnad / enhet",
-      supportHours: "IT-supporttimer / enhet / år",
-      staffRate: "Timelønn for IT-personell",
-      eoldCost: "End-of-life-kostnad / enhet",
-      downtimeProductivity: "Nedetid & produktivitet",
-      failures: "Feil / enhet / år",
-      downtimeHours: "Nedetidstimer / feil",
-      employeeCost: "Gj.sn. ansattkostnad / time",
-      assetValue: "Eiendelsverdi",
-      residualValue: "Restverdi (%)",
-      table: {
-        assumption: "Forutsetning",
-        value: "Verdi"
-      }
-    },
-    chart: {
-      title: "Kostnadssammenligning: Leie vs. Kjøp",
-      leaseCostLabel: "Total leiekostnad",
-      purchaseCostLabel: "Total eierkostnad",
-    },
-    breakdown: {
-      title: "Detaljert kostnadsoversikt",
-      averageLeaseTerm: "Gjennomsnittlig leieperiode (verdi-vektet)",
-    },
-    table: {
-      category: "Kostnadskategori",
-      purchase: "Kjøpsscenario",
-      lease: "Leiescenario",
-      hardwareCost: "Maskinvarekostnad (initial)",
-      capitalCost: "Kapitalkostnad (WACC)",
-      deployment: "Utrullingskostnader",
-      support: "Løpende IT-support",
-      downtime: "Produktivitetstap (nedetid)",
-      eold: "End-of-life-håndtering",
-      residualValue: "Minus: Restverdi",
-      leasePayments: "Totale leiebetalinger",
-      totalTco: "Total eierkostnad",
-    },
-    savingsWithLease: "Besparelser med leie",
-    included: "Inkludert",
-    mitigated: "Redusert",
-    wacc: {
-      title: "Kapitalkostnad (WACC)",
-      industry: "Bransje",
-      industryAverage: "WACC (bransjegjennomsnitt)",
-      applyIndividual: "Bruk individuell WACC",
-      individualWacc: "Individuell WACC (%)",
-    },
-    glossary: {
-      title: "Ordliste",
-      wacc: "WACC = Vektet gjennomsnittlig kapitalkostnad. WACC brukes til å beregne pengenes tidsverdi, noe som gir en mer nøyaktig 'effektiv kjøpspris'. Dette er en forenklet modell for illustrative formål.",
-    },
     industries: {
       Automotive: "Bilindustri",
       Banking: "Bank",
@@ -2692,335 +1222,6 @@ const no = {
       Materialsindustry: "Materialindustri",
     }
   },
-  admin: {
-    branding: {
-      title: "Merkevarehåndtering",
-      appLogo: "Applikasjonslogo (innloggingsside)",
-      currentLogo: "Nåværende logo",
-      uploadNewLabel: "Last opp en ny logo",
-      uploadButton: "Last opp logo",
-      removeButton: "Fjern egendefinert logo",
-      uploadHint: "Anbefalt: SVG eller PNG med gjennomsiktig bakgrunn.",
-      confirmRemoveLogo: "Er du sikker på at du vil fjerne den egendefinerte logoen og gå tilbake til standard?"
-    },
-    users: {
-      title: "Brukeradministrasjon",
-      addUserButton: "Legg til bruker",
-      table: {
-        name: "Navn",
-        emailCompany: "E-post / Selskap",
-        role: "Rolle",
-        totalCalculatedValue: "Totalt beregnet verdi",
-        totalCommissionEarned: "Total opptjent provisjon",
-        actions: "Handlinger",
-      },
-      modal: {
-        addTitle: "Legg til ny bruker",
-        editTitle: "Rediger bruker",
-        name: "Navn",
-        email: "E-post",
-        password: "Passord",
-        resetPassword: "Tilbakestill passord",
-        sendResetLink: "Send tilbakestillingslenke",
-        passwordPlaceholderEdit: "La stå tomt for å beholde uendret",
-        forceResetNote: "Dette vil kreve at brukeren endrer passordet sitt ved neste innlogging.",
-        role: "Rolle",
-        selectRole: "Velg en rolle",
-        partnerDetailsTitle: "Partnerdetaljer",
-        companyName: "Selskapsnavn",
-        phone: "Telefon",
-        country: "Land",
-        selectCountry: "Velg et land",
-        commission: "Provisjon (%)",
-        commissionHelpText: "Provisjonen beregnes av maskinvarekostnaden og fordeles over leieperioden, noe som øker den månedlige leiefaktoren.",
-        companyLogo: "Selskapslogo",
-        uploadLogoButton: "Last opp logo",
-      },
-      error: {
-        fillRequiredFields: "Vennligst fyll ut navn, e-post og rolle.",
-        passwordRequired: "Passord er påkrevd for nye brukere.",
-        commissionRange: "Provisjon må være en gyldig prosentandel.",
-        updateFailed: "Kunne ikke oppdatere profil",
-        profileSavedButResetFailed: "Profil lagret, men kunne ikke sende e-post for tilbakestilling av passord",
-        createUserFailed: "Kunne ikke opprette bruker",
-        createProfileFailed: "Brukerens autentiseringspost ble opprettet, men profilopprettelsen mislyktes. Vennligst fiks manuelt.",
-      },
-      success: {
-        profileSavedAndResetSent: "Profil lagret. En lenke for tilbakestilling av passord er sendt til {email}.",
-      },
-      warning: {
-        adminLogoutOnCreate: "Advarsel: Oppretting av en ny bruker vil logge deg ut av administratorkontoen din. Du må logge inn manuelt igjen etterpå.",
-      },
-      inviteSuccess: "Invitasjon sendt til {email}. De vil motta en e-post for å sette passordet sitt.",
-      resetSuccess: "Lenke for tilbakestilling av passord sendt til {email}.",
-      userCreationNote: "Brukeren vil motta en e-post for å sette opp passordet sitt og logge inn.",
-    },
-    lrf: {
-      title: "Håndtering av leiefaktorer",
-      description: "Angi spesifikke leiefaktorer. Tomme felt vil automatisk bruke faktoren fra den overordnede kategorien (f.eks. 'Laptop-Windows' vil bruke 'Laptop'-faktorer hvis eget felt er tomt).",
-      table: {
-        categoryOsBrand: "Kategori / OS / Merke",
-        termMonths: "{term} måneder",
-      },
-      allUsedAssets: "Alt brukt utstyr",
-      globalSettings: {
-        title: "Globale kalkyleinnstillinger",
-        nonReturnUpliftLabel: "Påslag for ikke-retur (% per 1 % ikke-retur)",
-        nonReturnUpliftHelp: "f.eks. skriv inn 0,8 for et 0,8 % påslag på LRF per 1 % ikke-retur. Et 5 % alternativ vil øke LRF med 4 %.",
-      },
-      notifications: {
-        title: "Varslingsinnstillinger",
-        description: "Velg en administrator som skal motta e-postvarsler når partnere ber om en LRF-oppdatering.",
-        recipientLabel: "Varslingsmottaker",
-      },
-      history: {
-        title: "Historikklogg",
-        date: "Dato",
-        admin: "Administrator",
-      },
-      upload: {
-          button: "Last opp CSV",
-          sampleLink: "Last ned CSV-mal.",
-          excelHint: "(Du kan redigere dette i Excel og lagre som en .csv-fil).",
-          confirm: "Dette vil overskrive alle nåværende LRF-er med data fra filen. Er du sikker på at du vil fortsette?",
-          success: "LRF-er ble importert. Klikk 'Lagre endringer' for å bruke dem.",
-          error: {
-            generic: "Feil ved parsing av CSV-fil",
-            header: "Ugyldig CSV-header. Headeren må inneholde 'key' etterfulgt av leieperiodene (12, 24, osv.).",
-            noData: "Ingen gyldige LRF-data funnet i filen."
-          }
-      }
-    },
-    loginHistory: {
-      title: "Innloggingshistorikk",
-      table: {
-        date: "Dato",
-        user: "Bruker",
-        status: "Status",
-        attemptedEmail: "Forsøkt e-post",
-      },
-      statuses: {
-        Success: "Vellykket",
-        Failure: "Mislykket",
-      },
-      noHistory: "Ingen innloggingsforsøk er registrert ennå.",
-    },
-    workflow: {
-      title: "Arbeidsflyt & varsler",
-      currentRecipient: "Nåværende mottaker",
-      primaryEmail: {
-        title: "Mottaker for kredittgodkjenning",
-        description: "Denne e-postadressen vil motta alle forespørsler om kredittgodkjenning sendt av partnere.",
-      },
-      substitutes: {
-        title: "Ferie / vikar-videresending",
-        description: "Legg til en vikar-e-postadresse for en bestemt tidsperiode. Forespørsler vil automatisk bli videresendt hvis datoen faller innenfor perioden.",
-        add: "Legg til ny vikar",
-        email: "Vikarens e-post",
-        startDate: "Startdato",
-        endDate: "Sluttdato",
-        addButton: "Legg til vikar",
-        status: "Status",
-        statuses: {
-          active: "Aktiv",
-          past: "Passert",
-          upcoming: "Kommende",
-        },
-        error: {
-          allFieldsRequired: "Vennligst fyll ut alle feltene for vikaren.",
-        },
-        confirmRemove: "Er du sikker på at du vil fjerne denne vikaren?",
-      },
-    },
-    activityLog: {
-      title: "Aktivitetslogg",
-      table: {
-        date: "Dato",
-        user: "Bruker",
-        activity: "Aktivitet",
-        details: "Detaljer",
-      },
-      activities: {
-        CreditRequestSent: "Kredittforespørsel sendt",
-      },
-      noActivity: "Ingen aktivitet er registrert ennå.",
-    },
-  },
-  pdf: {
-    quoteFor: "Tilbud for: {customerName}",
-    project: "Prosjekt: {projectName}",
-    customerStatus: "Kundestatus",
-    currency: "Valuta",
-    startDate: "Første mulige startdato",
-    assetSummary: {
-      title: "Utstyrssammendrag",
-      assetClass: "Utstyrsklasse",
-      totalValue: "Total verdi",
-      leaseTerms: "Leieperiode (måneder)",
-    },
-    customerDetails: {
-      title: "Kundedetaljer",
-      companyName: "Selskapsnavn",
-      address: "Adresse",
-      city: "By",
-      postalCode: "Postnummer",
-      country: "Land",
-      vatId: "MVA- / Org.nr.",
-      contactName: "Kontaktpersons navn",
-      contactEmail: "Kontaktpersons e-post",
-      contactPhone: "Kontaktpersons telefon"
-    },
-    table: {
-      asset: "Utstyr",
-      details: "Detaljer",
-      term: "Periode",
-      qty: "Antall",
-      monthly: "Månedlig",
-      total: "Totalt",
-      monthlyBundled: "Mnd. pakke",
-      totalBundled: "Total pakke",
-    },
-    subtotalFor: "Delsum for",
-    subtotalBundledFor: "Pakkedelsum for",
-    optionsSummary: "Alternativsammendrag",
-    totalMonthlyCost: "Total månedlig kostnad",
-    totalLeaseCost: "Total leiekostnad",
-    totalMonthlyBundled: "Total månedlig pakkepris",
-    totalBundledCost: "Total pakkekostnad",
-    fileName: "Tilbud",
-    serviceDescriptions: {
-      title: "Inkluderte tjenestebeskrivelser",
-      Deployment: "Installasjon og oppsett på stedet eller eksternt av enheter, for å sikre at de er klare for umiddelbar bruk av ansatte.",
-      PreConfiguration: "Forhåndslasting av bedriftsspesifikke programvarebilder, applikasjoner og sikkerhetsinnstillinger før levering.",
-      Delivery: "Sikker logistikk og levering av maskinvare direkte til kontorlokaler eller ansattes hjem.",
-      Support: "En 24-timers erstatningstjeneste for defekte enheter for å minimere ansattes nedetid.",
-      PackingService: "Vårt team håndterer profesjonell pakking av alt utstyr ved slutten av leieperioden, for å sikre at det er trygt for transport.",
-      Other: "Egendefinerte tjenester som beskrevet i tilbudet."
-    },
-    tco: {
-      summary: "Basert på en verdivektet gjennomsnittlig periode på {term} og en WACC på {wacc}.",
-      savings: "Leie gir potensielle besparelser på {amount} ({percent}) sammenlignet med kjøp.",
-    }
-  },
-  creditModal: {
-    title: "Be om kredittgodkjenning",
-    multiCountryTitle: "Nav for kredittgodkjenning i flere land",
-    hub: {
-      description: "Dette prosjektet inkluderer utstyr for flere land. Vennligst oppgi kundedetaljer for hvert land nedenfor og send forespørslene individuelt.",
-      description_consolidated: "Dette prosjektet inkluderer utstyr for flere land. Vennligst skriv inn de juridiske enhetsopplysningene for hvert land nedenfor. Når alle opplysninger er komplette, kan du forberede en enkelt konsolidert forespørsel for å sende til ditt primære kreditteam for intern koordinering.",
-      assetsForCountry: "Utstyr for {country}",
-      itemSummary: "{count} varer, totalverdi {value}",
-      status: "Status",
-      statusNeeded: "Detaljer mangler",
-      statusComplete: "Detaljer komplette",
-      statusReady: "Klar til sending",
-      statusSent: "Forespørsel sendt",
-      enterDetailsButton: "Skriv inn kundedetaljer",
-      editDetailsButton: "Rediger detaljer",
-      sendButton: "Forbered & send forespørsel",
-      consolidatedButton: "Forbered konsolidert forespørsel",
-      consolidatedButtonTooltip: "Vennligst skriv inn detaljer for alle land før du forbereder forespørselen.",
-      noCountryWarning: "Noen varer i dette tilbudet har ikke et land tildelt. Vennligst rediger hver vare og velg et land før du ber om godkjenning.",
-    },
-    form: {
-      title: "Skriv inn kundedetaljer for {country}",
-    },
-    customerDetails: "Kundens selskapsdetaljer",
-    companyName: "Selskapsnavn",
-    address: "Fullstendig gateadresse",
-    city: "By",
-    postalCode: "Postnummer",
-    country: "Land",
-    vatId: "MVA- / Org.nr.",
-    creditType: "Ny kreditt eller eksisterende CHG-kunde?",
-    creditTypeNew: "Ny kreditt",
-    creditTypeExisting: "Eksisterende kunde",
-    currency: "Valuta",
-    contactPerson: "Primær kontaktperson",
-    contactName: "Kontaktpersonens navn",
-    contactEmail: "Kontaktpersonens e-post",
-    contactPhone: "Kontaktpersonens telefon",
-    sendRequestButton: "Forbered forespørsel",
-    ai: {
-      label: "Autofyll med AI",
-      description: "Lim inn kundedetaljer fra en e-postsignatur eller et dokument for å fylle ut skjemaet automatisk.",
-      placeholder: "Lim inn tekst her...",
-      button: "Fyll ut fra tekst"
-    },
-    email: {
-      subject: "Forespørsel om kredittgodkjenning for {customer} fra {partner}",
-      multiCountrySubject: "Forespørsel om kredittgodkjenning for {customer} ({country}) fra {partner}",
-      bodyWithAttachment: "Kjære kreditteam,\n\nVennligst finn vedlagt tilbud for deres gjennomgang og godkjenning.\n\nProsjekt: {projectName}\nKunde: {customerName}\n\nTakk,\n{partnerName}",
-    },
-    error: {
-      title: "Manglende informasjon",
-      missingFields: "Vennligst fyll ut følgende obligatoriske felt: {fields}"
-    }
-  },
-  cart: {
-    title: "Handlekurv",
-    empty: "Handlekurven din er tom.",
-    subtotalMonthly: "Delsum (månedlig)",
-    proceedToOrder: "Fortsett til bestilling",
-  },
-  legal: {
-    checkboxLabel: "Jeg har lest og godtar",
-    termsLink: "vilkårene",
-    modal: {
-      title: "Vilkår og betingelser",
-      close: "Lukk",
-    },
-    terms: {
-      legalDisclaimer: "JURIDISK ANSVARSFRASKRIVELSE: Følgende vilkår og betingelser er kun for illustrative formål og utgjør ikke juridisk rådgivning. Du må konsultere en kvalifisert juridisk fagperson for å utarbeide vilkår og betingelser som er passende for din spesifikke virksomhet, jurisdiksjon og juridiske krav.",
-      lastUpdated: "Sist oppdatert: {date}",
-      acceptance: {
-        title: "1. Aksept av vilkår",
-        p1: "Ved å logge inn og bruke denne portalen for leie av IT-utstyr ('Tjenesten'), godtar du å være bundet av disse vilkårene og betingelsene ('Vilkårene'). Hvis du ikke godtar disse vilkårene, ikke bruk Tjenesten."
-      },
-      useOfService: {
-        title: "2. Bruk av Tjenesten",
-        p1: "Tjenesten tilbys for å bistå partnere av CHG-MERIDIAN med å lage kalkyler og tilbud for sine kunder. Du samtykker i å kun bruke Tjenesten til sitt tiltenkte formål og i samsvar med alle gjeldende lover og forskrifter."
-      },
-      data: {
-        title: "3. Håndtering av personopplysninger",
-        p1: "I samsvar med personvernforordningen (GDPR) og andre gjeldende personvernlover er vi forpliktet til å beskytte ditt personvern. Ved å bruke Tjenesten, anerkjenner og godtar du at dine data overføres og lagres sikkert i en sentralisert skydatabase.",
-        listTitle: "Data vi samler inn:",
-        li1: "Brukerkonto-informasjon: Ditt navn, e-postadresse, firmanavn, telefonnummer og kryptert passordinformasjon.",
-        li2: "Tilbudsinformasjon: Kundenavn, prosjektnavn og detaljer om kalkylene du lager.",
-        li3: "Innloggingshistorikk: Vi registrerer tidsstempler og status (vellykket/mislykket) for innloggingsforsøk av sikkerhetsgrunner.",
-        purposeTitle: "Formålet med datainnsamlingen:",
-        purposeLi1: "Å tilby, vedlikeholde og forbedre Tjenesten.",
-        purposeLi2: "Å identifisere deg som bruker og administrere kontoen din.",
-        purposeLi3: "Å la deg opprette, lagre og administrere leietilbud.",
-        purposeLi4: "For sikkerhetsrevisjon og for å forhindre uredelig aktivitet.",
-        storageTitle: "Datalagring og sikkerhet:",
-        storageLi1: "Dine data lagres på sikre servere som administreres av vår databaseleverandør (Supabase). Vi tar rimelige forholdsregler for å beskytte din informasjon mot uautorisert tilgang, bruk eller utlevering.",
-        storageLi2: "Du er ansvarlig for å opprettholde konfidensialiteten til ditt kontopassord.",
-        rightsTitle: "Dine rettigheter:",
-        rightsLi1: "Du har rett til å be om innsyn i, retting av eller sletting av dine personopplysninger. For å utøve disse rettighetene, vennligst kontakt administratoren for denne portalen i din organisasjon."
-      },
-      intellectualProperty: {
-          title: "4. Immaterielle rettigheter",
-          p1: "Tjenesten og dens originale innhold, funksjoner og funksjonalitet er og vil forbli den eksklusive eiendommen til CHG-MERIDIAN og dets lisensgivere."
-      },
-      disclaimer: {
-          title: "5. Ansvarsfraskrivelse for garantier",
-          p1: "Tjenesten tilbys 'som den er' og 'som tilgjengelig' uten noen form for garantier, verken uttrykkelige eller underforståtte. Alle kalkyler er veiledende og ikke-bindende."
-      },
-      liability: {
-          title: "6. Ansvarsbegrensning",
-          p1: "Under ingen omstendigheter skal CHG-MERIDIAN, dets direktører, ansatte eller partnere være ansvarlige for noen indirekte, tilfeldige, spesielle, følgeskader eller straffbare skader som oppstår som følge av din bruk av Tjenesten."
-      },
-      governingLaw: {
-          title: "7. Gjeldende lov",
-          p1: "Disse vilkårene skal være underlagt lovene i den jurisdiksjonen der CHG-MERIDIAN opererer, uten hensyn til dens lovvalgsregler."
-      },
-      changes: {
-          title: "8. Endringer i vilkår",
-          p1: "Vi forbeholder oss retten til å endre eller erstatte disse vilkårene når som helst. Vi vil varsle om eventuelle endringer ved å oppdatere 'Sist oppdatert'-datoen. Din fortsatte bruk av Tjenesten etter slike endringer utgjør din aksept av de nye vilkårene."
-      }
-    }
-  }
 };
 
 const da = {
@@ -3066,7 +1267,6 @@ const da = {
       PreConfiguration: "Forkonfiguration (staging)",
       Delivery: "Levering",
       Support: "Support (24t ombytning)",
-      PackingService: "Pakkeservice (ved leasingophør)",
     }
   },
   password: {
@@ -3076,14 +1276,7 @@ const da = {
     confirmNewPassword: "Bekræft ny adgangskode",
     updatePasswordButton: "Opdater adgangskode & log ind",
     error: {
-      allFieldsRequired: "Alle adgangskodefelter skal udfyldes.",
       mismatch: "De nye adgangskoder stemmer ikke overens.",
-      incorrectOld: "Den gamle adgangskode, du indtastede, er forkert.",
-      minLength: "Skal være mindst 10 tegn lang.",
-      uppercase: "Skal indeholde mindst ét stort bogstav.",
-      lowercase: "Skal indeholde mindst ét lille bogstav.",
-      number: "Skal indeholde mindst ét tal.",
-      specialChar: "Skal indeholde mindst ét specialtegn.",
     },
   },
   login: {
@@ -3093,17 +1286,52 @@ const da = {
     passwordPlaceholder: "Adgangskode",
     signInButton: "Log ind",
     error: {
-      bothFieldsRequired: "Indtast venligst både e-mail og adgangskode.",
       invalidCredentials: "Ugyldig e-mail eller adgangskode. Prøv igen.",
     },
   },
-  calculation: en.calculation,
-  summary: en.summary,
-  dashboard: en.dashboard,
-  lrf: en.lrf,
-  profile: en.profile,
+  calculation: {
+    title: "Opret beregning",
+    option: "Mulighed",
+    buttons: {
+      new: "Ny",
+      dashboard: "Dashboard",
+      saveTemplate: "Gem som skabelon",
+      generatePdf: "Generer PDF",
+      addItemTo: "Tilføj vare til {optionName}",
+      requestCreditApproval: "Anmod om kreditgodkendelse",
+      addOption: "Tilføj mulighed",
+    },
+    priceView: {
+      label: "Prisvisning",
+      detailed: "Detaljeret specificering",
+      bundled: "Samlet pris",
+    },
+    customerName: "Kundenavn",
+    customerNamePlaceholder: "Indtast kundenavn",
+    projectName: "Projektnavn",
+    projectNamePlaceholder: "Indtast projektnavn",
+    expectedStartDate: "Forventet startdato for kontrakt",
+    empty: {
+        title: "Denne mulighed er tom.",
+        description: 'Klik på "Tilføj vare" for at begynde.',
+    },
+    table: {
+      asset: "Aktiv",
+      details: "Detaljer",
+      term: "Periode",
+      qty: "Antal",
+      monthlyCost: "Månedlig pris",
+      totalCost: "Totalpris",
+      actions: "Handlinger",
+    },
+  },
+  aiSummary: {
+    button: "Generer resumé",
+  },
+  lrf: {
+    validUntil: "Priser er gyldige indtil: {date}",
+  },
   tco: {
-    ...en.tco,
     industries: {
       Automotive: "Bilindustri",
       Banking: "Bank",
@@ -3121,17 +1349,6 @@ const da = {
       Materialsindustry: "Materialeindustri",
     }
   },
-  admin: en.admin,
-  pdf: {
-    ...en.pdf,
-    serviceDescriptions: {
-      ...en.pdf.serviceDescriptions,
-      ProductAssurance: "Dækker kunden for eventuelle skader på returnerede aktiver klassificeret A-C. Kunden er fortsat ansvarlig for ødelagte, ikke-fungerende eller manglende aktiver (D-klasse).",
-    }
-  },
-  creditModal: en.creditModal,
-  cart: en.cart,
-  legal: en.legal,
 };
 
 const pl = {
@@ -3177,7 +1394,6 @@ const pl = {
       PreConfiguration: "Prekonfiguracja (staging)",
       Delivery: "Dostawa",
       Support: "Wsparcie (wymiana w 24h)",
-      PackingService: "Usługa pakowania (koniec leasingu)",
     }
   },
   password: {
@@ -3187,14 +1403,7 @@ const pl = {
     confirmNewPassword: "Potwierdź nowe hasło",
     updatePasswordButton: "Zaktualizuj hasło i zaloguj się",
     error: {
-      allFieldsRequired: "Wszystkie pola hasła są wymagane.",
       mismatch: "Nowe hasła nie są zgodne.",
-      incorrectOld: "Wprowadzone stare hasło jest nieprawidłowe.",
-      minLength: "Musi mieć co najmniej 10 znaków.",
-      uppercase: "Musi zawierać co najmniej jedną wielką literę.",
-      lowercase: "Musi zawierać co najmniej jedną małą literę.",
-      number: "Musi zawierać co najmniej jedną cyfrę.",
-      specialChar: "Musi zawierać co najmniej jeden znak specjalny.",
     },
   },
   login: {
@@ -3204,7 +1413,6 @@ const pl = {
     passwordPlaceholder: "Hasło",
     signInButton: "Zaloguj się",
     error: {
-      bothFieldsRequired: "Wprowadź e-mail i hasło.",
       invalidCredentials: "Nieprawidłowy e-mail lub hasło. Spróbuj ponownie.",
     },
   },
@@ -3220,6 +1428,7 @@ const pl = {
       generatePdf: "Generuj PDF",
       addItemTo: "Dodaj pozycję do {optionName}",
       requestCreditApproval: "Złóż wniosek o zatwierdzenie kredytowe",
+      addOption: "Dodaj opcję",
     },
     creditRequestAdminTooltip: "Ta funkcja jest przeznaczona dla użytkowników partnerskich do składania wniosków o zatwierdzenie kredytowe.",
     creditRequestPartnerDisabledTooltip: "Dodaj nazwę klienta i co najmniej jedną pozycję do oferty, aby włączyć tę funkcję.",
@@ -3244,144 +1453,16 @@ const pl = {
       qty: "Ilość",
       monthlyCost: "Koszt miesięczny",
       totalCost: "Koszt całkowity",
-      monthlyBundled: "Miesięcznie w pakiecie",
-      totalBundled: "Całkowicie w pakiecie",
-      commission: "Prowizja",
       actions: "Akcje",
-      os: "System",
-      condition: "Stan",
-      country: "Kraj",
-      nonReturn: "Brak zwrotu",
-      servicesLabel: "Usługi (jednorazowe)",
-      unit: "Szt.",
-    },
-    actions: {
-      duplicate: "Duplikuj pozycję",
-      edit: "Edytuj pozycję",
-      remove: "Usuń pozycję",
-    },
-    editModal: {
-      title: "Edytuj pozycję",
-      servicesLabel: "Usługi dodatkowe (koszt jednorazowy)",
-    },
-    templateModal: {
-      title: "Zapisz jako szablon",
-      nameLabel: "Nazwa szablonu",
-      namePlaceholder: "np. Standardowe wyposażenie pracownika",
-      saveButton: "Zapisz szablon",
-    },
-    wizard: {
-      title: "Kreator dodawania pozycji",
-      assetType: "Typ zasobu",
-      brand: "Marka",
-      os: "System operacyjny",
-      condition: "Stan",
-      country: "Kraj",
-      selectCountry: "Wybierz kraj...",
-      hardwareCost: "Cena jednostkowa sprzętu ({currency})",
-      quantity: "Liczba sztuk",
-      leaseTerm: "Okres leasingu (miesiące)",
-      nonReturnOption: "Opcja braku zwrotu",
-      customDescriptionLabel: "Opis zasobu",
-      customDescriptionPlaceholder: "np. Skaner o wysokiej wydajności",
-      submitButton: "Dodaj do kalkulacji",
-      step1: {
-        title: "Krok 1: Szczegóły sprzętu",
-      },
-      step2: {
-        title: "Krok 2: Usługi",
-        description: "Wszystkie koszty wprowadzone tutaj są kosztami jednorazowymi za zasób.",
-        supportHelpText: "Uwaga: Całkowity koszt za zasób na cały okres leasingu.",
-        otherServiceDescription: "Inna usługa",
-        otherServicePlaceholder: "np. Niestandardowa instalacja oprogramowania",
-      },
-      step3: {
-        title: "Krok 3: Okres leasingu i podsumowanie",
-        summaryTitle: "Podsumowanie pozycji",
-        asset: "Zasób",
-        quantity: "Ilość",
-        totalUnitCost: "Całkowity koszt jednostkowy",
-        leaseTerm: "Okres leasingu",
-      },
-    },
-    error: {
-      cannotDeleteLastOption: "Nie można usunąć ostatniej opcji.",
-      templateNameAndItemsRequired: "Podaj nazwę i upewnij się, że aktywna opcja zawiera pozycje.",
-    },
-    confirm: {
-      deleteOption: "Czy na pewno chcesz usunąć tę opcję?",
     },
   },
-  summary: {
-    hardwareValue: "Wartość sprzętu",
-    oneTimeServices: "Suma usług jednorazowych",
-    totalCommission: "Suma prowizji",
-    totalMonthlyCost: "Suma kosztów miesięcznych",
-    totalLeaseCost: "Suma kosztów leasingu",
-    totalMonthlyBundled: "Suma miesięcznej stawki pakietowej",
-    totalBundledCost: "Suma kosztów leasingu pakietowego",
+  aiSummary: {
+    button: "Generuj podsumowanie",
+  },
+  lrf: {
+    validUntil: "Ceny ważne do: {date}",
   },
   tco: {
-    title: "Analiza całkowitego kosztu posiadania (TCO)",
-    empty: {
-      title: "Kalkulacja jest pusta.",
-      description: 'Dodaj pozycje w zakładce "Kalkulator", aby zobaczyć analizę TCO.',
-    },
-    assumptions: {
-      title: "Założenia TCO",
-      operationalCosts: "Koszty operacyjne",
-      deploymentCost: "Koszt wdrożenia / urządzenie",
-      supportHours: "Godziny wsparcia IT / urządzenie / rok",
-      staffRate: "Stawka godzinowa personelu IT",
-      eoldCost: "Koszt końca życia / urządzenie",
-      downtimeProductivity: "Przestoje i produktywność",
-      failures: "Awarie / urządzenie / rok",
-      downtimeHours: "Godziny przestoju / awaria",
-      employeeCost: "Śr. koszt pracownika / godzinę",
-      assetValue: "Wartość aktywów",
-      residualValue: "Wartość rezydualna (%)",
-      table: {
-        assumption: "Założenie",
-        value: "Wartość"
-      }
-    },
-    chart: {
-      title: "Porównanie kosztów: Leasing vs. Zakup",
-      leaseCostLabel: "Całkowity koszt leasingu",
-      purchaseCostLabel: "Całkowity koszt posiadania",
-    },
-    breakdown: {
-      title: "Szczegółowy podział kosztów",
-      averageLeaseTerm: "Średni okres leasingu (ważony wartością)",
-    },
-    table: {
-      category: "Kategoria kosztów",
-      purchase: "Scenariusz zakupu",
-      lease: "Scenariusz leasingu",
-      hardwareCost: "Koszt sprzętu (początkowy)",
-      capitalCost: "Koszt kapitału (WACC)",
-      deployment: "Koszty wdrożenia",
-      support: "Bieżące wsparcie IT",
-      downtime: "Utrata produktywności (przestoje)",
-      eold: "Utylizacja po zakończeniu eksploatacji",
-      residualValue: "Minus: Wartość rezydualna",
-      leasePayments: "Całkowite opłaty leasingowe",
-      totalTco: "Całkowity koszt posiadania",
-    },
-    savingsWithLease: "Oszczędności dzięki leasingowi",
-    included: "Wliczone",
-    mitigated: "Złagodzone",
-    wacc: {
-      title: "Koszt kapitału (WACC)",
-      industry: "Branża",
-      industryAverage: "WACC (średnia branżowa)",
-      applyIndividual: "Zastosuj indywidualny WACC",
-      individualWacc: "Indywidualny WACC (%)",
-    },
-    glossary: {
-      title: "Słowniczek",
-      wacc: "WACC = Średni ważony koszt kapitału. WACC służy do obliczania wartości pieniądza w czasie, co daje dokładniejszą 'efektywną cenę zakupu'. Jest to uproszczony model do celów ilustracyjnych.",
-    },
     industries: {
       Automotive: "Motoryzacja",
       Banking: "Bankowość",
@@ -3400,334 +1481,12 @@ const pl = {
     }
   },
   admin: {
-    branding: {
-      title: "Zarządzanie marką",
-      appLogo: "Logo aplikacji (strona logowania)",
-      currentLogo: "Aktualne logo",
-      uploadNewLabel: "Prześlij nowe logo",
-      uploadButton: "Prześlij logo",
-      removeButton: "Usuń niestandardowe logo",
-      uploadHint: "Zalecane: SVG lub PNG z przezroczystym tłem.",
-      confirmRemoveLogo: "Czy na pewno chcesz usunąć niestandardowe logo i przywrócić domyślne?"
-    },
     users: {
-      title: "Zarządzanie użytkownikami",
-      addUserButton: "Dodaj użytkownika",
-      table: {
-        name: "Imię i nazwisko",
-        emailCompany: "E-mail / Firma",
-        role: "Rola",
-        totalCalculatedValue: "Całkowita obliczona wartość",
-        totalCommissionEarned: "Całkowita zarobiona prowizja",
-        actions: "Akcje",
-      },
-      modal: {
-        addTitle: "Dodaj nowego użytkownika",
-        editTitle: "Edytuj użytkownika",
-        name: "Imię i nazwisko",
-        email: "E-mail",
-        password: "Hasło",
-        resetPassword: "Zresetuj hasło",
-        sendResetLink: "Wyślij link resetujący",
-        passwordPlaceholderEdit: "Pozostaw puste, aby nie zmieniać",
-        forceResetNote: "Wymusi to na użytkowniku zmianę hasła przy następnym logowaniu.",
-        role: "Rola",
-        selectRole: "Wybierz rolę",
-        partnerDetailsTitle: "Dane partnera",
-        companyName: "Nazwa firmy",
-        phone: "Telefon",
-        country: "Kraj",
-        selectCountry: "Wybierz kraj",
-        commission: "Prowizja (%)",
-        commissionHelpText: "Prowizja jest obliczana od kosztu sprzętu i rozkładana na okres leasingu, zwiększając miesięczny współczynnik leasingowy.",
-        companyLogo: "Logo firmy",
-        uploadLogoButton: "Prześlij logo",
-      },
-      error: {
-        fillRequiredFields: "Wypełnij imię i nazwisko, e-mail i rolę.",
-        passwordRequired: "Hasło jest wymagane dla nowych użytkowników.",
-        commissionRange: "Prowizja musi być prawidłową wartością procentową.",
-        updateFailed: "Nie udało się zaktualizować profilu",
-        profileSavedButResetFailed: "Profil zapisany, ale nie udało się wysłać e-maila z linkiem do resetowania hasła",
-        createUserFailed: "Nie udało się utworzyć użytkownika",
-        createProfileFailed: "Rekord uwierzytelniania użytkownika został utworzony, ale nie udało się utworzyć profilu. Popraw ręcznie.",
-      },
-      success: {
-        profileSavedAndResetSent: "Profil zapisany. Link do resetowania hasła został wysłany na adres {email}.",
-      },
-      warning: {
-        adminLogoutOnCreate: "Ostrzeżenie: Utworzenie nowego użytkownika spowoduje wylogowanie z konta administratora. Będziesz musiał zalogować się ponownie ręcznie.",
-      },
-      inviteSuccess: "Zaproszenie wysłane do {email}. Otrzymają e-mail, aby ustawić swoje hasło.",
-      resetSuccess: "Link do resetowania hasła wysłany do {email}.",
-      userCreationNote: "Użytkownik otrzyma e-mail, aby ustawić swoje hasło i zalogować się.",
-    },
-    lrf: {
-      title: "Zarządzanie współczynnikiem raty leasingowej",
-      description: "Ustaw konkretne stawki leasingowe. Puste pola automatycznie użyją stawki z kategorii nadrzędnej (np. 'Laptop-Windows' użyje stawek 'Laptop', jeśli jego pole jest puste).",
-      table: {
-        categoryOsBrand: "Kategoria / System / Marka",
-        termMonths: "{term} miesięcy",
-      },
-      allUsedAssets: "Wszystkie używane zasoby",
-      globalSettings: {
-        title: "Globalne ustawienia kalkulacji",
-        nonReturnUpliftLabel: "Dopłata za brak zwrotu (% za 1% braku zwrotu)",
-        nonReturnUpliftHelp: "np. wpisz 0,8 dla dopłaty 0,8% do LRF za każdy 1% braku zwrotu. Opcja 5% zwiększy LRF o 4%.",
-      },
-      notifications: {
-        title: "Ustawienia powiadomień",
-        description: "Wybierz administratora, który będzie otrzymywał powiadomienia e-mail, gdy partnerzy poproszą o aktualizację LRF.",
-        recipientLabel: "Odbiorca powiadomień",
-      },
-      history: {
-        title: "Dziennik historii",
-        date: "Data",
-        admin: "Administrator",
-      },
-      upload: {
-          button: "Prześlij CSV",
-          sampleLink: "Pobierz szablon CSV.",
-          excelHint: "(Możesz go edytować w programie Excel i zapisać jako plik .csv).",
-          confirm: "Spowoduje to nadpisanie wszystkich obecnych LRF danymi z pliku. Czy na pewno chcesz kontynuować?",
-          success: "LRF zostały pomyślnie zaimportowane. Kliknij 'Zapisz zmiany', aby je zastosować.",
-          error: {
-            generic: "Błąd podczas parsowania pliku CSV",
-            header: "Nieprawidłowy nagłówek CSV. Nagłówek musi zawierać 'key', a następnie okresy leasingu (12, 24 itd.).",
-            noData: "W pliku nie znaleziono prawidłowych danych LRF."
-          }
-      }
-    },
-    loginHistory: {
-      title: "Historia logowania",
-      table: {
-        date: "Data",
-        user: "Użytkownik",
-        status: "Status",
-        attemptedEmail: "Próbowany e-mail",
-      },
-      statuses: {
-        Success: "Sukces",
-        Failure: "Niepowodzenie",
-      },
-      noHistory: "Nie zarejestrowano jeszcze żadnych prób logowania.",
-    },
-    workflow: {
-      title: "Przepływ pracy i powiadomienia",
-      currentRecipient: "Obecny odbiorca",
-      primaryEmail: {
-        title: "Odbiorca zatwierdzenia kredytowego",
-        description: "Ten adres e-mail będzie otrzymywał wszystkie wnioski o zatwierdzenie kredytowe wysyłane przez partnerów.",
-      },
-      substitutes: {
-        title: "Przekazywanie na czas urlopu / zastępstwa",
-        description: "Dodaj zastępczy adres e-mail na określony czas. Wnioski będą automatycznie przekazywane, jeśli data mieści się w zakresie.",
-        add: "Dodaj nowego zastępcę",
-        email: "E-mail zastępcy",
-        startDate: "Data rozpoczęcia",
-        endDate: "Data zakończenia",
-        addButton: "Dodaj zastępcę",
-        status: "Status",
-        statuses: {
-          active: "Aktywny",
-          past: "Przeszły",
-          upcoming: "Nadchodzący",
-        },
-        error: {
-          allFieldsRequired: "Wypełnij wszystkie pola dla zastępcy.",
-        },
-        confirmRemove: "Czy na pewno chcesz usunąć tego zastępcę?",
-      },
-    },
-    activityLog: {
-      title: "Dziennik aktywności",
-      table: {
-        date: "Data",
-        user: "Użytkownik",
-        activity: "Aktywność",
-        details: "Szczegóły",
-      },
-      activities: {
-        CreditRequestSent: "Wysłano wniosek kredytowy",
-      },
-      noActivity: "Nie zarejestrowano jeszcze żadnej aktywności.",
-    },
-  },
-  pdf: {
-    quoteFor: "Oferta dla: {customerName}",
-    project: "Projekt: {projectName}",
-    customerStatus: "Status klienta",
-    currency: "Waluta",
-    startDate: "Pierwsza możliwa data rozpoczęcia",
-    assetSummary: {
-      title: "Podsumowanie aktywów",
-      assetClass: "Klasa aktywów",
-      totalValue: "Wartość całkowita",
-      leaseTerms: "Okres leasingu (miesiące)",
-    },
-    customerDetails: {
-      title: "Dane klienta",
-      companyName: "Nazwa firmy",
-      address: "Adres",
-      city: "Miasto",
-      postalCode: "Kod pocztowy",
-      country: "Kraj",
-      vatId: "NIP / Numer firmy",
-      contactName: "Imię i nazwisko osoby kontaktowej",
-      contactEmail: "E-mail osoby kontaktowej",
-      contactPhone: "Telefon osoby kontaktowej"
-    },
-    table: {
-      asset: "Zasób",
-      details: "Szczegóły",
-      term: "Okres",
-      qty: "Ilość",
-      monthly: "Miesięcznie",
-      total: "Suma",
-      monthlyBundled: "Pakiet/mies.",
-      totalBundled: "Suma pakietu",
-    },
-    subtotalFor: "Suma częściowa dla",
-    subtotalBundledFor: "Suma częściowa pakietu dla",
-    optionsSummary: "Podsumowanie opcji",
-    totalMonthlyCost: "Całkowity koszt miesięczny",
-    totalLeaseCost: "Całkowity koszt leasingu",
-    totalMonthlyBundled: "Całkowita miesięczna stawka pakietowa",
-    totalBundledCost: "Całkowity koszt leasingu pakietowego",
-    fileName: "Oferta",
-    serviceDescriptions: {
-      title: "Opisy zawartych usług",
-      Deployment: "Instalacja i konfiguracja urządzeń na miejscu lub zdalnie, zapewniająca ich natychmiastową gotowość do użytku przez pracowników.",
-      PreConfiguration: "Wstępne ładowanie obrazów oprogramowania, aplikacji i ustawień bezpieczeństwa specyficznych dla firmy przed dostawą.",
-      Delivery: "Bezpieczna logistyka i dostawa sprzętu bezpośrednio do biur lub domów pracowników.",
-      Support: "24-godzinna usługa wymiany wadliwych urządzeń w celu zminimalizowania przestojów pracowników.",
-      PackingService: "Nasz zespół zajmie się profesjonalnym zapakowaniem wszystkich aktywów na koniec okresu leasingu, zapewniając ich bezpieczny transport.",
-      Other: "Usługi niestandardowe zgodnie z opisem w ofercie."
-    },
-    tco: {
-      summary: "Na podstawie średniego ważonego wartością okresu {term} i WACC wynoszącego {wacc}.",
-      savings: "Leasing oferuje potencjalne oszczędności w wysokości {amount} ({percent}) w porównaniu z zakupem.",
+        warning: {
+            adminLogoutOnCreate: "Ostrzeżenie: Utworzenie nowego użytkownika spowoduje wylogowanie z konta administratora. Będziesz musiał zalogować się ponownie ręcznie.",
+        }
     }
   },
-  creditModal: {
-    title: "Złóż wniosek o zatwierdzenie kredytowe",
-    multiCountryTitle: "Centrum zatwierdzania kredytowego dla wielu krajów",
-    hub: {
-      description: "Ten projekt obejmuje aktywa dla wielu krajów. Podaj dane klienta dla każdego kraju poniżej i wyślij wnioski indywidualnie.",
-      description_consolidated: "Ten projekt obejmuje aktywa dla wielu krajów. Wprowadź dane podmiotu prawnego dla każdego kraju poniżej. Po uzupełnieniu wszystkich danych możesz przygotować jedno skonsolidowane zapytanie do wysłania do swojego głównego zespołu kredytowego w celu wewnętrznej koordynacji.",
-      assetsForCountry: "Aktywa dla {country}",
-      itemSummary: "{count} pozycji, łączna wartość {value}",
-      status: "Status",
-      statusNeeded: "Wymagane dane",
-      statusComplete: "Dane kompletne",
-      statusReady: "Gotowe do wysłania",
-      statusSent: "Wniosek wysłany",
-      enterDetailsButton: "Wprowadź dane klienta",
-      editDetailsButton: "Edytuj dane",
-      sendButton: "Przygotuj i wyślij wniosek",
-      consolidatedButton: "Przygotuj skonsolidowany wniosek",
-      consolidatedButtonTooltip: "Wprowadź dane dla wszystkich krajów przed przygotowaniem wniosku.",
-      noCountryWarning: "Niektóre pozycje w tej ofercie nie mają przypisanego kraju. Edytuj każdą pozycję i wybierz kraj przed złożeniem wniosku o zatwierdzenie.",
-    },
-    form: {
-      title: "Wprowadź dane klienta dla {country}",
-    },
-    customerDetails: "Dane firmy klienta",
-    companyName: "Nazwa firmy",
-    address: "Pełny adres ulicy",
-    city: "Miasto",
-    postalCode: "Kod pocztowy",
-    country: "Kraj",
-    vatId: "NIP / Numer firmy",
-    creditType: "Nowy kredyt czy istniejący klient CHG?",
-    creditTypeNew: "Nowy kredyt",
-    creditTypeExisting: "Istniejący klient",
-    currency: "Waluta",
-    contactPerson: "Główna osoba kontaktowa",
-    contactName: "Imię i nazwisko osoby kontaktowej",
-    contactEmail: "E-mail osoby kontaktowej",
-    contactPhone: "Telefon osoby kontaktowej",
-    sendRequestButton: "Przygotuj wniosek",
-    ai: {
-      label: "Autouzupełnianie za pomocą AI",
-      description: "Wklej dane klienta ze stopki e-maila lub dokumentu, aby automatycznie wypełnić formularz.",
-      placeholder: "Wklej tekst tutaj...",
-      button: "Wypełnij z tekstu"
-    },
-    email: {
-      subject: "Wniosek o zatwierdzenie kredytowe dla {customer} od {partner}",
-      multiCountrySubject: "Wniosek o zatwierdzenie kredytowe dla {customer} ({country}) od {partner}",
-      bodyWithAttachment: "Szanowny Zespole Kredytowy,\n\nW załączeniu przesyłam ofertę do weryfikacji i zatwierdzenia.\n\nProjekt: {projectName}\nKlient: {customerName}\n\nDziękuję,\n{partnerName}",
-    },
-    error: {
-      title: "Brakujące informacje",
-      missingFields: "Wypełnij następujące wymagane pola: {fields}"
-    }
-  },
-  cart: {
-    title: "Koszyk",
-    empty: "Twój koszyk jest pusty.",
-    subtotalMonthly: "Suma częściowa (miesięcznie)",
-    proceedToOrder: "Przejdź do zamówienia",
-  },
-  legal: {
-    checkboxLabel: "Przeczytałem i zgadzam się z",
-    termsLink: "Regulaminem",
-    modal: {
-      title: "Regulamin",
-      close: "Zamknij",
-    },
-    terms: {
-      legalDisclaimer: "ZASTRZEŻENIE PRAWNE: Poniższe warunki mają charakter wyłącznie ilustracyjny i nie stanowią porady prawnej. Musisz skonsultować się z wykwalifikowanym prawnikiem w celu sporządzenia warunków odpowiednich dla Twojej konkretnej działalności, jurysdykcji i wymogów prawnych.",
-      lastUpdated: "Ostatnia aktualizacja: {date}",
-      acceptance: {
-        title: "1. Akceptacja warunków",
-        p1: "Logując się i korzystając z tego Portalu wynajmu sprzętu IT ('Usługa'), zgadzasz się na przestrzeganie niniejszych Warunków ('Warunki'). Jeśli nie zgadzasz się na te warunki, nie korzystaj z Usługi."
-      },
-      useOfService: {
-        title: "2. Korzystanie z Usługi",
-        p1: "Usługa jest świadczona w celu pomocy partnerom CHG-MERIDIAN w tworzeniu kalkulacji i ofert dla ich klientów. Zgadzasz się korzystać z Usługi wyłącznie w jej zamierzonym celu i zgodnie z obowiązującymi przepisami prawa."
-      },
-      data: {
-        title: "3. Zarządzanie danymi osobowymi",
-        p1: "Zgodnie z Ogólnym Rozporządzeniem o Ochronie Danych (RODO) i innymi obowiązującymi przepisami o ochronie danych, zobowiązujemy się do ochrony Twojej prywatności. Korzystając z Usługi, potwierdzasz i zgadzasz się, że Twoje dane są bezpiecznie przesyłane i przechowywane w scentralizowanej bazie danych w chmurze.",
-        listTitle: "Dane, które zbieramy:",
-        li1: "Informacje o koncie użytkownika: Twoje imię i nazwisko, adres e-mail, nazwa firmy, numer telefonu i zaszyfrowane informacje o haśle.",
-        li2: "Informacje o ofercie: Nazwy klientów, nazwy projektów i szczegóły tworzonych kalkulacji.",
-        li3: "Historia logowania: Rejestrujemy znaczniki czasu i statusy powodzenia/niepowodzenia prób logowania w celach bezpieczeństwa.",
-        purposeTitle: "Cel zbierania danych:",
-        purposeLi1: "Dostarczanie, utrzymywanie i ulepszanie Usługi.",
-        purposeLi2: "Identyfikacja Ciebie jako użytkownika i zarządzanie Twoim kontem.",
-        purposeLi3: "Umożliwienie tworzenia, zapisywania i zarządzania ofertami wynajmu.",
-        purposeLi4: "Do celów audytu bezpieczeństwa i zapobiegania oszustwom.",
-        storageTitle: "Przechowywanie i bezpieczeństwo danych:",
-        storageLi1: "Twoje dane są przechowywane na bezpiecznych serwerach zarządzanych przez naszego dostawcę bazy danych (Supabase). Podejmujemy rozsądne środki w celu ochrony Twoich informacji przed nieautoryzowanym dostępem, wykorzystaniem lub ujawnieniem.",
-        storageLi2: "Jesteś odpowiedzialny za utrzymanie poufności hasła do swojego konta.",
-        rightsTitle: "Twoje prawa:",
-        rightsLi1: "Masz prawo do żądania dostępu do swoich danych osobowych, ich sprostowania lub usunięcia. Aby skorzystać z tych praw, skontaktuj się z administratorem tego portalu w swojej organizacji."
-      },
-      intellectualProperty: {
-          title: "4. Własność intelektualna",
-          p1: "Usługa i jej oryginalna treść, funkcje i funkcjonalność są i pozostaną wyłączną własnością CHG-MERIDIAN i jej licencjodawców."
-      },
-      disclaimer: {
-          title: "5. Wyłączenie gwarancji",
-          p1: "Usługa jest świadczona 'w stanie, w jakim jest' i 'w miarę dostępności' bez jakichkolwiek gwarancji, wyraźnych lub dorozumianych. Wszystkie kalkulacje są orientacyjne i niewiążące."
-      },
-      liability: {
-          title: "6. Ograniczenie odpowiedzialności",
-          p1: "W żadnym wypadku CHG-MERIDIAN, jej dyrektorzy, pracownicy ani partnerzy nie ponoszą odpowiedzialności za jakiekolwiek szkody pośrednie, przypadkowe, specjalne, wynikowe lub karne wynikające z korzystania z Usługi."
-      },
-      governingLaw: {
-          title: "7. Obowiązujące prawo",
-          p1: "Niniejsze Warunki podlegają prawu jurysdykcji, w której działa CHG-MERIDIAN, bez względu na jej przepisy kolizyjne."
-      },
-      changes: {
-          title: "8. Zmiany w Warunkach",
-          p1: "Zastrzegamy sobie prawo do modyfikacji lub zastąpienia niniejszych Warunków w dowolnym momencie. O wszelkich zmianach poinformujemy, aktualizując datę 'Ostatniej aktualizacji'. Dalsze korzystanie z Usługi po takich zmianach stanowi akceptację nowych Warunków."
-      }
-    }
-  }
 };
 
 const cs = {
@@ -3773,7 +1532,6 @@ const cs = {
       PreConfiguration: "Předkonfigurace (staging)",
       Delivery: "Doručení",
       Support: "Podpora (výměna do 24h)",
-      PackingService: "Balicí služba (konec pronájmu)",
     }
   },
   password: {
@@ -3783,14 +1541,7 @@ const cs = {
     confirmNewPassword: "Potvrďte nové heslo",
     updatePasswordButton: "Aktualizovat heslo a přihlásit se",
     error: {
-      allFieldsRequired: "Všechna pole pro heslo jsou povinná.",
       mismatch: "Nová hesla se neshodují.",
-      incorrectOld: "Zadané staré heslo je nesprávné.",
-      minLength: "Musí mít alespoň 10 znaků.",
-      uppercase: "Musí obsahovat alespoň jedno velké písmeno.",
-      lowercase: "Musí obsahovat alespoň jedno malé písmeno.",
-      number: "Musí obsahovat alespoň jedno číslo.",
-      specialChar: "Musí obsahovat alespoň jeden speciální znak.",
     },
   },
   login: {
@@ -3800,17 +1551,52 @@ const cs = {
     passwordPlaceholder: "Heslo",
     signInButton: "Přihlásit se",
     error: {
-      bothFieldsRequired: "Zadejte prosím e-mail i heslo.",
       invalidCredentials: "Neplatný e-mail nebo heslo. Zkuste to znovu.",
     },
   },
-  calculation: en.calculation,
-  summary: en.summary,
-  dashboard: en.dashboard,
-  lrf: en.lrf,
-  profile: en.profile,
+  calculation: {
+    title: "Vytvořit kalkulaci",
+    option: "Možnost",
+    buttons: {
+      new: "Nová",
+      dashboard: "Nástěnka",
+      saveTemplate: "Uložit jako šablonu",
+      generatePdf: "Generovat PDF",
+      addItemTo: "Přidat položku do {optionName}",
+      requestCreditApproval: "Požádat o schválení úvěru",
+      addOption: "Přidat možnost",
+    },
+    priceView: {
+      label: "Zobrazení ceny",
+      detailed: "Podrobný rozpis",
+      bundled: "Balíčková cena",
+    },
+    customerName: "Jméno zákazníka",
+    customerNamePlaceholder: "Zadejte jméno zákazníka",
+    projectName: "Název projektu",
+    projectNamePlaceholder: "Zadejte název projektu",
+    expectedStartDate: "Očekávané datum zahájení smlouvy",
+    empty: {
+        title: "Tato možnost je prázdná.",
+        description: 'Začněte kliknutím na "Přidat položku".',
+    },
+    table: {
+      asset: "Majetek",
+      details: "Podrobnosti",
+      term: "Doba",
+      qty: "Množství",
+      monthlyCost: "Měsíční náklady",
+      totalCost: "Celkové náklady",
+      actions: "Akce",
+    },
+  },
+  aiSummary: {
+    button: "Generovat souhrn",
+  },
+  lrf: {
+    validUntil: "Ceny platné do: {date}",
+  },
   tco: {
-    ...en.tco,
     industries: {
       Automotive: "Automobilový průmysl",
       Banking: "Bankovnictví",
@@ -3828,11 +1614,6 @@ const cs = {
       Materialsindustry: "Materiálový průmysl",
     },
   },
-  admin: en.admin,
-  pdf: en.pdf,
-  creditModal: en.creditModal,
-  cart: en.cart,
-  legal: en.legal,
 };
 
 export const translations = {

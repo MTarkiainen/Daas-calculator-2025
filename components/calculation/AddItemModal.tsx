@@ -52,6 +52,8 @@ const initialFormState: Omit<CalculationItem, 'id'> = {
   quantity: 1,
   nonReturnPercentage: 0,
   customDescription: '',
+// FIX: Added missing 'packingServiceApplied' property to align with the CalculationItem type.
+  packingServiceApplied: false,
 };
 
 const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAddItem }) => {

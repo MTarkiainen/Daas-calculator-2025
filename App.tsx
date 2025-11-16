@@ -177,16 +177,6 @@ const App: React.FC = () => {
   const { t, language } = useLanguage();
 
   const createNewQuote = (): Quote => {
-    let defaultCurrency = 'EUR';
-    if (currentProfile?.country) {
-      defaultCurrency = COUNTRY_CURRENCY_MAP[currentProfile.country] || 'EUR';
-    } else {
-      const countryCode = LANGUAGE_TO_COUNTRY_MAP[language.code];
-      if (countryCode) {
-        defaultCurrency = COUNTRY_CURRENCY_MAP[countryCode] || 'EUR';
-      }
-    }
-
     return {
       id: uuidv4(),
       customerName: '',
@@ -196,7 +186,7 @@ const App: React.FC = () => {
       status: QuoteStatus.Draft,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      currency: defaultCurrency,
+      currency: 'EUR', // Always default to EUR
       countrySpecificDetails: {},
     };
   };
@@ -348,7 +338,7 @@ const App: React.FC = () => {
         setBrandingSettings({ appLogoBase64: settings?.appLogoBase64 || null });
       }
   }
-  
+
   // Functions to update data in Supabase
   const handleQuoteSave = async (quoteToSave: Quote) => {
     if (!currentProfile) return;

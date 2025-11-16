@@ -24,6 +24,10 @@ import SegmentedControl from '../ui/SegmentedControl';
 import CreditRequestModal from './CreditRequestModal';
 import CheckCircleIcon from '../ui/icons/CheckCircleIcon';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { calculateTco, getLeaseRateFactor } from '../../utils/calculationUtils';
+import AiSummaryModal from '../ai/AiSummaryModal';
+import SparklesIcon from '../ui/icons/SparklesIcon';
+import { GoogleGenAI } from '@google/genai';
 
 const getKeyByValue = (object: object, value: string) => {
   return Object.keys(object).find(key => object[key] === value);
@@ -217,59 +221,6 @@ const EditItemModal: React.FC<{isOpen: boolean; onClose: () => void; onUpdateIte
 };
 
 
-// HELPERS
-export const getLeaseRateFactor = (
-  factors: LeaseRateFactorsMap, 
-  item: Pick<CalculationItem, 'assetType' | 'operatingSystem' | 'leaseTerm' | 'condition' | 'nonReturnPercentage' | 'brand'>,
-  nonReturnUpliftFactor: number,
-  partnerCommission: number = 0
-): number => {
-  const { assetType, operatingSystem, brand, leaseTerm, condition, nonReturnPercentage } = item;
-  
-  let baseLrf = 0;
-  if (condition === Condition.Used) {
-    baseLrf = factors[USED_ASSET_LRF_KEY]?.[leaseTerm] || 0;
-  } else if (assetType === AssetType.Mobile) {
-    // Mobile Hierarchy: AssetType -> OS
-    const keysToTry: string[] = [];
-    if (operatingSystem) keysToTry.push(`${assetType}-${operatingSystem}`);
-    keysToTry.push(assetType);
-    for (const key of keysToTry) {
-        if (factors[key]?.[leaseTerm] !== undefined) {
-            baseLrf = factors[key][leaseTerm]!;
-            break;
-        }
-    }
-  } else {
-    // Default Hierarchy: AssetType -> Brand -> OS
-    const keysToTry: string[] = [];
-    if (brand && operatingSystem) keysToTry.push(`${assetType}-${brand}-${operatingSystem}`);
-    if (brand) keysToTry.push(`${assetType}-${brand}`);
-    keysToTry.push(assetType);
-
-    for (const key of keysToTry) {
-      if (factors[key]?.[leaseTerm] !== undefined) {
-        baseLrf = factors[key][leaseTerm]!;
-        break;
-      }
-    }
-  }
-  
-  let finalLrf = baseLrf;
-
-  const nonReturnApplicableAssets: AssetType[] = [AssetType.Laptop, AssetType.Mobile, AssetType.Tablet];
-  if (nonReturnApplicableAssets.includes(assetType) && nonReturnPercentage && nonReturnPercentage > 0) {
-    const totalUpliftMultiplier = nonReturnUpliftFactor * nonReturnPercentage;
-    finalLrf = finalLrf * (1 + totalUpliftMultiplier);
-  }
-  
-  if (partnerCommission > 0) {
-    const commissionFactor = (partnerCommission / 100) / leaseTerm;
-    finalLrf += commissionFactor;
-  }
-
-  return finalLrf;
-};
 
 // PROPS
 interface CalculationSheetProps {
@@ -305,6 +256,10 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
   const [templateName, setTemplateName] = useState('');
   const [priceViewMode, setPriceViewMode] = useState<PriceViewMode>('detailed');
 
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+  const [aiSummary, setAiSummary] = useState('');
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+
   useEffect(() => { if (quote.options.length > 0 && !quote.options.find(o => o.id === activeOptionId)) setActiveOptionId(quote.options[0].id); }, [quote, activeOptionId]);
   
   const activeOption = quote.options.find(o => o.id === activeOptionId);
@@ -319,6 +274,7 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
     const newItem: CalculationItem = { ...item, id: uuidv4() };
     updateOption(activeOption.id, [...activeOption.items, newItem]);
   };
+
   const removeItem = (id: string) => activeOption && updateOption(activeOption.id, activeOption.items.filter(i => i.id !== id));
   const duplicateItem = (id: string) => {
     if (!activeOption) return;
@@ -458,6 +414,33 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
     
     const partnerCommission = currentUser.role === UserRole.Partner ? currentUser.commissionPercentage || 0 : 0;
     let allIncludedServices = new Set<AdditionalService | 'Other'>();
+    let isPackingServiceUsed = false;
+    const serviceSummary: Record<string, { totalCost: number }> = {};
+    
+    // Aggregate service data from all items across all options for summary
+    quoteForPdf.options.forEach(option => {
+        option.items.forEach(item => {
+            if (item.packingServiceApplied) {
+                isPackingServiceUsed = true;
+                const serviceName = t('calculation.packingService');
+                if (!serviceSummary[serviceName]) serviceSummary[serviceName] = { totalCost: 0 };
+                serviceSummary[serviceName].totalCost += (lrfData.packingServiceCost || 0) * item.quantity;
+            }
+            item.additionalServices.forEach(s => {
+                allIncludedServices.add(s.service);
+                // FIX: Explicitly typed `serviceName` to `string` to accommodate translated or custom service names.
+                let serviceName: string = s.service;
+                if (s.service === 'Other' && s.description) {
+                    serviceName = s.description;
+                } else if (s.service !== 'Other') {
+                    const serviceEnumKey = getKeyByValue(AdditionalService, s.service) as keyof typeof AdditionalService;
+                    serviceName = t(`enums.AdditionalService.${serviceEnumKey}`, { defaultValue: s.service });
+                }
+                if (!serviceSummary[serviceName]) serviceSummary[serviceName] = { totalCost: 0 };
+                serviceSummary[serviceName].totalCost += s.cost * item.quantity;
+            });
+        });
+    });
     
     quoteForPdf.options.forEach((option) => {
         if (option.items.length === 0) return;
@@ -479,11 +462,13 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
         let optionTotalLease = 0;
 
         const body = option.items.map(item => {
-            item.additionalServices.forEach(s => allIncludedServices.add(s.service));
-
             const leaseRateFactor = getLeaseRateFactor(lrfData.factors, item, lrfData.nonReturnUpliftFactor || 0.008, partnerCommission);
             const monthlyHardwareCostPerUnit = item.hardwareCost * leaseRateFactor;
-            const totalServicesCostPerUnit = item.additionalServices.reduce((sum, service) => sum + service.cost, 0);
+            
+            let totalServicesCostPerUnit = item.additionalServices.reduce((sum, service) => sum + service.cost, 0);
+            if (item.packingServiceApplied) {
+                totalServicesCostPerUnit += lrfData.packingServiceCost || 0;
+            }
             
             // Detailed
             const totalMonthlyCost = monthlyHardwareCostPerUnit * item.quantity;
@@ -502,9 +487,26 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
             const assetDesc = `${item.assetType}${item.customDescription ? `\n(${item.customDescription})` : ''}`;
             let details = `${item.brand}\n${item.condition}, ${item.operatingSystem || 'N/A'}`;
             if ((item.nonReturnPercentage || 0) > 0) details += `\n${t('calculation.table.nonReturn')}`;
-            if (item.additionalServices.length > 0) {
-                const servicesList = item.additionalServices.map(s => {
-                    const name = s.service === 'Other' ? (s.description || 'Other') : t(`enums.AdditionalService.${s.service}`);
+            
+            const servicesToDisplayInPdf: (ServiceSelection | { service: string, cost: number, description?: string })[] = [...item.additionalServices];
+            if (item.packingServiceApplied) {
+                servicesToDisplayInPdf.push({
+                    service: t('calculation.packingService'),
+                    cost: lrfData.packingServiceCost || 0,
+                });
+            }
+
+            if (servicesToDisplayInPdf.length > 0) {
+                const servicesList = servicesToDisplayInPdf.map(s => {
+                    let name = s.service;
+                    if (s.service !== t('calculation.packingService')) { // Avoid re-translating packing service
+                        if (s.service === 'Other' && s.description) {
+                            name = s.description;
+                        } else {
+                            const serviceEnumKey = getKeyByValue(AdditionalService, s.service as AdditionalService) as keyof typeof AdditionalService;
+                            name = t(`enums.AdditionalService.${serviceEnumKey}`, { defaultValue: s.service });
+                        }
+                    }
                     const cost = priceViewMode === 'detailed' ? `: ${formatPdfCurrency(s.cost)}` : '';
                     return `${name}${cost}`;
                 }).join('\n');
@@ -521,13 +523,27 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
             ];
         });
 
+        const subtotalTitle = priceViewMode === 'detailed' ? t('pdf.subtotalFor') : t('pdf.subtotalBundledFor');
+
         autoTable(doc, {
             startY: finalY,
             head: head,
             body: body,
+            foot: [[
+                { content: `${subtotalTitle} ${option.name}:`, colSpan: 4, styles: { halign: 'left' } },
+                { content: formatPdfCurrency(optionTotalMonthly), styles: { halign: 'right' } },
+                { content: formatPdfCurrency(optionTotalLease), styles: { halign: 'right' } }
+            ]],
             theme: 'grid',
             headStyles: { fillColor: [8, 5, 147] },
             styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' },
+            footStyles: {
+                fontStyle: 'bold',
+                fontSize: 9,
+                cellPadding: 2,
+                fillColor: [255, 255, 255],
+                textColor: [40, 40, 40],
+            },
             columnStyles: {
                 0: { cellWidth: 35 }, 1: { cellWidth: 50 },
                 3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'right' },
@@ -535,33 +551,45 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
             ...pageFooterOptions,
         });
 
-        finalY = (doc as any).lastAutoTable.finalY;
-
-        const subtotalTitle = priceViewMode === 'detailed' ? t('pdf.subtotalFor') : t('pdf.subtotalBundledFor');
-        const summaryBody = [
-            [{ content: `${subtotalTitle} ${option.name}:`, colSpan: 2, styles: { halign: 'right', fontStyle: 'bold' } },
-            formatPdfCurrency(optionTotalMonthly), formatPdfCurrency(optionTotalLease)]
-        ];
-
-        autoTable(doc, {
-            startY: finalY,
-            body: summaryBody,
-            theme: 'plain',
-            styles: { fontSize: 9, fontStyle: 'bold' },
-            columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right' } },
-            ...pageFooterOptions
-        });
-
         finalY = (doc as any).lastAutoTable.finalY + 10;
     });
 
-    if (allIncludedServices.size > 0) {
+    const serviceSummaryEntries = Object.entries(serviceSummary);
+    if (priceViewMode === 'detailed' && serviceSummaryEntries.length > 0) {
+        if (finalY > 230) { doc.addPage(); pageHeader(); finalY = 40; }
+        doc.setFontSize(14).text(t('pdf.serviceSummary.title'), 14, finalY);
+        finalY += 8;
+        const summaryBody = serviceSummaryEntries.map(([name, data]) => [name, formatPdfCurrency(data.totalCost)]);
+        autoTable(doc, {
+            startY: finalY,
+            head: [[t('pdf.serviceSummary.service'), t('pdf.serviceSummary.totalCost')]],
+            body: summaryBody,
+            theme: 'striped',
+            styles: { fontSize: 9 },
+            headStyles: { fillColor: [230, 230, 230], textColor: 20 },
+            columnStyles: { 0: { fontStyle: 'bold', cellWidth: 'auto' }, 1: { halign: 'right' } },
+            ...pageFooterOptions
+        });
+        finalY = (doc as any).lastAutoTable.finalY + 10;
+    }
+
+    // FIX: Correct type inference issue by explicitly typing the array and removing 'as any' casts.
+    const servicesForDescription: Array<AdditionalService | 'Other' | 'PackingService_KEY'> = Array.from(allIncludedServices);
+    if (isPackingServiceUsed) {
+        // Use a unique key to avoid conflicts with 'Other'
+        servicesForDescription.push('PackingService_KEY');
+    }
+
+    if (servicesForDescription.length > 0) {
         if (finalY > 230) { doc.addPage(); pageHeader(); finalY = 40; }
         doc.setFontSize(14).text(t('pdf.serviceDescriptions.title'), 14, finalY);
         finalY += 8;
-        const serviceBody = Array.from(allIncludedServices).map(serviceValue => {
+        const serviceBody = servicesForDescription.map(serviceValue => {
             if (serviceValue === 'Other') {
                 return ['Other', t('pdf.serviceDescriptions.Other')];
+            }
+            if (serviceValue === 'PackingService_KEY') {
+                return [t('calculation.packingService'), t('pdf.serviceDescriptions.PackingService')];
             }
             const serviceEnumKey = getKeyByValue(AdditionalService, serviceValue) as keyof typeof AdditionalService;
             if (serviceEnumKey) {
@@ -579,7 +607,95 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
         finalY = (doc as any).lastAutoTable.finalY + 10;
     }
 
+    // Standard Included Services Section
+    if (finalY > 230) { doc.addPage(); pageHeader(); finalY = 40; }
+    doc.setFontSize(14).text(t('pdf.standardServices.title'), 14, finalY);
+    finalY += 8;
+    const standardServicesBody = [
+        [t('pdf.standardServices.invoice.title'), t('pdf.standardServices.invoice.desc')],
+        [t('pdf.standardServices.tesma.title'), t('pdf.standardServices.tesma.desc')],
+        [t('pdf.standardServices.eol.title'), t('pdf.standardServices.eol.desc')],
+    ];
+    autoTable(doc, {
+        startY: finalY, 
+        body: standardServicesBody, 
+        theme: 'striped', 
+        styles: { fontSize: 9 },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 50 } },
+        ...pageFooterOptions
+    });
+    finalY = (doc as any).lastAutoTable.finalY + 10;
+
     doc.save(`${t('pdf.fileName')}-${quoteForPdf.customerName || 'draft'}.pdf`);
+  };
+
+  const handleGenerateSummary = async () => {
+    if (quote.options.every(o => o.items.length === 0)) {
+        alert("Please add items to the quote before generating a summary.");
+        return;
+    }
+    setIsSummaryModalOpen(true);
+    setIsGeneratingSummary(true);
+    setAiSummary('');
+
+    try {
+        const tcoResults = calculateTco(quote, lrfData, tcoSettings, currentUser);
+        
+        const optionsSummary = quote.options.map(opt => {
+            const totalItems = opt.items.reduce((sum, item) => sum + item.quantity, 0);
+            const totalValue = opt.items.reduce((sum, item) => sum + item.hardwareCost * item.quantity, 0);
+            return `- ${opt.name}: ${totalItems} devices, total hardware value ${totalValue.toFixed(2)} ${quote.currency}.`;
+        }).join('\n');
+
+        let prompt = `You are a professional sales assistant for an IT leasing company. Your task is to generate a concise, compelling executive summary for a customer proposal based on the following quote details. The summary should be well-written, professional, and highlight the key value propositions.
+
+        **Customer:** ${quote.customerName || 'Not specified'}
+        **Project:** ${quote.projectName || 'Not specified'}
+        **Quote Options Summary:**
+        ${optionsSummary}
+        `;
+
+        if (tcoResults) {
+            prompt += `
+            **TCO Analysis Results:**
+            - By leasing instead of purchasing, the customer can achieve a potential saving of ${tcoResults.absoluteSavings.toFixed(2)} ${quote.currency}.
+            - This represents a ${ (tcoResults.savingsPercentage * 100).toFixed(1) }% reduction in the Total Cost of Ownership over the average lease term of ${tcoResults.weightedAvgTermMonths.toFixed(1)} months.
+            
+            **Instructions:**
+            1.  Start with a polite opening addressing the customer.
+            2.  Briefly summarize the proposed options.
+            3.  Emphasize the financial benefits, especially the TCO savings. Frame it as a strategic advantage (e.g., preserving capital, predictable costs).
+            4.  Mention the benefits of the included services (e.g., simplified management, minimized downtime).
+            5.  End with a professional closing statement, encouraging the next step (e.g., a follow-up discussion).
+            6.  The tone should be confident, professional, and customer-focused.
+            7.  Do not include placeholders like "[Your Name]". The summary should be ready to be copied and pasted directly into an email body or a proposal document.
+            `;
+        } else {
+             prompt += `
+            **Instructions:**
+            1.  Start with a polite opening addressing the customer.
+            2.  Briefly summarize the proposed options.
+            3.  Mention the benefits of the included services (e.g., simplified management, predictable operational expenses).
+            4.  End with a professional closing statement, encouraging the next step (e.g., a follow-up discussion).
+            5.  The tone should be confident, professional, and customer-focused.
+            6.  Do not include placeholders like "[Your Name]". The summary should be ready to be copied and pasted directly into an email body or a proposal document.
+            `;
+        }
+
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
+
+        setAiSummary(response.text);
+
+    } catch (error) {
+        console.error("Error generating AI summary:", error);
+        setAiSummary("Sorry, an error occurred while generating the summary. Please check your API key and try again.");
+    } finally {
+        setIsGeneratingSummary(false);
+    }
   };
 
   const partnerCommission = isPartner ? currentUser.commissionPercentage || 0 : 0;
@@ -598,6 +714,7 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
                     <Button variant="secondary" onClick={() => setIsDashboardOpen(true)} leftIcon={<FolderOpenIcon />}>{t('calculation.buttons.dashboard')}</Button>
                     <Button variant="secondary" onClick={() => setIsTemplateModalOpen(true)} leftIcon={<SaveIcon />} disabled={!activeOption || activeOption.items.length === 0}>{t('calculation.buttons.saveTemplate')}</Button>
                     <Button variant="secondary" onClick={() => generateQuotePdf(quote)} leftIcon={<DocumentDownloadIcon />}>{t('calculation.buttons.generatePdf')}</Button>
+                    <Button onClick={handleGenerateSummary} variant="secondary" leftIcon={<SparklesIcon />}>{t('aiSummary.button')}</Button>
                     {isPartner && (
                         <div title={!quote.customerName || quote.options.every(o => o.items.length === 0) ? t('creditRequestPartnerDisabledTooltip') : ''}>
                              <Button 
@@ -638,14 +755,14 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
             )}
           </div>
         ))}
-        <Button size="sm" variant="secondary" onClick={addOption} leftIcon={<PlusIcon />}>Add Option</Button>
+        <Button size="sm" variant="secondary" onClick={addOption} leftIcon={<PlusIcon />}>{t('calculation.buttons.addOption')}</Button>
       </div>
       
       {/* Active Option Content */}
       <div className="bg-white p-6 rounded-xl shadow-md">
          {activeOption && (
             <div>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex flex-wrap gap-4 justify-between items-center mb-4">
                   <SegmentedControl
                       label={t('calculation.priceView.label')}
                       options={[
@@ -655,7 +772,9 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
                       value={priceViewMode}
                       onChange={(val) => setPriceViewMode(val as PriceViewMode)}
                   />
-                  <Button onClick={() => setIsWizardOpen(true)} leftIcon={<PlusIcon />}>{t('calculation.buttons.addItemTo', {optionName: activeOption.name})}</Button>
+                  <div className="flex items-center gap-2">
+                    <Button onClick={() => setIsWizardOpen(true)} leftIcon={<PlusIcon />}>{t('calculation.buttons.addItemTo', {optionName: activeOption.name})}</Button>
+                  </div>
               </div>
 
               {activeOption.items.length > 0 ? (
@@ -684,6 +803,7 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
                                     onDuplicate={duplicateItem}
                                     priceViewMode={priceViewMode}
                                     currency={quote.currency || 'EUR'}
+                                    packingServiceCost={lrfData.packingServiceCost || 0}
                                 />
                             ))}
                         </tbody>
@@ -694,11 +814,16 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
                           const factor = getLeaseRateFactor(lrfData.factors, item, lrfData.nonReturnUpliftFactor || 0.008, partnerCommission);
                           const monthlyHardwareCost = item.hardwareCost * factor;
                           const totalMonthly = monthlyHardwareCost * item.quantity;
-                          const totalServices = item.additionalServices.reduce((s, serv) => s + serv.cost, 0) * item.quantity;
+                          
+                          let totalServices = item.additionalServices.reduce((s, serv) => s + serv.cost, 0) * item.quantity;
+                          if (item.packingServiceApplied) {
+                              totalServices += (lrfData.packingServiceCost || 0) * item.quantity;
+                          }
+
                           const totalLease = (monthlyHardwareCost * item.leaseTerm) * item.quantity + totalServices;
 
-                          const monthlyServices = totalServices / item.leaseTerm;
-                          const bundledMonthly = (monthlyHardwareCost * item.quantity) + monthlyServices;
+                          const monthlyServices = item.leaseTerm > 0 ? totalServices / item.leaseTerm : 0;
+                          const bundledMonthly = totalMonthly + monthlyServices;
 
                           acc.totalHardwareCost += item.hardwareCost * item.quantity;
                           acc.totalServicesCost += totalServices;
@@ -727,6 +852,12 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
         <p className="text-xs text-slate-500 text-center mt-4">(*) {t('calculation.disclaimer')}</p>
 
         {/* Modals */}
+        <AiSummaryModal 
+            isOpen={isSummaryModalOpen}
+            onClose={() => setIsSummaryModalOpen(false)}
+            summaryText={aiSummary}
+            isLoading={isGeneratingSummary}
+        />
         <CalculationWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} onAddItem={addItem} currency={quote.currency || 'EUR'} />
         {itemToEdit && (
             <EditItemModal 

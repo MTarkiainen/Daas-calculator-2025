@@ -1,7 +1,8 @@
 
+
 import React from 'react';
 import { CartItem, Quote, LeaseRateFactorsData, CalculationItem, Profile, UserRole } from '../../types';
-import { getLeaseRateFactor } from '../calculation/CalculationSheet';
+import { getLeaseRateFactor } from '../../utils/calculationUtils';
 import TrashIcon from '../ui/icons/TrashIcon';
 import { Button } from '../ui/Button';
 

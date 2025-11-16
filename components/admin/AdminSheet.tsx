@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 import { Profile, LeaseRateFactorsData, LoginAttempt, BrandingSettings, Quote, WorkflowSettings, ActivityLogEntry } from '../../types';
 import UserManagement from './UserManagement';
@@ -34,7 +35,7 @@ const AdminSheet: React.FC<AdminSheetProps> = ({
   brandingSettings, setBrandingSettings, 
   savedQuotes,
   workflowSettings, setWorkflowSettings,
-  activityLog
+  activityLog,
 }) => {
   return (
     <div className="space-y-8">
