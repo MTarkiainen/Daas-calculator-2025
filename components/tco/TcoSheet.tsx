@@ -1,5 +1,3 @@
-
-
 import React, { useMemo, useState } from 'react';
 import { Quote, TcoSettings, LeaseRateFactorsData, Profile, UserRole, TcoSuggestion, AssetType } from '../../types';
 import { INDUSTRIES_WACC } from '../../constants';
@@ -50,9 +48,17 @@ const TcoSheet: React.FC<TcoSheetProps> = ({ quote, lrfData, tcoSettings, setTco
     const handleTuneAssumptions = async () => {
         setIsTuning(true);
         try {
+            const apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
+            if (!apiKey) {
+                alert("AI features are disabled. Please configure your Gemini API key in the .env file.");
+                setIsTuning(false);
+                return;
+            }
+
             const allItems = quote.options.flatMap(o => o.items);
             if (allItems.length === 0) {
                 alert("Please add items to the quote before tuning assumptions.");
+                setIsTuning(false);
                 return;
             }
 
@@ -74,7 +80,7 @@ const TcoSheet: React.FC<TcoSheetProps> = ({ quote, lrfData, tcoSettings, setTco
             
             For each parameter you suggest changing, provide a brief, data-driven reasoning. Focus on how the industry and device mix might influence costs. If a current value seems reasonable, you don't need to suggest a change for it. Return your suggestions in the specified JSON format.`;
 
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+            const ai = new GoogleGenAI({ apiKey });
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash',
                 contents: prompt,

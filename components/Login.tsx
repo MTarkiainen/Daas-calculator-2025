@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
@@ -8,6 +7,7 @@ import { supabase } from '../supabaseClient';
 import PasswordInput from './ui/PasswordInput';
 import CompanyLogo from './ui/icons/CompanyLogo';
 import { useLanguage } from '../i18n/LanguageContext';
+import PasswordResetModal from './auth/PasswordResetModal';
 
 interface LoginProps {
   brandingSettings: BrandingSettings;
@@ -20,6 +20,7 @@ const Login: React.FC<LoginProps> = ({ brandingSettings }) => {
   const [loading, setLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,16 +68,27 @@ const Login: React.FC<LoginProps> = ({ brandingSettings }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <PasswordInput
-                label={t('login.passwordPlaceholder')}
-                id="password"
-                name="password"
-                autoComplete="current-password"
-                required
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div>
+                <PasswordInput
+                    label={t('login.passwordPlaceholder')}
+                    id="password"
+                    name="password"
+                    autoComplete="current-password"
+                    required
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                 <div className="text-right mt-2">
+                    <button
+                        type="button"
+                        onClick={() => setIsResetModalOpen(true)}
+                        className="text-sm font-medium text-chg-active-blue hover:text-brand-500 underline rounded-md px-1 py-0.5 hover:bg-blue-50 transition-colors"
+                    >
+                        {t('login.forgotPassword')}
+                    </button>
+                </div>
+              </div>
             </div>
 
             <div className="flex items-start">
@@ -123,6 +135,7 @@ const Login: React.FC<LoginProps> = ({ brandingSettings }) => {
         </div>
       </div>
       <TermsModal isOpen={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
+      <PasswordResetModal isOpen={isResetModalOpen} onClose={() => setIsResetModalOpen(false)} />
     </>
   );
 };

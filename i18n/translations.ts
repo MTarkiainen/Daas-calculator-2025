@@ -6,6 +6,11 @@ const en = {
     myProfile: "My Profile",
     logout: "Logout",
     copyright: "© {year} CHG-MERIDIAN. All rights reserved.",
+    error: {
+      profileMissing: "Your user profile is missing or corrupted. Please contact an administrator.",
+      sessionExpired: "Your session has expired. Please log in again to create a user.",
+      sessionRestoreFailed: "Could not restore your session after creating the user. Please log in again.",
+    }
   },
   tabs: {
     calculator: "Calculator",
@@ -37,6 +42,36 @@ const en = {
     close: "Close"
   },
   enums: {
+    AssetType: {
+      Laptop: "Laptop",
+      Mobile: "Mobile",
+      Tablet: "Tablet",
+      Desktop: "Desktop",
+      OtherIT: "Other IT",
+      Accessory: "Accessory",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Other",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Other",
+    },
+    Condition: {
+      New: "New",
+      Used: "Used",
+    },
     AdditionalService: {
       Deployment: "Deployment",
       PreConfiguration: "Pre-configuration (staging)",
@@ -67,6 +102,15 @@ const en = {
     emailPlaceholder: "Email address",
     passwordPlaceholder: "Password",
     signInButton: "Sign in",
+    forgotPassword: "Forgot your password?",
+    resetModal: {
+      title: "Reset Password",
+      instructions: "Enter your email address and we will send you a link to reset your password.",
+      emailLabel: "Email Address",
+      sendButton: "Send Reset Link",
+      success: "Check your email for a password reset link.",
+      error: "An error occurred. Please try again or contact an administrator.",
+    },
     error: {
       bothFieldsRequired: "Please enter both email and password.",
       invalidCredentials: "Invalid email or password. Please try again.",
@@ -214,6 +258,35 @@ const en = {
     copyButton: "Copy to Clipboard",
     copied: "Copied!",
   },
+  aiPrompt: {
+    summary: {
+      persona: "You are a professional sales assistant for an IT leasing company.",
+      task: "Your task is to generate a concise, compelling executive summary for a customer proposal based on the following quote details. The summary should be well-written, professional, and highlight the key value propositions.",
+      customer: "Customer",
+      project: "Project",
+      notSpecified: "Not specified",
+      optionsSummary: "Quote Options Summary",
+      tcoResults: "TCO Analysis Results",
+      tcoSavingDetail: "By leasing instead of purchasing, the customer can achieve a potential saving of {amount} {currency}.",
+      tcoPercentageDetail: "This represents a {percent}% reduction in the Total Cost of Ownership over the average lease term of {term} months.",
+      instructionsTitle: "Instructions",
+      instruction1: "Start with a polite opening addressing the customer.",
+      instruction2: "Briefly summarize the proposed options.",
+      instruction3WithTco: "Emphasize the financial benefits, especially the TCO savings. Frame it as a strategic advantage (e.g., preserving capital, predictable costs).",
+      instruction3WithoutTco: "Mention the benefits of the included services (e.g., simplified management, predictable operational expenses).",
+      instruction4WithTco: "Mention the benefits of the included services (e.g., simplified management, minimized downtime).",
+      instruction5: "End with a professional closing statement, encouraging the next step (e.g., a follow-up discussion).",
+      instruction6: "The tone should be confident, professional, and customer-focused.",
+      instruction7: "Do not include placeholders like \"[Your Name]\". The summary should be ready to be copied and pasted directly into an email body or a proposal document.",
+      languageInstruction: "VERY IMPORTANT: The entire response must be in the following language: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "You are a helpful and friendly AI assistant for the 'IT Hardware Rental Portal'.",
+      appDescription: "This application helps IT hardware rental partners create calculations and offers for their customers. It has three main sections: 1. Calculator: To build quotes with different hardware, services, and lease terms. 2. TCO Analysis: To compare the total cost of ownership of leasing versus buying hardware. 3. Admin Panel: For managing users, lease rate factors, and other settings.",
+      goal: "Your goal is to answer user questions about how to use the application, explain financial terms like TCO and WACC, and provide general assistance. Be concise and clear in your answers.",
+      languageInstruction: "Always respond in the user's selected language: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     expiredOn: "Rates Expired on: {date}",
     validUntil: "Rates valid until: {date}",
@@ -284,12 +357,6 @@ const en = {
     breakdown: {
       title: "Detailed Cost Breakdown",
       averageLeaseTerm: "Average Lease Term (Value-Weighted)",
-    },
-    liabilityChart: {
-      title: "Leasing Liability Schedule",
-      description: "Forecast of quarterly lease payments, invoiced in advance.",
-      quarterLabel: "Q{q}",
-      yAxisLabel: "Payment Amount",
     },
     table: {
       category: "Cost Category",
@@ -388,6 +455,7 @@ const en = {
         profileSavedButResetFailed: "Profile saved, but failed to send password reset email",
         createUserFailed: "Failed to create user",
         createProfileFailed: "User auth record created, but profile creation failed. Please fix manually.",
+        createUserRollback: "Failed to create user profile. The user has been removed. Please try again.",
       },
       success: {
         profileSavedAndResetSent: "Profile saved. A password reset link has been sent to {email}.",
@@ -695,6 +763,11 @@ const de = {
     myProfile: "Mein Profil",
     logout: "Abmelden",
     copyright: "© {year} CHG-MERIDIAN. Alle Rechte vorbehalten.",
+    error: {
+      profileMissing: "Ihr Benutzerprofil fehlt oder ist beschädigt. Bitte kontaktieren Sie einen Administrator.",
+      sessionExpired: "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um einen Benutzer zu erstellen.",
+      sessionRestoreFailed: "Ihre Sitzung konnte nach dem Erstellen des Benutzers nicht wiederhergestellt werden. Bitte melden Sie sich erneut an.",
+    }
   },
   tabs: {
     calculator: "Rechner",
@@ -726,6 +799,36 @@ const de = {
     close: "Schließen"
   },
   enums: {
+    AssetType: {
+      Laptop: "Laptop",
+      Mobile: "Mobilgerät",
+      Tablet: "Tablet",
+      Desktop: "Desktop",
+      OtherIT: "Sonstige IT",
+      Accessory: "Zubehör",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Sonstige",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Sonstige",
+    },
+    Condition: {
+      New: "Neu",
+      Used: "Gebraucht",
+    },
     AdditionalService: {
       Deployment: "Deployment",
       PreConfiguration: "Vorkonfiguration (Staging)",
@@ -749,6 +852,15 @@ const de = {
     emailPlaceholder: "Email-Adresse",
     passwordPlaceholder: "Passwort",
     signInButton: "Anmelden",
+    forgotPassword: "Passwort vergessen?",
+    resetModal: {
+      title: "Passwort zurücksetzen",
+      instructions: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+      emailLabel: "E-Mail-Addresse",
+      sendButton: "Link zum Zurücksetzen senden",
+      success: "Überprüfen Sie Ihre E-Mails auf einen Link zum Zurücksetzen des Passworts.",
+      error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut oder wenden Sie sich an einen Administrator.",
+    },
     error: {
       invalidCredentials: "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
     },
@@ -789,16 +901,126 @@ const de = {
       qty: "Menge",
       monthlyCost: "Monatl. Kosten",
       totalCost: "Gesamtkosten",
+      monthlyBundled: "Monatl. Paketpreis",
+      totalBundled: "Gesamtpaketpreis",
       actions: "Aktionen",
+      os: "Betriebssystem",
+      condition: "Zustand",
+      country: "Land",
+      nonReturn: "Keine Rückgabe",
+      servicesLabel: "Dienstleistungen (einmalig)",
+      unit: "Einheit",
     },
   },
   aiSummary: {
     button: "Zusammenfassung erstellen",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Sie sind ein professioneller Vertriebsassistent für ein IT-Leasingunternehmen.",
+      task: "Ihre Aufgabe ist es, eine prägnante, überzeugende Zusammenfassung für ein Kundenangebot auf der Grundlage der folgenden Angebotsdetails zu erstellen. Die Zusammenfassung sollte gut geschrieben, professionell und die wichtigsten Wertversprechen hervorheben.",
+      customer: "Kunde",
+      project: "Projekt",
+      notSpecified: "Nicht angegeben",
+      optionsSummary: "Zusammenfassung der Angebotsoptionen",
+      tcoResults: "Ergebnisse der TCO-Analyse",
+      tcoSavingDetail: "Durch Leasing anstelle von Kauf kann der Kunde potenzielle Einsparungen von {amount} {currency} erzielen.",
+      tcoPercentageDetail: "Dies entspricht einer Reduzierung der Gesamtbetriebskosten um {percent}% über die durchschnittliche Leasingdauer von {term} Monaten.",
+      instructionsTitle: "Anweisungen",
+      instruction1: "Beginnen Sie mit einer höflichen Eröffnung, die sich an den Kunden richtet.",
+      instruction2: "Fassen Sie die vorgeschlagenen Optionen kurz zusammen.",
+      instruction3WithTco: "Betonen Sie die finanziellen Vorteile, insbesondere die TCO-Einsparungen. Stellen Sie es als strategischen Vorteil dar (z. B. Kapitalerhaltung, vorhersehbare Kosten).",
+      instruction3WithoutTco: "Erwähnen Sie die Vorteile der enthaltenen Dienstleistungen (z. B. vereinfachte Verwaltung, vorhersehbare Betriebskosten).",
+      instruction4WithTco: "Erwähnen Sie die Vorteile der enthaltenen Dienstleistungen (z. B. vereinfachte Verwaltung, minimierte Ausfallzeiten).",
+      instruction5: "Beenden Sie mit einer professionellen Abschlusserklärung, die zum nächsten Schritt ermutigt (z. B. ein Folgegespräch).",
+      instruction6: "Der Ton sollte selbstbewusst, professionell und kundenorientiert sein.",
+      instruction7: "Verwenden Sie keine Platzhalter wie \"[Ihr Name]\". Die Zusammenfassung sollte bereit sein, direkt in den Text einer E-Mail oder eines Angebotsdokuments kopiert und eingefügt zu werden.",
+      languageInstruction: "SEHR WICHTIG: Die gesamte Antwort muss in der folgenden Sprache verfasst sein: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Sie sind ein hilfreicher und freundlicher KI-Assistent für das 'IT-Hardware-Mietportal'.",
+      appDescription: "Diese Anwendung hilft Partnern von IT-Hardware-Vermietservices bei der Erstellung von Kalkulationen und Angeboten für ihre Kunden. Sie hat drei Hauptbereiche: 1. Rechner: Zum Erstellen von Angeboten mit verschiedener Hardware, Dienstleistungen und Leasingbedingungen. 2. TCO-Analyse: Zum Vergleich der Gesamtbetriebskosten von Leasing gegenüber Kauf von Hardware. 3. Admin-Panel: Zur Verwaltung von Benutzern, Leasingraten-Faktoren und anderen Einstellungen.",
+      goal: "Ihr Ziel ist es, Benutzerfragen zur Anwendung zu beantworten, Finanzbegriffe wie TCO und WACC zu erklären und allgemeine Unterstützung zu leisten. Seien Sie in Ihren Antworten prägnant und klar.",
+      languageInstruction: "Antworten Sie immer in der vom Benutzer ausgewählten Sprache: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Preise gültig bis: {date}",
   },
   tco: {
+    title: "Analyse der Gesamtbetriebskosten (TCO)",
+    empty: {
+      title: "Die Kalkulation ist leer.",
+      description: 'Bitte fügen Sie Artikel im Reiter "Rechner" hinzu, um die TCO-Analyse zu sehen.',
+    },
+    assumptions: {
+      title: "TCO-Annahmen",
+      operationalCosts: "Betriebskosten",
+      deploymentCost: "Bereitstellungskosten / Gerät",
+      supportHours: "IT-Supportstunden / Gerät / Jahr",
+      staffRate: "Stundensatz IT-Personal",
+      eoldCost: "End-of-Life-Kosten / Gerät",
+      downtimeProductivity: "Ausfallzeit & Produktivität",
+      failures: "Ausfälle / Gerät / Jahr",
+      downtimeHours: "Ausfallstunden / Ausfall",
+      employeeCost: "Durchschn. Mitarbeiterkosten / Stunde",
+      assetValue: "Anlagewert",
+      residualValue: "Restwert (%)",
+      table: {
+        assumption: "Annahme",
+        value: "Wert",
+      },
+    },
+    tuning: {
+      button: "Mit KI optimieren",
+      modalTitle: "KI-gestützte TCO-Optimierung",
+      description: "Basierend auf Ihrem Angebot und Ihrer Branche hat die KI die folgenden Anpassungen vorgeschlagen, um einen realistischeren TCO-Vergleich zu erstellen.",
+      table: {
+        parameter: "Parameter",
+        current: "Aktuell",
+        suggested: "Vorgeschlagen",
+        reasoning: "KI-Begründung",
+      },
+      applyButton: "Ausgewählte anwenden ({count})",
+      noSuggestions: "Die KI hat Ihre aktuellen Annahmen überprüft und sie für den gegebenen Angebotskontext als angemessen befunden. Derzeit werden keine Änderungen vorgeschlagen.",
+    },
+    chart: {
+      title: "Kostenvergleich: Miete vs. Kauf",
+      leaseCostLabel: "Gesamte Mietkosten",
+      purchaseCostLabel: "Gesamtbetriebskosten",
+    },
+    breakdown: {
+      title: "Detaillierte Kostenaufschlüsselung",
+      averageLeaseTerm: "Durchschnittliche Laufzeit (wertgewichtet)",
+    },
+    table: {
+      category: "Kostenkategorie",
+      purchase: "Kaufszenario",
+      lease: "Mietszenario",
+      hardwareCost: "Hardwarekosten (initial)",
+      capitalCost: "Kapitalkosten (WACC)",
+      deployment: "Bereitstellungskosten",
+      support: "Laufender IT-Support",
+      downtime: "Produktivitätsverlust (Ausfallzeit)",
+      eold: "End-of-Life-Entsorgung",
+      residualValue: "Abzgl. Restwert",
+      leasePayments: "Mietzahlungen gesamt",
+      totalTco: "Gesamtbetriebskosten",
+    },
+    savingsWithLease: "Einsparungen durch Miete",
+    included: "Inklusive",
+    mitigated: "Gemindert",
+    wacc: {
+      title: "Kapitalkosten (WACC)",
+      industry: "Branche",
+      industryAverage: "WACC (Branchendurchschnitt)",
+      applyIndividual: "WACC (Individuell) anwenden",
+      individualWacc: "WACC (Individuell) in %",
+    },
+    glossary: {
+      title: "Glossar",
+      wacc: "WACC = Gewichteter durchschnittlicher Kapitalkostensatz. Der WACC wird verwendet, um den Zeitwert des Geldes zu berechnen und so einen genaueren 'effektiven Kaufpreis' zu ermitteln. Dies ist ein vereinfachtes Modell zu Veranschaulichungszwecken.",
+    },
     industries: {
       Automotive: "Automobil",
       Banking: "Bankwesen",
@@ -817,6 +1039,11 @@ const de = {
     }
   },
   admin: {
+    users: {
+      error: {
+        createUserRollback: "Benutzerprofil konnte nicht erstellt werden. Der Benutzer wurde entfernt. Bitte versuchen Sie es erneut.",
+      }
+    },
     lrf: {
         globalSettings: {
             packingServiceCostLabel: "Kosten für Verpackungsservice pro Gerät",
@@ -832,6 +1059,11 @@ const fi = {
     myProfile: "Oma profiili",
     logout: "Kirjaudu ulos",
     copyright: "© {year} CHG-MERIDIAN. Kaikki oikeudet pidätetään.",
+    error: {
+      profileMissing: "Käyttäjäprofiilisi puuttuu tai on vioittunut. Ota yhteyttä järjestelmänvalvojaan.",
+      sessionExpired: "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen luodaksesi käyttäjän.",
+      sessionRestoreFailed: "Istuntoasi ei voitu palauttaa käyttäjän luomisen jälkeen. Kirjaudu sisään uudelleen.",
+    }
   },
   tabs: {
     calculator: "Laskuri",
@@ -863,6 +1095,36 @@ const fi = {
     close: "Sulje"
   },
   enums: {
+    AssetType: {
+      Laptop: "Kannettava",
+      Mobile: "Mobiili",
+      Tablet: "Tabletti",
+      Desktop: "Pöytäkone",
+      OtherIT: "Muu IT",
+      Accessory: "Lisälaite",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Muu",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Muu",
+    },
+    Condition: {
+      New: "Uusi",
+      Used: "Käytetty",
+    },
     AdditionalService: {
       Deployment: "Käyttöönotto",
       PreConfiguration: "Esiasennus (staging)",
@@ -886,6 +1148,15 @@ const fi = {
     emailPlaceholder: "Sähköpostiosoite",
     passwordPlaceholder: "Salasana",
     signInButton: "Kirjaudu sisään",
+    forgotPassword: "Unohditko salasanasi?",
+    resetModal: {
+      title: "Nollaa salasana",
+      instructions: "Anna sähköpostiosoitteesi, niin lähetämme sinulle linkin salasanan nollaamiseksi.",
+      emailLabel: "Sähköpostiosoite",
+      sendButton: "Lähetä nollauslinkki",
+      success: "Tarkista sähköpostistasi salasanan nollauslinkki.",
+      error: "Tapahtui virhe. Yritä uudelleen tai ota yhteyttä järjestelmänvalvojaan.",
+    },
     error: {
       invalidCredentials: "Virheellinen sähköpostiosoite tai salasana. Yritä uudelleen.",
     },
@@ -925,16 +1196,126 @@ const fi = {
       qty: "Määrä",
       monthlyCost: "Kuukausihinta",
       totalCost: "Kokonaiskustannus",
+      monthlyBundled: "Paketin kk-hinta",
+      totalBundled: "Paketin kokonaishinta",
       actions: "Toiminnot",
+      os: "OS",
+      condition: "Kunto",
+      country: "Maa",
+      nonReturn: "Ei-palautus",
+      servicesLabel: "Palvelut (kertamaksu)",
+      unit: "Yksikkö",
     },
   },
   aiSummary: {
     button: "Luo yhteenveto",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Olet ammattimainen myyntiassistentti IT-leasing-yrityksessä.",
+      task: "Tehtäväsi on luoda tiivis ja vakuuttava yhteenveto asiakastarjouksesta seuraavien tarjoustietojen perusteella. Yhteenvedon tulee olla hyvin kirjoitettu, ammattimainen ja korostaa keskeisiä arvolupauksia.",
+      customer: "Asiakas",
+      project: "Projekti",
+      notSpecified: "Ei määritelty",
+      optionsSummary: "Tarjousvaihtoehtojen yhteenveto",
+      tcoResults: "TCO-analyysin tulokset",
+      tcoSavingDetail: "Vuokraamalla ostamisen sijaan asiakas voi saavuttaa potentiaalisen säästön, joka on {amount} {currency}.",
+      tcoPercentageDetail: "Tämä vastaa {percent}%:n alennusta kokonaiskustannuksissa (TCO) keskimääräisen {term} kuukauden vuokra-ajan aikana.",
+      instructionsTitle: "Ohjeet",
+      instruction1: "Aloita kohteliaalla avauksella, joka on osoitettu asiakkaalle.",
+      instruction2: "Tee lyhyt yhteenveto ehdotetuista vaihtoehdoista.",
+      instruction3WithTco: "Korosta taloudellisia etuja, erityisesti TCO-säästöjä. Kehystä se strategiseksi eduksi (esim. pääoman säilyttäminen, ennustettavat kustannukset).",
+      instruction3WithoutTco: "Mainitse sisältyvien palveluiden edut (esim. yksinkertaistettu hallinta, ennustettavat käyttökustannukset).",
+      instruction4WithTco: "Mainitse sisältyvien palveluiden edut (esim. yksinkertaistettu hallinta, minimoidut seisokit).",
+      instruction5: "Päätä ammattimaiseen loppulauseeseen, joka kannustaa seuraavaan vaiheeseen (esim. jatkokeskusteluun).",
+      instruction6: "Äänensävyn tulee olla itsevarma, ammattimainen ja asiakaslähtöinen.",
+      instruction7: "Älä käytä paikkamerkkejä, kuten \"[Oma Nimi]\". Yhteenvedon tulee olla valmis kopioitavaksi ja liitettäväksi suoraan sähköpostin tai tarjousasiakirjan runkoon.",
+      languageInstruction: "ERITTÄIN TÄRKEÄÄ: Koko vastauksen on oltava seuraavalla kielellä: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Olet avulias ja ystävällinen tekoälyassistentti 'IT-laitteiden vuokrausportaalissa'.",
+      appDescription: "Tämä sovellus auttaa IT-laitteiden vuokrauskumppaneita luomaan laskelmia ja tarjouksia asiakkailleen. Siinä on kolme pääosiota: 1. Laskuri: Tarjousten rakentamiseen eri laitteistoilla, palveluilla ja vuokra-ajoilla. 2. TCO-analyysi: Vuokraamisen ja ostamisen kokonaiskustannusten vertailuun. 3. Hallintapaneeli: Käyttäjien, vuokrakertoimien ja muiden asetusten hallintaan.",
+      goal: "Tavoitteenasi on vastata käyttäjien kysymyksiin sovelluksen käytöstä, selittää taloudellisia termejä kuten TCO ja WACC sekä tarjota yleistä apua. Ole vastauksissasi tiivis ja selkeä.",
+      languageInstruction: "Vastaa aina käyttäjän valitsemalla kielellä: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Hinnat voimassa asti: {date}",
   },
   tco: {
+    title: "Kokonaiskustannusanalyysi (TCO)",
+    empty: {
+      title: "Laskelma on tyhjä.",
+      description: "Lisää tuotteita \"Laskuri\"-välilehdellä nähdäksesi TCO-analyysin.",
+    },
+    assumptions: {
+      title: "TCO-oletukset",
+      operationalCosts: "Käyttökustannukset",
+      deploymentCost: "Käyttöönottokustannus / laite",
+      supportHours: "IT-tukitunnit / laite / vuosi",
+      staffRate: "IT-henkilöstön tuntihinta",
+      eoldCost: "Elinkaaren lopun kustannus / laite",
+      downtimeProductivity: "Seisokit & tuottavuus",
+      failures: "Vikaantumiset / laite / vuosi",
+      downtimeHours: "Seisokkitunnit / vikaantuminen",
+      employeeCost: "Keskim. työntekijän kustannus / tunti",
+      assetValue: "Omaisuuden arvo",
+      residualValue: "Jäännösarvo (%)",
+      table: {
+        assumption: "Oletus",
+        value: "Arvo",
+      },
+    },
+    tuning: {
+      button: "Hienosäädä tekoälyllä",
+      modalTitle: "Tekoälypohjainen TCO-hienosäätö",
+      description: "Tarjouksesi ja toimialasi perusteella tekoäly on ehdottanut seuraavia muutoksia realistisemman TCO-vertailun luomiseksi.",
+      table: {
+        parameter: "Parametri",
+        current: "Nykyinen",
+        suggested: "Ehdotettu",
+        reasoning: "Tekoälyn perustelut",
+      },
+      applyButton: "Ota käyttöön valitut ({count})",
+      noSuggestions: "Tekoäly tarkisti nykyiset oletuksesi ja totesi ne kohtuullisiksi annetun tarjouksen kontekstissa. Muutoksia ei ehdoteta tällä hetkellä.",
+    },
+    chart: {
+      title: "Vuokrauksen ja ostamisen kustannusvertailu",
+      leaseCostLabel: "Vuokrauksen kokonaiskustannus",
+      purchaseCostLabel: "Omistamisen kokonaiskustannus",
+    },
+    breakdown: {
+      title: "Yksityiskohtainen kustannuserittely",
+      averageLeaseTerm: "Keskimääräinen vuokra-aika (arvopainotettu)",
+    },
+    table: {
+      category: "Kustannusluokka",
+      purchase: "Osto-skenaario",
+      lease: "Vuokra-skenaario",
+      hardwareCost: "Laitteiston hankintakustannus (alussa)",
+      capitalCost: "Pääomakustannus (WACC)",
+      deployment: "Käyttöönottokustannukset",
+      support: "Jatkuva IT-tuki",
+      downtime: "Tuottavuuden menetys (seisokit)",
+      eold: "Elinkaaren lopun hävittäminen",
+      residualValue: "Vähennettynä: Jäännösarvo",
+      leasePayments: "Vuokramaksut yhteensä",
+      totalTco: "Omistamisen kokonaiskustannus",
+    },
+    savingsWithLease: "Säästöt vuokrauksella",
+    included: "Sisältyy",
+    mitigated: "Lievennetty",
+    wacc: {
+      title: "Pääomakustannus (WACC)",
+      industry: "Toimiala",
+      industryAverage: "WACC (toimialan keskiarvo)",
+      applyIndividual: "Käytä yksilöllistä WACCia",
+      individualWacc: "Yksilöllinen WACC (%)",
+    },
+    glossary: {
+      title: "Sanasto",
+      wacc: "WACC = Pääoman painotettu keskimääräinen kustannus. WACCia käytetään rahan aika-arvon laskemiseen, mikä antaa tarkemman 'tehollisen ostohinnan'. Tämä on yksinkertaistettu malli havainnollistamistarkoituksessa.",
+    },
     industries: {
       Automotive: "Autoteollisuus",
       Banking: "Pankkitoiminta",
@@ -953,6 +1334,11 @@ const fi = {
     }
   },
   admin: {
+     users: {
+      error: {
+        createUserRollback: "Käyttäjäprofiilin luominen epäonnistui. Käyttäjä on poistettu. Yritä uudelleen.",
+      }
+    },
      lrf: {
         globalSettings: {
             packingServiceCostLabel: "Pakkauspalvelun hinta per laite",
@@ -968,6 +1354,11 @@ const sv = {
     myProfile: "Min profil",
     logout: "Logga ut",
     copyright: "© {year} CHG-MERIDIAN. Alla rättigheter förbehållna.",
+    error: {
+      profileMissing: "Din användarprofil saknas eller är korrupt. Vänligen kontakta en administratör.",
+      sessionExpired: "Din session har gått ut. Logga in igen för att skapa en användare.",
+      sessionRestoreFailed: "Kunde inte återställa din session efter att ha skapat användaren. Logga in igen.",
+    }
   },
   tabs: {
     calculator: "Kalkylator",
@@ -999,6 +1390,36 @@ const sv = {
     close: "Stäng"
   },
   enums: {
+    AssetType: {
+      Laptop: "Bärbar dator",
+      Mobile: "Mobil",
+      Tablet: "Surfplatta",
+      Desktop: "Stationär dator",
+      OtherIT: "Övrig IT",
+      Accessory: "Tillbehör",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Annat",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Annat",
+    },
+    Condition: {
+      New: "Ny",
+      Used: "Begagnad",
+    },
     AdditionalService: {
       Deployment: "Driftsättning",
       PreConfiguration: "Förkonfiguration (staging)",
@@ -1022,6 +1443,15 @@ const sv = {
     emailPlaceholder: "E-postadress",
     passwordPlaceholder: "Lösenord",
     signInButton: "Logga in",
+    forgotPassword: "Glömt ditt lösenord?",
+    resetModal: {
+      title: "Återställ lösenord",
+      instructions: "Ange din e-postadress så skickar vi dig en länk för att återställa ditt lösenord.",
+      emailLabel: "E-postadress",
+      sendButton: "Skicka återställningslänk",
+      success: "Kontrollera din e-post för en länk för att återställa lösenordet.",
+      error: "Ett fel uppstod. Försök igen eller kontakta en administratör.",
+    },
     error: {
       invalidCredentials: "Ogiltig e-post eller lösenord. Försök igen.",
     },
@@ -1061,16 +1491,126 @@ const sv = {
       qty: "Antal",
       monthlyCost: "Månadskostnad",
       totalCost: "Total kostnad",
+      monthlyBundled: "Paketpris / mån",
+      totalBundled: "Totalt paketpris",
       actions: "Åtgärder",
+      os: "OS",
+      condition: "Skick",
+      country: "Land",
+      nonReturn: "Ej retur",
+      servicesLabel: "Tjänster (engångs)",
+      unit: "Enhet",
     },
   },
   aiSummary: {
     button: "Generera sammanfattning",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Du är en professionell säljassistent för ett IT-leasingföretag.",
+      task: "Din uppgift är att skapa en koncis, övertygande sammanfattning för ett kunderbjudande baserat på följande offertdetaljer. Sammanfattningen ska vara välskriven, professionell och lyfta fram de viktigaste värdeerbjudandena.",
+      customer: "Kund",
+      project: "Projekt",
+      notSpecified: "Ej specificerat",
+      optionsSummary: "Sammanfattning av offertalternativ",
+      tcoResults: "Resultat av TCO-analys",
+      tcoSavingDetail: "Genom att leasa istället för att köpa kan kunden uppnå en potentiell besparing på {amount} {currency}.",
+      tcoPercentageDetail: "Detta motsvarar en minskning av den totala ägandekostnaden (TCO) med {percent}% över den genomsnittliga leasingperioden på {term} månader.",
+      instructionsTitle: "Instruktioner",
+      instruction1: "Börja med en artig inledning riktad till kunden.",
+      instruction2: "Sammanfatta kort de föreslagna alternativen.",
+      instruction3WithTco: "Betona de ekonomiska fördelarna, särskilt TCO-besparingarna. Framställ det som en strategisk fördel (t.ex. bevara kapital, förutsägbara kostnader).",
+      instruction3WithoutTco: "Nämn fördelarna med de inkluderade tjänsterna (t.ex. förenklad hantering, förutsägbara driftskostnader).",
+      instruction4WithTco: "Nämn fördelarna med de inkluderade tjänsterna (t.ex. förenklad hantering, minimerad stilleståndstid).",
+      instruction5: "Avsluta med ett professionellt avslutande uttalande som uppmuntrar till nästa steg (t.ex. en uppföljande diskussion).",
+      instruction6: "Tonen ska vara självsäker, professionell och kundfokuserad.",
+      instruction7: "Inkludera inte platshållare som \"[Ditt Namn]\". Sammanfattningen ska vara redo att kopieras och klistras in direkt i en e-post eller ett offertdokument.",
+      languageInstruction: "MYCKET VIKTIGT: Hela svaret måste vara på följande språk: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Du är en hjälpsam och vänlig AI-assistent för 'Portal för uthyrning av IT-hårdvara'.",
+      appDescription: "Denna applikation hjälper partners för uthyrning av IT-hårdvara att skapa kalkyler och erbjudanden till sina kunder. Den har tre huvudsektioner: 1. Kalkylator: För att bygga offerter med olika hårdvara, tjänster och leasingvillkor. 2. TCO-analys: För att jämföra den totala ägandekostnaden mellan leasing och köp av hårdvara. 3. Adminpanel: För att hantera användare, leasingräntefaktorer och andra inställningar.",
+      goal: "Ditt mål är att svara på användarfrågor om hur man använder applikationen, förklara finansiella termer som TCO och WACC och ge allmän hjälp. Var koncis och tydlig i dina svar.",
+      languageInstruction: "Svara alltid på användarens valda språk: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Priser giltiga till: {date}",
   },
   tco: {
+    title: "Total Cost of Ownership-analys (TCO)",
+    empty: {
+      title: "Kalkylen är tom.",
+      description: 'Vänligen lägg till artiklar i fliken "Kalkylator" för att se TCO-analysen.',
+    },
+    assumptions: {
+      title: "TCO-antaganden",
+      operationalCosts: "Driftskostnader",
+      deploymentCost: "Driftsättningskostnad / enhet",
+      supportHours: "IT-supporttimmar / enhet / år",
+      staffRate: "Timpris IT-personal",
+      eoldCost: "End-of-Life-kostnad / enhet",
+      downtimeProductivity: "Stillestånd & produktivitet",
+      failures: "Fel / enhet / år",
+      downtimeHours: "Stilleståndstimmar / fel",
+      employeeCost: "Genomsnittlig personalkostnad / timme",
+      assetValue: "Tillgångsvärde",
+      residualValue: "Restvärde (%)",
+      table: {
+        assumption: "Antagande",
+        value: "Värde",
+      },
+    },
+    tuning: {
+      button: "Justera med AI",
+      modalTitle: "AI-driven TCO-justering",
+      description: "Baserat på din offert och bransch har AI föreslagit följande justeringar för att skapa en mer realistisk TCO-jämförelse.",
+      table: {
+        parameter: "Parameter",
+        current: "Nuvarande",
+        suggested: "Föreslaget",
+        reasoning: "AI:s resonemang",
+      },
+      applyButton: "Tillämpa valda ({count})",
+      noSuggestions: "AI har granskat dina nuvarande antaganden och funnit dem rimliga för den angivna offerten. Inga ändringar föreslås för närvarande.",
+    },
+    chart: {
+      title: "Kostnadsjämförelse: Leasing vs. Köp",
+      leaseCostLabel: "Total leasingkostnad",
+      purchaseCostLabel: "Total ägandekostnad",
+    },
+    breakdown: {
+      title: "Detaljerad kostnadsspecifikation",
+      averageLeaseTerm: "Genomsnittlig leasingperiod (värdevägd)",
+    },
+    table: {
+      category: "Kostnadskategori",
+      purchase: "Köpscenario",
+      lease: "Leasingscenario",
+      hardwareCost: "Hårdvarukostnad (initial)",
+      capitalCost: "Kapitalkostnad (WACC)",
+      deployment: "Driftsättningskostnader",
+      support: "Löpande IT-support",
+      downtime: "Produktivitetsförlust (stillestånd)",
+      eold: "Avyttring vid livscykelns slut",
+      residualValue: "Minus: Restvärde",
+      leasePayments: "Totala leasingbetalningar",
+      totalTco: "Total ägandekostnad",
+    },
+    savingsWithLease: "Besparingar med leasing",
+    included: "Inkluderat",
+    mitigated: "Minskat",
+    wacc: {
+      title: "Kapitalkostnad (WACC)",
+      industry: "Bransch",
+      industryAverage: "WACC (branschgenomsnitt)",
+      applyIndividual: "Tillämpa individuell WACC",
+      individualWacc: "Individuell WACC i %",
+    },
+    glossary: {
+      title: "Ordlista",
+      wacc: "WACC = Vägd genomsnittlig kapitalkostnad. WACC används för att beräkna pengars tidsvärde, vilket ger ett mer exakt 'effektivt inköpspris'. Detta är en förenklad modell i illustrativt syfte.",
+    },
     industries: {
       Automotive: "Fordonsindustri",
       Banking: "Bankväsende",
@@ -1089,6 +1629,11 @@ const sv = {
     }
   },
   admin: {
+    users: {
+      error: {
+        createUserRollback: "Misslyckades med att skapa användarprofil. Användaren har tagits bort. Försök igen.",
+      }
+    },
      lrf: {
         globalSettings: {
             packingServiceCostLabel: "Kostnad för packningstjänst per enhet",
@@ -1104,6 +1649,11 @@ const no = {
     myProfile: "Min profil",
     logout: "Logg ut",
     copyright: "© {year} CHG-MERIDIAN. Alle rettigheter forbeholdt.",
+    error: {
+      profileMissing: "Brukerprofilen din mangler eller er korrupt. Vennligst kontakt en administrator.",
+      sessionExpired: "Sesjonen din har utløpt. Logg inn på nytt for å opprette en bruker.",
+      sessionRestoreFailed: "Kunne ikke gjenopprette sesjonen din etter å ha opprettet brukeren. Logg inn på nytt.",
+    }
   },
   tabs: {
     calculator: "Kalkulator",
@@ -1135,6 +1685,36 @@ const no = {
     close: "Lukk"
   },
   enums: {
+    AssetType: {
+      Laptop: "Bærbar PC",
+      Mobile: "Mobil",
+      Tablet: "Nettbrett",
+      Desktop: "Stasjonær PC",
+      OtherIT: "Annet IT",
+      Accessory: "Tilbehør",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Annet",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Annet",
+    },
+    Condition: {
+      New: "Ny",
+      Used: "Brukt",
+    },
     AdditionalService: {
       Deployment: "Utrulling",
       PreConfiguration: "Forhåndskonfigurering (staging)",
@@ -1158,6 +1738,15 @@ const no = {
     emailPlaceholder: "E-postadresse",
     passwordPlaceholder: "Passord",
     signInButton: "Logg inn",
+    forgotPassword: "Glemt passord?",
+    resetModal: {
+      title: "Tilbakestill passord",
+      instructions: "Skriv inn e-postadressen din, så sender vi deg en lenke for å tilbakestille passordet.",
+      emailLabel: "E-postadresse",
+      sendButton: "Send tilbakestillingslenke",
+      success: "Sjekk e-posten din for en lenke for å tilbakestille passordet.",
+      error: "En feil oppstod. Prøv igjen eller kontakt en administrator.",
+    },
     error: {
       invalidCredentials: "Ugyldig e-post eller passord. Prøv igjen.",
     },
@@ -1195,16 +1784,126 @@ const no = {
       qty: "Antall",
       monthlyCost: "Månedlig kostnad",
       totalCost: "Total kostnad",
+      monthlyBundled: "Pakkepris / mnd",
+      totalBundled: "Total pakkepris",
       actions: "Handlinger",
+      os: "OS",
+      condition: "Tilstand",
+      country: "Land",
+      nonReturn: "Ingen retur",
+      servicesLabel: "Tjenester (engangs)",
+      unit: "Enhet",
     },
   },
   aiSummary: {
     button: "Generer sammendrag",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Du er en profesjonell salgsassistent for et IT-leasingselskap.",
+      task: "Din oppgave er å generere en konsis, overbevisende oppsummering for et kundetilbud basert på følgende tilbudsdetaljer. Oppsummeringen skal være velskrevet, profesjonell og fremheve de viktigste verdiforslagene.",
+      customer: "Kunde",
+      project: "Prosjekt",
+      notSpecified: "Ikke spesifisert",
+      optionsSummary: "Oppsummering av tilbudsalternativer",
+      tcoResults: "Resultater fra TCO-analyse",
+      tcoSavingDetail: "Ved å lease i stedet for å kjøpe, kan kunden oppnå en potensiell besparelse på {amount} {currency}.",
+      tcoPercentageDetail: "Dette representerer en reduksjon i de totale eierkostnadene (TCO) på {percent}% over den gjennomsnittlige leieperioden på {term} måneder.",
+      instructionsTitle: "Instruksjoner",
+      instruction1: "Start med en høflig åpning rettet mot kunden.",
+      instruction2: "Oppsummer kort de foreslåtte alternativene.",
+      instruction3WithTco: "Fremhev de økonomiske fordelene, spesielt TCO-besparelsene. Ramm det inn som en strategisk fordel (f.eks. bevaring av kapital, forutsigbare kostnader).",
+      instruction3WithoutTco: "Nevn fordelene med de inkluderte tjenestene (f.eks. forenklet administrasjon, forutsigbare driftskostnader).",
+      instruction4WithTco: "Nevn fordelene med de inkluderte tjenestene (f.eks. forenklet administrasjon, minimal nedetid).",
+      instruction5: "Avslutt med en profesjonell avslutningserklæring som oppfordrer til neste skritt (f.eks. en oppfølgingssamtale).",
+      instruction6: "Tonen skal være selvsikker, profesjonell og kundefokusert.",
+      instruction7: "Ikke inkluder plassholdere som \"[Ditt Navn]\". Oppsummeringen skal være klar til å kopieres og limes inn direkte i en e-post eller et tilbudsdokument.",
+      languageInstruction: "VELDIG VIKTIG: Hele svaret må være på følgende språk: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Du er en hjelpsom og vennlig AI-assistent for 'Portal for leie av IT-utstyr'.",
+      appDescription: "Denne applikasjonen hjelper partnere for utleie av IT-utstyr med å lage kalkyler og tilbud til kundene sine. Den har tre hovedseksjoner: 1. Kalkulator: For å bygge tilbud med forskjellig utstyr, tjenester og leievilkår. 2. TCO-analyse: For å sammenligne de totale eierkostnadene ved å lease kontra å kjøpe utstyr. 3. Adminpanel: For å administrere brukere, leieratefaktorer og andre innstillinger.",
+      goal: "Ditt mål er å svare på brukerspørsmål om hvordan man bruker applikasjonen, forklare økonomiske termer som TCO og WACC, og gi generell hjelp. Vær konsis og tydelig i svarene dine.",
+      languageInstruction: "Svar alltid på brukerens valgte språk: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Priser gyldige til: {date}",
   },
   tco: {
+    title: "Total Cost of Ownership-analyse (TCO)",
+    empty: {
+      title: "Kalkylen er tom.",
+      description: 'Vennligst legg til varer i "Kalkulator"-fanen for å se TCO-analysen.',
+    },
+    assumptions: {
+      title: "TCO-forutsetninger",
+      operationalCosts: "Driftskostnader",
+      deploymentCost: "Utrullingskostnad / enhet",
+      supportHours: "IT-supporttimer / enhet / år",
+      staffRate: "Timepris IT-personell",
+      eoldCost: "End-of-Life-kostnad / enhet",
+      downtimeProductivity: "Nedetid & produktivitet",
+      failures: "Feil / enhet / år",
+      downtimeHours: "Nedetidstimer / feil",
+      employeeCost: "Gj.sn. ansattkostnad / time",
+      assetValue: "Eiendelsverdi",
+      residualValue: "Restverdi (%)",
+      table: {
+        assumption: "Forutsetning",
+        value: "Verdi",
+      },
+    },
+    tuning: {
+      button: "Juster med AI",
+      modalTitle: "AI-drevet TCO-justering",
+      description: "Basert på ditt tilbud og din bransje, har AI foreslått følgende justeringer for å skape en mer realistisk TCO-sammenligning.",
+      table: {
+        parameter: "Parameter",
+        current: "Nåværende",
+        suggested: "Foreslått",
+        reasoning: "AIs resonnement",
+      },
+      applyButton: "Bruk valgte ({count})",
+      noSuggestions: "AI har gjennomgått dine nåværende forutsetninger og funnet dem rimelige for den gitte tilbudskonteksten. Ingen endringer foreslås på nåværende tidspunkt.",
+    },
+    chart: {
+      title: "Kostnadssammenligning: Leie vs. Kjøp",
+      leaseCostLabel: "Total leiekostnad",
+      purchaseCostLabel: "Total eierkostnad",
+    },
+    breakdown: {
+      title: "Detaljert kostnadsoversikt",
+      averageLeaseTerm: "Gjennomsnittlig leieperiode (verdi-vektet)",
+    },
+    table: {
+      category: "Kostnadskategori",
+      purchase: "Kjøpsscenario",
+      lease: "Leiescenario",
+      hardwareCost: "Maskinvarekostnad (initial)",
+      capitalCost: "Kapitalkostnad (WACC)",
+      deployment: "Utrullingskostnader",
+      support: "Løpende IT-support",
+      downtime: "Produktivitetstap (nedetid)",
+      eold: "Avhending ved levetidens slutt",
+      residualValue: "Minus: Restverdi",
+      leasePayments: "Totale leiebetalinger",
+      totalTco: "Total eierkostnad",
+    },
+    savingsWithLease: "Besparelser med leie",
+    included: "Inkludert",
+    mitigated: "Redusert",
+    wacc: {
+      title: "Kapitalkostnad (WACC)",
+      industry: "Bransje",
+      industryAverage: "WACC (bransjegjennomsnitt)",
+      applyIndividual: "Bruk individuell WACC",
+      individualWacc: "Individuell WACC i %",
+    },
+    glossary: {
+      title: "Ordliste",
+      wacc: "WACC = Vektet gjennomsnittlig kapitalkostnad. WACC brukes til å beregne pengenes tidsverdi, noe som gir en mer nøyaktig 'effektiv kjøpspris'. Dette er en forenklet modell for illustrasjonsformål.",
+    },
     industries: {
       Automotive: "Bilindustri",
       Banking: "Bank",
@@ -1222,6 +1921,13 @@ const no = {
       Materialsindustry: "Materialindustri",
     }
   },
+  admin: {
+    users: {
+      error: {
+        createUserRollback: "Kunne ikke opprette brukerprofil. Brukeren er fjernet. Prøv igjen.",
+      }
+    }
+  },
 };
 
 const da = {
@@ -1231,6 +1937,11 @@ const da = {
     myProfile: "Min profil",
     logout: "Log ud",
     copyright: "© {year} CHG-MERIDIAN. Alle rettigheder forbeholdes.",
+    error: {
+      profileMissing: "Din brugerprofil mangler eller er beskadiget. Kontakt venligst en administrator.",
+      sessionExpired: "Din session er udløbet. Log venligst ind igen for at oprette en bruger.",
+      sessionRestoreFailed: "Kunne ikke gendanne din session efter oprettelse af brugeren. Log venligst ind igen.",
+    }
   },
   tabs: {
     calculator: "Beregner",
@@ -1262,6 +1973,36 @@ const da = {
     close: "Luk"
   },
   enums: {
+    AssetType: {
+      Laptop: "Bærbar",
+      Mobile: "Mobil",
+      Tablet: "Tablet",
+      Desktop: "Stationær",
+      OtherIT: "Andet IT",
+      Accessory: "Tilbehør",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Andet",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Andet",
+    },
+    Condition: {
+      New: "Ny",
+      Used: "Brugt",
+    },
     AdditionalService: {
       Deployment: "Implementering",
       PreConfiguration: "Forkonfiguration (staging)",
@@ -1285,6 +2026,15 @@ const da = {
     emailPlaceholder: "E-mailadresse",
     passwordPlaceholder: "Adgangskode",
     signInButton: "Log ind",
+    forgotPassword: "Glemt din adgangskode?",
+    resetModal: {
+      title: "Nulstil adgangskode",
+      instructions: "Indtast din e-mailadresse, og vi sender dig et link til at nulstille din adgangskode.",
+      emailLabel: "E-mailadresse",
+      sendButton: "Send nulstillingslink",
+      success: "Tjek din e-mail for et link til nulstilling af adgangskode.",
+      error: "Der opstod en fejl. Prøv igen eller kontakt en administrator.",
+    },
     error: {
       invalidCredentials: "Ugyldig e-mail eller adgangskode. Prøv igen.",
     },
@@ -1322,16 +2072,126 @@ const da = {
       qty: "Antal",
       monthlyCost: "Månedlig pris",
       totalCost: "Totalpris",
+      monthlyBundled: "Samlet månedlig pris",
+      totalBundled: "Samlet totalpris",
       actions: "Handlinger",
+      os: "OS",
+      condition: "Stand",
+      country: "Land",
+      nonReturn: "Ingen returnering",
+      servicesLabel: "Tjenester (engangs)",
+      unit: "Enhed",
     },
   },
   aiSummary: {
     button: "Generer resumé",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Du er en professionel salgsassistent for et IT-leasingselskab.",
+      task: "Din opgave er at generere et kortfattet og overbevisende resumé til et kundetilbud baseret på følgende tilbudsdetaljer. Resuméet skal være velskrevet, professionelt og fremhæve de vigtigste værditilbud.",
+      customer: "Kunde",
+      project: "Projekt",
+      notSpecified: "Ikke specificeret",
+      optionsSummary: "Resumé af tilbudsmuligheder",
+      tcoResults: "Resultater af TCO-analyse",
+      tcoSavingDetail: "Ved at lease i stedet for at købe kan kunden opnå en potentiel besparelse på {amount} {currency}.",
+      tcoPercentageDetail: "Dette repræsenterer en reduktion i de samlede ejeromkostninger (TCO) på {percent}% over den gennemsnitlige leasingperiode på {term} måneder.",
+      instructionsTitle: "Instruktioner",
+      instruction1: "Begynd med en høflig åbning henvendt til kunden.",
+      instruction2: "Opsummer kort de foreslåede muligheder.",
+      instruction3WithTco: "Fremhæv de økonomiske fordele, især TCO-besparelserne. Formuler det som en strategisk fordel (f.eks. bevarelse af kapital, forudsigelige omkostninger).",
+      instruction3WithoutTco: "Nævn fordelene ved de inkluderede ydelser (f.eks. forenklet administration, forudsigelige driftsomkostninger).",
+      instruction4WithTco: "Nævn fordelene ved de inkluderede ydelser (f.eks. forenklet administration, minimeret nedetid).",
+      instruction5: "Afslut med en professionel afsluttende bemærkning, der opfordrer til næste skridt (f.eks. en opfølgende samtale).",
+      instruction6: "Tonen skal være selvsikker, professionel og kundefokuseret.",
+      instruction7: "Inkluder ikke pladsholdere som \"[Dit Navn]\". Resuméet skal være klar til at blive kopieret og indsat direkte i en e-mail eller et tilbudsdokument.",
+      languageInstruction: "MEGET VIGTIGT: Hele svaret skal være på følgende sprog: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Du er en hjælpsom og venlig AI-assistent for 'Portalen for leje af IT-hardware'.",
+      appDescription: "Denne applikation hjælper partnere inden for udlejning af IT-hardware med at lave beregninger og tilbud til deres kunder. Den har tre hovedsektioner: 1. Beregner: Til at opbygge tilbud med forskellig hardware, ydelser og leasingvilkår. 2. TCO-analyse: Til at sammenligne de samlede ejeromkostninger ved at lease kontra at købe hardware. 3. Admin-panel: Til at administrere brugere, leasingrentefaktorer og andre indstillinger.",
+      goal: "Dit mål er at besvare brugeres spørgsmål om, hvordan man bruger applikationen, forklare økonomiske termer som TCO og WACC og yde generel assistance. Vær kortfattet og klar i dine svar.",
+      languageInstruction: "Svar altid på brugerens valgte sprog: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Priser er gyldige indtil: {date}",
   },
   tco: {
+    title: "Analyse af de samlede ejeromkostninger (TCO)",
+    empty: {
+      title: "Beregningen er tom.",
+      description: 'Tilføj venligst varer i fanen "Beregner" for at se TCO-analysen.',
+    },
+    assumptions: {
+      title: "TCO-antagelser",
+      operationalCosts: "Driftsomkostninger",
+      deploymentCost: "Implementeringsomkostning / enhed",
+      supportHours: "IT-supporttimer / enhed / år",
+      staffRate: "Timeløn for IT-personale",
+      eoldCost: "End-of-Life-omkostning / enhed",
+      downtimeProductivity: "Nedetid & produktivitet",
+      failures: "Fejl / enhed / år",
+      downtimeHours: "Nedetidstimer / fejl",
+      employeeCost: "Gns. medarbejderomkostning / time",
+      assetValue: "Aktivværdi",
+      residualValue: "Restværdi (%)",
+      table: {
+        assumption: "Antagelse",
+        value: "Værdi",
+      },
+    },
+    tuning: {
+      button: "Juster med AI",
+      modalTitle: "AI-drevet TCO-justering",
+      description: "Baseret på dit tilbud og din branche har AI foreslået følgende justeringer for at skabe en mere realistisk TCO-sammenligning.",
+      table: {
+        parameter: "Parameter",
+        current: "Nuværende",
+        suggested: "Foreslået",
+        reasoning: "AI's begrundelse",
+      },
+      applyButton: "Anvend valgte ({count})",
+      noSuggestions: "AI har gennemgået dine nuværende antagelser og fundet dem rimelige for den givne tilbudskontekst. Der foreslås ingen ændringer på nuværende tidspunkt.",
+    },
+    chart: {
+      title: "Omkostningssammenligning: Leasing vs. Køb",
+      leaseCostLabel: "Samlet leasingomkostning",
+      purchaseCostLabel: "Samlede ejeromkostninger",
+    },
+    breakdown: {
+      title: "Detaljeret omkostningsspecificering",
+      averageLeaseTerm: "Gennemsnitlig leasingperiode (vægtet efter værdi)",
+    },
+    table: {
+      category: "Omkostningskategori",
+      purchase: "Købsscenarie",
+      lease: "Leasingscenarie",
+      hardwareCost: "Hardwareomkostning (indledende)",
+      capitalCost: "Kapitalomkostning (WACC)",
+      deployment: "Implementeringsomkostninger",
+      support: "Løbende IT-support",
+      downtime: "Produktivitetstab (nedetid)",
+      eold: "Bortskaffelse ved levetidsophør",
+      residualValue: "Minus: Restværdi",
+      leasePayments: "Samlede leasingbetalinger",
+      totalTco: "Samlede ejeromkostninger",
+    },
+    savingsWithLease: "Besparelser med leasing",
+    included: "Inkluderet",
+    mitigated: "Minimeret",
+    wacc: {
+      title: "Kapitalomkostning (WACC)",
+      industry: "Branche",
+      industryAverage: "WACC (branchegennemsnit)",
+      applyIndividual: "Anvend individuel WACC",
+      individualWacc: "Individuel WACC i %",
+    },
+    glossary: {
+      title: "Ordliste",
+      wacc: "WACC = Vægtet gennemsnitlig kapitalomkostning. WACC bruges til at beregne pengenes tidsværdi, hvilket giver en mere præcis 'effektiv købspris'. Dette er en forenklet model til illustrative formål.",
+    },
     industries: {
       Automotive: "Bilindustri",
       Banking: "Bank",
@@ -1349,6 +2209,13 @@ const da = {
       Materialsindustry: "Materialeindustri",
     }
   },
+  admin: {
+    users: {
+      error: {
+        createUserRollback: "Kunne ikke oprette brugerprofil. Brugeren er blevet fjernet. Prøv venligst igen.",
+      }
+    }
+  },
 };
 
 const pl = {
@@ -1358,6 +2225,11 @@ const pl = {
     myProfile: "Mój profil",
     logout: "Wyloguj się",
     copyright: "© {year} CHG-MERIDIAN. Wszelkie prawa zastrzeżone.",
+    error: {
+      profileMissing: "Twój profil użytkownika brakuje lub jest uszkodzony. Skontaktuj się z administratorem.",
+      sessionExpired: "Twoja sesja wygasła. Zaloguj się ponownie, aby utworzyć użytkownika.",
+      sessionRestoreFailed: "Nie można było przywrócić sesji po utworzeniu użytkownika. Zaloguj się ponownie.",
+    }
   },
   tabs: {
     calculator: "Kalkulator",
@@ -1389,6 +2261,36 @@ const pl = {
     close: "Zamknij"
   },
   enums: {
+    AssetType: {
+      Laptop: "Laptop",
+      Mobile: "Telefon komórkowy",
+      Tablet: "Tablet",
+      Desktop: "Komputer stacjonarny",
+      OtherIT: "Inne IT",
+      Accessory: "Akcesorium",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Inny",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Inny",
+    },
+    Condition: {
+      New: "Nowy",
+      Used: "Używany",
+    },
     AdditionalService: {
       Deployment: "Wdrożenie",
       PreConfiguration: "Prekonfiguracja (staging)",
@@ -1412,6 +2314,15 @@ const pl = {
     emailPlaceholder: "Adres e-mail",
     passwordPlaceholder: "Hasło",
     signInButton: "Zaloguj się",
+    forgotPassword: "Zapomniałeś hasła?",
+    resetModal: {
+      title: "Zresetuj hasło",
+      instructions: "Wprowadź swój adres e-mail, a my wyślemy Ci link do zresetowania hasła.",
+      emailLabel: "Adres e-mail",
+      sendButton: "Wyślij link do resetowania",
+      success: "Sprawdź swoją skrzynkę e-mail w poszukiwaniu linku do zresetowania hasła.",
+      error: "Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem.",
+    },
     error: {
       invalidCredentials: "Nieprawidłowy e-mail lub hasło. Spróbuj ponownie.",
     },
@@ -1453,16 +2364,126 @@ const pl = {
       qty: "Ilość",
       monthlyCost: "Koszt miesięczny",
       totalCost: "Koszt całkowity",
+      monthlyBundled: "Miesięcznie w pakiecie",
+      totalBundled: "Całkowity koszt pakietu",
       actions: "Akcje",
+      os: "System operacyjny",
+      condition: "Stan",
+      country: "Kraj",
+      nonReturn: "Brak zwrotu",
+      servicesLabel: "Usługi (jednorazowe)",
+      unit: "szt.",
     },
   },
   aiSummary: {
     button: "Generuj podsumowanie",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Jesteś profesjonalnym asystentem sprzedaży w firmie leasingowej IT.",
+      task: "Twoim zadaniem jest wygenerowanie zwięzłego, przekonującego podsumowania oferty dla klienta na podstawie poniższych szczegółów. Podsumowanie powinno być dobrze napisane, profesjonalne i podkreślać kluczowe propozycje wartości.",
+      customer: "Klient",
+      project: "Projekt",
+      notSpecified: "Nie określono",
+      optionsSummary: "Podsumowanie opcji oferty",
+      tcoResults: "Wyniki analizy TCO",
+      tcoSavingDetail: "Dzięki leasingowi zamiast zakupu klient może osiągnąć potencjalne oszczędności w wysokości {amount} {currency}.",
+      tcoPercentageDetail: "Oznacza to redukcję całkowitego kosztu posiadania (TCO) o {percent}% w ciągu średniego okresu leasingu wynoszącego {term} miesięcy.",
+      instructionsTitle: "Instrukcje",
+      instruction1: "Zacznij od uprzejmego powitania skierowanego do klienta.",
+      instruction2: "Krótko podsumuj proponowane opcje.",
+      instruction3WithTco: "Podkreśl korzyści finansowe, zwłaszcza oszczędności TCO. Przedstaw to jako strategiczną przewagę (np. zachowanie kapitału, przewidywalne koszty).",
+      instruction3WithoutTco: "Wspomnij o korzyściach płynących z zawartych usług (np. uproszczone zarządzanie, przewidywalne koszty operacyjne).",
+      instruction4WithTco: "Wspomnij o korzyściach płynących z zawartych usług (np. uproszczone zarządzanie, zminimalizowany czas przestoju).",
+      instruction5: "Zakończ profesjonalnym oświadczeniem, zachęcającym do następnego kroku (np. dalszej dyskusji).",
+      instruction6: "Ton powinien być pewny siebie, profesjonalny i skoncentrowany na kliencie.",
+      instruction7: "Nie używaj symboli zastępczych, takich jak „[Twoje imię]”. Podsumowanie powinno być gotowe do skopiowania i wklejenia bezpośrednio do treści wiadomości e-mail lub dokumentu ofertowego.",
+      languageInstruction: "BARDZO WAŻNE: Cała odpowiedź musi być w następującym języku: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Jesteś pomocnym i przyjaznym asystentem AI dla 'Portalu wynajmu sprzętu IT'.",
+      appDescription: "Ta aplikacja pomaga partnerom wynajmującym sprzęt IT w tworzeniu kalkulacji i ofert dla swoich klientów. Posiada trzy główne sekcje: 1. Kalkulator: Do tworzenia ofert z różnym sprzętem, usługami i warunkami leasingu. 2. Analiza TCO: Do porównywania całkowitego kosztu posiadania (TCO) leasingu w porównaniu z zakupem sprzętu. 3. Panel administracyjny: Do zarządzania użytkownikami, współczynnikami stawek leasingowych i innymi ustawieniami.",
+      goal: "Twoim celem jest odpowiadanie na pytania użytkowników dotyczące korzystania z aplikacji, wyjaśnianie terminów finansowych, takich jak TCO i WACC, oraz udzielanie ogólnej pomocy. Bądź zwięzły i jasny w swoich odpowiedziach.",
+      languageInstruction: "Zawsze odpowiadaj w wybranym przez użytkownika języku: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Ceny ważne do: {date}",
   },
   tco: {
+    title: "Analiza całkowitego kosztu posiadania (TCO)",
+    empty: {
+      title: "Kalkulacja jest pusta.",
+      description: 'Dodaj pozycje w zakładce "Kalkulator", aby zobaczyć analizę TCO.',
+    },
+    assumptions: {
+      title: "Założenia TCO",
+      operationalCosts: "Koszty operacyjne",
+      deploymentCost: "Koszt wdrożenia / urządzenie",
+      supportHours: "Godziny wsparcia IT / urządzenie / rok",
+      staffRate: "Stawka godzinowa personelu IT",
+      eoldCost: "Koszt końca życia / urządzenie",
+      downtimeProductivity: "Przestoje i produktywność",
+      failures: "Awarie / urządzenie / rok",
+      downtimeHours: "Godziny przestoju / awaria",
+      employeeCost: "Średni koszt pracownika / godzinę",
+      assetValue: "Wartość aktywów",
+      residualValue: "Wartość rezydualna (%)",
+      table: {
+        assumption: "Założenie",
+        value: "Wartość",
+      },
+    },
+    tuning: {
+      button: "Dostrój z AI",
+      modalTitle: "Dostrajanie TCO z AI",
+      description: "Na podstawie Twojej oferty i branży, AI zasugerowało następujące korekty, aby stworzyć bardziej realistyczne porównanie TCO.",
+      table: {
+        parameter: "Parametr",
+        current: "Obecny",
+        suggested: "Sugerowany",
+        reasoning: "Uzasadnienie AI",
+      },
+      applyButton: "Zastosuj wybrane ({count})",
+      noSuggestions: "AI przeanalizowało Twoje obecne założenia i uznało je za rozsądne w kontekście podanej oferty. Obecnie nie sugeruje się żadnych zmian.",
+    },
+    chart: {
+      title: "Porównanie kosztów: Leasing vs. Zakup",
+      leaseCostLabel: "Całkowity koszt leasingu",
+      purchaseCostLabel: "Całkowity koszt posiadania",
+    },
+    breakdown: {
+      title: "Szczegółowy podział kosztów",
+      averageLeaseTerm: "Średni okres leasingu (ważony wartością)",
+    },
+    table: {
+      category: "Kategoria kosztów",
+      purchase: "Scenariusz zakupu",
+      lease: "Scenariusz leasingu",
+      hardwareCost: "Koszt sprzętu (początkowy)",
+      capitalCost: "Koszt kapitału (WACC)",
+      deployment: "Koszty wdrożenia",
+      support: "Bieżące wsparcie IT",
+      downtime: "Utrata produktywności (przestoje)",
+      eold: "Utylizacja po zakończeniu eksploatacji",
+      residualValue: "Minus: Wartość rezydualna",
+      leasePayments: "Całkowite opłaty leasingowe",
+      totalTco: "Całkowity koszt posiadania",
+    },
+    savingsWithLease: "Oszczędności z leasingiem",
+    included: "W cenie",
+    mitigated: "Złagodzone",
+    wacc: {
+      title: "Koszt kapitału (WACC)",
+      industry: "Branża",
+      industryAverage: "WACC (średnia branżowa)",
+      applyIndividual: "Zastosuj indywidualny WACC",
+      individualWacc: "Indywidualny WACC w %",
+    },
+    glossary: {
+      title: "Słowniczek",
+      wacc: "WACC = Średni ważony koszt kapitału. WACC służy do obliczenia wartości pieniądza w czasie, co pozwala uzyskać dokładniejszą 'efektywną cenę zakupu'. Jest to uproszczony model do celów ilustracyjnych.",
+    },
     industries: {
       Automotive: "Motoryzacja",
       Banking: "Bankowość",
@@ -1484,6 +2505,9 @@ const pl = {
     users: {
         warning: {
             adminLogoutOnCreate: "Ostrzeżenie: Utworzenie nowego użytkownika spowoduje wylogowanie z konta administratora. Będziesz musiał zalogować się ponownie ręcznie.",
+        },
+        error: {
+          createUserRollback: "Nie udało się utworzyć profilu użytkownika. Użytkownik został usunięty. Spróbuj ponownie.",
         }
     }
   },
@@ -1496,6 +2520,11 @@ const cs = {
     myProfile: "Můj profil",
     logout: "Odhlásit se",
     copyright: "© {year} CHG-MERIDIAN. Všechna práva vyhrazena.",
+    error: {
+      profileMissing: "Váš uživatelský profil chybí nebo je poškozen. Kontaktujte prosím administrátora.",
+      sessionExpired: "Vaše relace vypršela. Pro vytvoření uživatele se prosím znovu přihlaste.",
+      sessionRestoreFailed: "Po vytvoření uživatele se nepodařilo obnovit vaši relaci. Přihlaste se prosím znovu.",
+    }
   },
   tabs: {
     calculator: "Kalkulačka",
@@ -1527,6 +2556,36 @@ const cs = {
     close: "Zavřít"
   },
   enums: {
+    AssetType: {
+      Laptop: "Notebook",
+      Mobile: "Mobilní telefon",
+      Tablet: "Tablet",
+      Desktop: "Stolní počítač",
+      OtherIT: "Ostatní IT",
+      Accessory: "Příslušenství",
+    },
+    OperatingSystem: {
+      Windows: "Windows",
+      MacOS: "MacOS",
+      Chrome: "Chrome",
+      iOS: "iOS",
+      Android: "Android",
+      Other: "Jiný",
+    },
+    Brand: {
+      HP: "HP",
+      Lenovo: "Lenovo",
+      Dell: "Dell",
+      Acer: "Acer",
+      Apple: "Apple",
+      Samsung: "Samsung",
+      Microsoft: "Microsoft",
+      Other: "Jiná",
+    },
+    Condition: {
+      New: "Nový",
+      Used: "Použitý",
+    },
     AdditionalService: {
       Deployment: "Nasazení",
       PreConfiguration: "Předkonfigurace (staging)",
@@ -1550,6 +2609,15 @@ const cs = {
     emailPlaceholder: "E-mailová adresa",
     passwordPlaceholder: "Heslo",
     signInButton: "Přihlásit se",
+    forgotPassword: "Zapomněli jste heslo?",
+    resetModal: {
+      title: "Obnovit heslo",
+      instructions: "Zadejte svou e-mailovou adresu a my vám zašleme odkaz pro obnovení hesla.",
+      emailLabel: "E-mailová adresa",
+      sendButton: "Odeslat odkaz pro obnovení",
+      success: "Zkontrolujte si e-mail pro odkaz na obnovení hesla.",
+      error: "Došlo k chybě. Zkuste to prosím znovu nebo kontaktujte administrátora.",
+    },
     error: {
       invalidCredentials: "Neplatný e-mail nebo heslo. Zkuste to znovu.",
     },
@@ -1587,16 +2655,126 @@ const cs = {
       qty: "Množství",
       monthlyCost: "Měsíční náklady",
       totalCost: "Celkové náklady",
+      monthlyBundled: "Balíček měsíčně",
+      totalBundled: "Celkem balíček",
       actions: "Akce",
+      os: "OS",
+      condition: "Stav",
+      country: "Země",
+      nonReturn: "Nevrácení",
+      servicesLabel: "Služby (jednorázové)",
+      unit: "Jednotka",
     },
   },
   aiSummary: {
     button: "Generovat souhrn",
   },
+  aiPrompt: {
+    summary: {
+      persona: "Jste profesionální prodejní asistent pro IT leasingovou společnost.",
+      task: "Vaším úkolem je vytvořit stručné a přesvědčivé shrnutí nabídky pro zákazníka na základě následujících údajů. Shrnutí by mělo být dobře napsané, profesionální a zdůrazňovat klíčové hodnotové nabídky.",
+      customer: "Zákazník",
+      project: "Projekt",
+      notSpecified: "Nespecifikováno",
+      optionsSummary: "Shrnutí možností nabídky",
+      tcoResults: "Výsledky analýzy TCO",
+      tcoSavingDetail: "Díky leasingu namísto nákupu může zákazník dosáhnout potenciální úspory ve výši {amount} {currency}.",
+      tcoPercentageDetail: "To představuje snížení celkových nákladů na vlastnictví (TCO) o {percent}% během průměrné doby leasingu {term} měsíců.",
+      instructionsTitle: "Pokyny",
+      instruction1: "Začněte zdvořilým oslovením zákazníka.",
+      instruction2: "Stručně shrňte navrhované možnosti.",
+      instruction3WithTco: "Zdůrazněte finanční výhody, zejména úspory TCO. Formulujte to jako strategickou výhodu (např. zachování kapitálu, předvídatelné náklady).",
+      instruction3WithoutTco: "Zmiňte výhody zahrnutých služeb (např. zjednodušená správa, předvídatelné provozní náklady).",
+      instruction4WithTco: "Zmiňte výhody zahrnutých služeb (např. zjednodušená správa, minimalizované prostoje).",
+      instruction5: "Ukončete profesionálním závěrečným prohlášením, které vybízí k dalšímu kroku (např. následná diskuse).",
+      instruction6: "Tón by měl být sebevědomý, profesionální a zaměřený na zákazníka.",
+      instruction7: "Nepoužívejte zástupné symboly jako „[Vaše jméno]“. Shrnutí by mělo být připraveno k přímému zkopírování a vložení do těla e-mailu nebo nabídkového dokumentu.",
+      languageInstruction: "VELMI DŮLEŽITÉ: Celá odpověď musí být v následujícím jazyce: {languageName} ({languageCode}).",
+    },
+    assistant: {
+      persona: "Jste nápomocný a přátelský asistent AI pro 'Portál pro pronájem IT hardwaru'.",
+      appDescription: "Tato aplikace pomáhá partnerům pro pronájem IT hardwaru vytvářet kalkulace a nabídky pro jejich zákazníky. Má tři hlavní sekce: 1. Kalkulačka: Pro vytváření nabídek s různým hardwarem, službami a dobami pronájmu. 2. Analýza TCO: Pro porovnání celkových nákladů na vlastnictví (TCO) mezi leasingem a nákupem hardwaru. 3. Administrátorský panel: Pro správu uživatelů, faktorů leasingových sazeb a dalších nastavení.",
+      goal: "Vaším cílem je odpovídat na dotazy uživatelů ohledně používání aplikace, vysvětlovat finanční pojmy jako TCO a WACC a poskytovat obecnou pomoc. Buďte ve svých odpovědích struční a jasní.",
+      languageInstruction: "Vždy odpovídejte ve zvoleném jazyce uživatele: {languageName} ({languageCode}).",
+    }
+  },
   lrf: {
     validUntil: "Ceny platné do: {date}",
   },
   tco: {
+    title: "Analýza celkových nákladů na vlastnictví (TCO)",
+    empty: {
+      title: "Kalkulace je prázdná.",
+      description: 'Přidejte prosím položky v záložce "Kalkulačka" pro zobrazení analýzy TCO.',
+    },
+    assumptions: {
+      title: "Předpoklady TCO",
+      operationalCosts: "Provozní náklady",
+      deploymentCost: "Náklady na nasazení / zařízení",
+      supportHours: "Hodiny IT podpory / zařízení / rok",
+      staffRate: "Hodinová sazba IT personálu",
+      eoldCost: "Náklady na konec životnosti / zařízení",
+      downtimeProductivity: "Prostoje a produktivita",
+      failures: "Poruchy / zařízení / rok",
+      downtimeHours: "Hodiny prostoje / porucha",
+      employeeCost: "Průměrné náklady na zaměstnance / hodinu",
+      assetValue: "Hodnota majetku",
+      residualValue: "Zbytková hodnota (%)",
+      table: {
+        assumption: "Předpoklad",
+        value: "Hodnota",
+      },
+    },
+    tuning: {
+      button: "Vyladit s AI",
+      modalTitle: "Vyladění TCO s pomocí AI",
+      description: "Na základě vaší nabídky a odvětví navrhla AI následující úpravy pro realističtější srovnání TCO.",
+      table: {
+        parameter: "Parametr",
+        current: "Současný",
+        suggested: "Navrhovaný",
+        reasoning: "Odůvodnění AI",
+      },
+      applyButton: "Použít vybrané ({count})",
+      noSuggestions: "AI zkontrolovala vaše současné předpoklady a shledala je přiměřenými pro daný kontext nabídky. V tuto chvíli nejsou navrhovány žádné změny.",
+    },
+    chart: {
+      title: "Srovnání nákladů: Leasing vs. Nákup",
+      leaseCostLabel: "Celkové náklady na leasing",
+      purchaseCostLabel: "Celkové náklady na vlastnictví",
+    },
+    breakdown: {
+      title: "Podrobný rozpis nákladů",
+      averageLeaseTerm: "Průměrná doba leasingu (vážená hodnotou)",
+    },
+    table: {
+      category: "Kategorie nákladů",
+      purchase: "Scénář nákupu",
+      lease: "Scénář leasingu",
+      hardwareCost: "Náklady na hardware (počáteční)",
+      capitalCost: "Náklady na kapitál (WACC)",
+      deployment: "Náklady na nasazení",
+      support: "Průběžná IT podpora",
+      downtime: "Ztráta produktivity (prostoje)",
+      eold: "Likvidace na konci životnosti",
+      residualValue: "Mínus: Zbytková hodnota",
+      leasePayments: "Celkové leasingové splátky",
+      totalTco: "Celkové náklady na vlastnictví",
+    },
+    savingsWithLease: "Úspory s leasingem",
+    included: "Zahrnuto",
+    mitigated: "Zmírněno",
+    wacc: {
+      title: "Náklady na kapitál (WACC)",
+      industry: "Odvětví",
+      industryAverage: "WACC (průměr odvětví)",
+      applyIndividual: "Použít individuální WACC",
+      individualWacc: "Individuální WACC v %",
+    },
+    glossary: {
+      title: "Slovníček",
+      wacc: "WACC = Vážené průměrné náklady na kapitál. WACC se používá k výpočtu časové hodnoty peněz a poskytuje přesnější 'efektivní kupní cenu'. Jedná se o zjednodušený model pro ilustrační účely.",
+    },
     industries: {
       Automotive: "Automobilový průmysl",
       Banking: "Bankovnictví",
@@ -1613,6 +2791,13 @@ const cs = {
       Utilities: "Veřejné služby",
       Materialsindustry: "Materiálový průmysl",
     },
+  },
+  admin: {
+    users: {
+        error: {
+          createUserRollback: "Nepodařilo se vytvořit profil uživatele. Uživatel byl odstraněn. Zkuste to prosím znovu.",
+        }
+    }
   },
 };
 

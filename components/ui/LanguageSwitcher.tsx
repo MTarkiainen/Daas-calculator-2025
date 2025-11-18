@@ -33,7 +33,7 @@ const LanguageSwitcher: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-1.5 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
+        className="flex items-center space-x-2 px-3 py-1.5 bg-white text-slate-700 border border-slate-300 rounded-xl hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors"
       >
         <CurrentFlag className="w-5 h-5 rounded-sm" />
         <span className="text-sm font-medium">{language.code.toUpperCase()}</span>

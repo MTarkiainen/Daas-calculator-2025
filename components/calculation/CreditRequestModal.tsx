@@ -80,9 +80,13 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
     if (!aiText.trim()) return;
     setIsAiLoading(true);
     try {
-        // FIX: Use process.env.API_KEY as per @google/genai guidelines.
-        // The value is provided through the define plugin in vite.config.ts.
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+        const apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
+        if (!apiKey) {
+            alert("AI features are disabled. Please configure your Gemini API key in the .env file.");
+            setIsAiLoading(false);
+            return;
+        }
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: `Extract the following details from the text below. If a value isn't found, leave it as an empty string. Text: "${aiText}"`,

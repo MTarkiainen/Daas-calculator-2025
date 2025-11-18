@@ -1,6 +1,7 @@
 
 
 import React from 'react';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 interface TcoBarChartProps {
     leaseCost: number;
@@ -9,7 +10,7 @@ interface TcoBarChartProps {
 }
 
 const TcoBarChart: React.FC<TcoBarChartProps> = ({ leaseCost, purchaseCost, currency }) => {
-    const locale = 'en-GB';
+    const { t, locale } = useLanguage();
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(value);
@@ -51,7 +52,7 @@ const TcoBarChart: React.FC<TcoBarChartProps> = ({ leaseCost, purchaseCost, curr
 
     return (
         <div>
-            <h3 className="text-lg font-semibold text-center mb-6">Lease vs. Purchase Cost Comparison</h3>
+            <h3 className="text-lg font-semibold text-center mb-6">{t('tco.chart.title')}</h3>
             <div className="flex h-72 w-full">
                 {/* Chart Area with integrated Y-Axis */}
                 <div className="relative flex-1 flex justify-around pl-20 pb-8">
@@ -77,11 +78,11 @@ const TcoBarChart: React.FC<TcoBarChartProps> = ({ leaseCost, purchaseCost, curr
                         <div
                             className="w-24 bg-chg-active-blue rounded-t-lg transition-all duration-700 ease-out group relative hover:bg-brand-700"
                             style={{ height: `${leaseHeight}%` }}
-                            title={`Total Lease Cost: ${formatCurrency(leaseCost)}`}
+                            title={`${t('tco.chart.leaseCostLabel')}: ${formatCurrency(leaseCost)}`}
                         >
                             <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold text-chg-active-blue">{formatCurrency(leaseCost)}</span>
                         </div>
-                        <span className="mt-2 text-sm text-slate-600 text-center font-medium">Total Lease Cost</span>
+                        <span className="mt-2 text-sm text-slate-600 text-center font-medium">{t('tco.chart.leaseCostLabel')}</span>
                     </div>
 
                     {/* Purchase Bar */}
@@ -89,11 +90,11 @@ const TcoBarChart: React.FC<TcoBarChartProps> = ({ leaseCost, purchaseCost, curr
                         <div
                             className="w-24 bg-slate-600 rounded-t-lg transition-all duration-700 ease-out group relative hover:bg-slate-700"
                             style={{ height: `${purchaseHeight}%` }}
-                            title={`Total Ownership Cost: ${formatCurrency(purchaseCost)}`}
+                            title={`${t('tco.chart.purchaseCostLabel')}: ${formatCurrency(purchaseCost)}`}
                         >
                             <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-bold text-slate-700">{formatCurrency(purchaseCost)}</span>
                         </div>
-                        <span className="mt-2 text-sm text-slate-600 text-center font-medium">Total Ownership Cost</span>
+                        <span className="mt-2 text-sm text-slate-600 text-center font-medium">{t('tco.chart.purchaseCostLabel')}</span>
                     </div>
                 </div>
             </div>

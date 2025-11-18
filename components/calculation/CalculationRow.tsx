@@ -30,6 +30,12 @@ const CalculationRow: React.FC<CalculationRowProps> = ({ item, leaseRateFactor, 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(value);
   };
+  
+  // Helper to find the enum key from its value string
+  const getKeyFromEnumValue = (enumObj: any, value: string | null | undefined): string | null => {
+    if (!value) return null;
+    return Object.keys(enumObj).find(key => enumObj[key] === value) || null;
+  };
 
   const servicesToDisplay: (ServiceSelection | { service: string, cost: number })[] = [...item.additionalServices];
   if (item.packingServiceApplied) {
@@ -51,33 +57,39 @@ const CalculationRow: React.FC<CalculationRowProps> = ({ item, leaseRateFactor, 
   const totalLeaseCost = totalLeaseCostPerUnit * item.quantity;
   
   // Bundled calculations
-  const monthlyServicesCostPerUnit = totalServicesCostPerUnit / item.leaseTerm;
+  const monthlyServicesCostPerUnit = item.leaseTerm > 0 ? totalServicesCostPerUnit / item.leaseTerm : 0;
   const bundledMonthlyCostPerUnit = monthlyHardwareCostPerUnit + monthlyServicesCostPerUnit;
   const totalMonthlyBundled = bundledMonthlyCostPerUnit * item.quantity;
   const totalBundledCostPerUnit = bundledMonthlyCostPerUnit * item.leaseTerm;
   const totalBundledCost = totalBundledCostPerUnit * item.quantity;
 
   const isOtherAsset = item.assetType === AssetType.OtherIT || item.assetType === AssetType.Accessory;
+  
+  const assetTypeKey = getKeyFromEnumValue(AssetType, item.assetType);
+  const brandKey = getKeyFromEnumValue(Brand, item.brand);
+  const osKey = getKeyFromEnumValue(OperatingSystem, item.operatingSystem);
+  const conditionKey = getKeyFromEnumValue(Condition, item.condition);
+
 
   return (
     <tr>
       <td className="px-4 py-4 whitespace-nowrap align-top">
-        <div className="text-sm font-medium text-slate-900">{item.assetType}</div>
+        <div className="text-sm font-medium text-slate-900">{assetTypeKey ? t(`enums.AssetType.${assetTypeKey}`, { defaultValue: item.assetType }) : item.assetType}</div>
         {isOtherAsset && item.customDescription ? (
           <div className="text-sm text-slate-700 font-semibold">{item.customDescription}</div>
         ) : (
-          <div className="text-sm text-slate-500">{item.brand}</div>
+          <div className="text-sm text-slate-500">{brandKey ? t(`enums.Brand.${brandKey}`, { defaultValue: item.brand }) : item.brand}</div>
         )}
       </td>
       <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-500 align-top">
         <div className="font-semibold text-slate-800">{t('calculation.table.country')}: {item.country || 'N/A'}</div>
         {!isOtherAsset ? (
             <>
-                <div>{t('calculation.table.os')}: {item.operatingSystem || t('common.na')}</div>
-                <div>{t('calculation.table.condition')}: {item.condition}</div>
+                <div>{t('calculation.table.os')}: {osKey ? t(`enums.OperatingSystem.${osKey}`, { defaultValue: item.operatingSystem }) : t('common.na')}</div>
+                <div>{t('calculation.table.condition')}: {conditionKey ? t(`enums.Condition.${conditionKey}`, { defaultValue: item.condition }) : item.condition}</div>
             </>
         ) : (
-            <div>{t('calculation.table.condition')}: {item.condition}</div>
+            <div>{t('calculation.table.condition')}: {conditionKey ? t(`enums.Condition.${conditionKey}`, { defaultValue: item.condition }) : item.condition}</div>
         )}
 
         {(item.nonReturnPercentage || 0) > 0 && (

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { jsPDF } from 'jspdf';
@@ -28,6 +26,7 @@ import { calculateTco, getLeaseRateFactor } from '../../utils/calculationUtils';
 import AiSummaryModal from '../ai/AiSummaryModal';
 import SparklesIcon from '../ui/icons/SparklesIcon';
 import { GoogleGenAI } from '@google/genai';
+import XIcon from '../ui/icons/XIcon';
 
 const getKeyByValue = (object: object, value: string) => {
   return Object.keys(object).find(key => object[key] === value);
@@ -246,7 +245,7 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
     lrfData, quote, setQuote, savedQuotes, onQuoteSave, onQuoteDelete, createNewQuote, 
     currentUser, profiles, tcoSettings, templates, onTemplateSave, onTemplateDelete, workflowSettings, addActivityLog
 }) => {
-  const { t, locale } = useLanguage();
+  const { t, locale, language } = useLanguage();
   const [activeOptionId, setActiveOptionId] = useState<string>(quote.options[0]?.id);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
@@ -366,6 +365,7 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
   
   const generateQuotePdf = (quoteForPdf: Quote) => {
     const doc = new jsPDF();
+    const tcoCalculations = calculateTco(quoteForPdf, lrfData, tcoSettings, currentUser);
     const formatPdfCurrency = (val: number) => new Intl.NumberFormat(locale, { style: 'currency', currency: quoteForPdf.currency || 'EUR' }).format(val);
     const formatPdfNumber = (val: number) => new Intl.NumberFormat(locale).format(val);
     
@@ -625,6 +625,78 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
         ...pageFooterOptions
     });
     finalY = (doc as any).lastAutoTable.finalY + 10;
+    
+    // TCO Section
+    if (tcoCalculations) {
+        if (finalY > 180) { // Check if there's enough space, otherwise add a new page.
+            doc.addPage();
+            pageHeader();
+            finalY = 40;
+        } else {
+            finalY += 15;
+        }
+        
+        const { 
+          totalTcoForPurchase, totalLeaseCost,
+          absoluteSavings, savingsPercentage, weightedAvgTermMonths,
+          totalPurchasePrice, costOfCapital, totalDeploymentCost,
+          totalSupportCost, totalDowntimeCost, totalEoldCost, totalResidualValue
+        } = tcoCalculations;
+
+        const wacc = tcoSettings.useCustomWacc ? tcoSettings.customWacc : INDUSTRIES_WACC[tcoSettings.selectedIndustry];
+
+        doc.setFontSize(14).setTextColor(40, 40, 40).text(t('tco.title'), 14, finalY);
+        finalY += 6;
+        
+        doc.setFontSize(9);
+        const summaryText = `${t('pdf.tco.summary', { term: weightedAvgTermMonths.toFixed(1), wacc: `${wacc.toFixed(2)}%` })} ${t('pdf.tco.savings', { amount: formatPdfCurrency(absoluteSavings), percent: `${(savingsPercentage * 100).toFixed(1)}%` })}`;
+        const summaryLines = doc.splitTextToSize(summaryText, doc.internal.pageSize.width - 28);
+        doc.text(summaryLines, 14, finalY);
+        finalY += (summaryLines.length * 4) + 5;
+        
+        const tcoBody = [
+            [t('tco.table.hardwareCost'), formatPdfCurrency(totalPurchasePrice), t('common.na')],
+            [t('tco.table.capitalCost'), formatPdfCurrency(costOfCapital), t('common.na')],
+            [t('tco.table.deployment'), formatPdfCurrency(totalDeploymentCost), t('tco.included')],
+            [t('tco.table.support'), formatPdfCurrency(totalSupportCost), t('tco.included')],
+            [t('tco.table.downtime'), formatPdfCurrency(totalDowntimeCost), t('tco.mitigated')],
+            [t('tco.table.eold'), formatPdfCurrency(totalEoldCost), t('tco.included')],
+            [{ content: t('tco.table.residualValue'), styles: { textColor: [192, 0, 0] } }, { content: `(${formatPdfCurrency(totalResidualValue)})`, styles: { textColor: [192, 0, 0] } }, t('common.na')],
+            [t('tco.table.leasePayments'), t('common.na'), formatPdfCurrency(totalLeaseCost)]
+        ];
+
+        autoTable(doc, {
+            startY: finalY,
+            head: [[t('tco.table.category'), t('tco.table.purchase'), t('tco.table.lease')]],
+            body: tcoBody,
+            foot: [
+                [
+                    { content: t('tco.table.totalTco'), styles: { fontStyle: 'bold', fontSize: 10 } },
+                    { content: formatPdfCurrency(totalTcoForPurchase), styles: { fontStyle: 'bold', halign: 'right', fontSize: 10 } },
+                    { content: formatPdfCurrency(totalLeaseCost), styles: { fontStyle: 'bold', halign: 'right', fontSize: 10 } }
+                ],
+                [
+                    { content: t('tco.savingsWithLease'), colSpan: 1, styles: { fillColor: [217, 245, 228], textColor: [82, 143, 108], fontStyle: 'bold' } },
+                    { content: `${formatPdfCurrency(absoluteSavings)} (${(savingsPercentage * 100).toFixed(1)}%)`, colSpan: 2, styles: { fillColor: [217, 245, 228], textColor: [82, 143, 108], fontStyle: 'bold', halign: 'right' } }
+                ]
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [8, 5, 147], fontSize: 9 },
+            styles: { fontSize: 8, cellPadding: 2 },
+            footStyles: {
+                fontSize: 9,
+                cellPadding: 2,
+                fillColor: [255, 255, 255],
+                textColor: [40, 40, 40],
+            },
+            columnStyles: {
+                1: { halign: 'right' },
+                2: { halign: 'right' },
+            },
+            ...pageFooterOptions
+        });
+        finalY = (doc as any).lastAutoTable.finalY + 10;
+    }
 
     doc.save(`${t('pdf.fileName')}-${quoteForPdf.customerName || 'draft'}.pdf`);
   };
@@ -639,6 +711,13 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
     setAiSummary('');
 
     try {
+        const apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
+        if (!apiKey) {
+            setAiSummary("AI features are disabled. Please configure your Gemini API key in the .env file.");
+            setIsGeneratingSummary(false);
+            return;
+        }
+        
         const tcoResults = calculateTco(quote, lrfData, tcoSettings, currentUser);
         
         const optionsSummary = quote.options.map(opt => {
@@ -647,45 +726,56 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
             return `- ${opt.name}: ${totalItems} devices, total hardware value ${totalValue.toFixed(2)} ${quote.currency}.`;
         }).join('\n');
 
-        let prompt = `You are a professional sales assistant for an IT leasing company. Your task is to generate a concise, compelling executive summary for a customer proposal based on the following quote details. The summary should be well-written, professional, and highlight the key value propositions.
-
-        **Customer:** ${quote.customerName || 'Not specified'}
-        **Project:** ${quote.projectName || 'Not specified'}
-        **Quote Options Summary:**
-        ${optionsSummary}
-        `;
-
+        let instructions: string[];
         if (tcoResults) {
-            prompt += `
-            **TCO Analysis Results:**
-            - By leasing instead of purchasing, the customer can achieve a potential saving of ${tcoResults.absoluteSavings.toFixed(2)} ${quote.currency}.
-            - This represents a ${ (tcoResults.savingsPercentage * 100).toFixed(1) }% reduction in the Total Cost of Ownership over the average lease term of ${tcoResults.weightedAvgTermMonths.toFixed(1)} months.
-            
-            **Instructions:**
-            1.  Start with a polite opening addressing the customer.
-            2.  Briefly summarize the proposed options.
-            3.  Emphasize the financial benefits, especially the TCO savings. Frame it as a strategic advantage (e.g., preserving capital, predictable costs).
-            4.  Mention the benefits of the included services (e.g., simplified management, minimized downtime).
-            5.  End with a professional closing statement, encouraging the next step (e.g., a follow-up discussion).
-            6.  The tone should be confident, professional, and customer-focused.
-            7.  Do not include placeholders like "[Your Name]". The summary should be ready to be copied and pasted directly into an email body or a proposal document.
-            `;
+            instructions = [
+                t('aiPrompt.summary.instruction1'),
+                t('aiPrompt.summary.instruction2'),
+                t('aiPrompt.summary.instruction3WithTco'),
+                t('aiPrompt.summary.instruction4WithTco'),
+                t('aiPrompt.summary.instruction5'),
+                t('aiPrompt.summary.instruction6'),
+                t('aiPrompt.summary.instruction7'),
+            ];
         } else {
-             prompt += `
-            **Instructions:**
-            1.  Start with a polite opening addressing the customer.
-            2.  Briefly summarize the proposed options.
-            3.  Mention the benefits of the included services (e.g., simplified management, predictable operational expenses).
-            4.  End with a professional closing statement, encouraging the next step (e.g., a follow-up discussion).
-            5.  The tone should be confident, professional, and customer-focused.
-            6.  Do not include placeholders like "[Your Name]". The summary should be ready to be copied and pasted directly into an email body or a proposal document.
-            `;
+             instructions = [
+                t('aiPrompt.summary.instruction1'),
+                t('aiPrompt.summary.instruction2'),
+                t('aiPrompt.summary.instruction3WithoutTco'),
+                t('aiPrompt.summary.instruction5'),
+                t('aiPrompt.summary.instruction6'),
+                t('aiPrompt.summary.instruction7'),
+            ];
         }
 
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+        const tcoSection = tcoResults ? `
+**${t('aiPrompt.summary.tcoResults')}:**
+- ${t('aiPrompt.summary.tcoSavingDetail', { amount: tcoResults.absoluteSavings.toFixed(2), currency: quote.currency || '' })}
+- ${t('aiPrompt.summary.tcoPercentageDetail', { percent: (tcoResults.savingsPercentage * 100).toFixed(1), term: tcoResults.weightedAvgTermMonths.toFixed(1) })}
+` : ``;
+
+        const prompt = `
+${t('aiPrompt.summary.persona')}
+${t('aiPrompt.summary.task')}
+
+**${t('aiPrompt.summary.customer')}:** ${quote.customerName || t('aiPrompt.summary.notSpecified')}
+**${t('aiPrompt.summary.project')}:** ${quote.projectName || t('aiPrompt.summary.notSpecified')}
+
+**${t('aiPrompt.summary.optionsSummary')}:**
+${optionsSummary}
+${tcoSection}
+
+---
+**${t('aiPrompt.summary.instructionsTitle')}:**
+${instructions.map(i => `- ${i}`).join('\n')}
+---
+${t('aiPrompt.summary.languageInstruction', { languageName: language.name, languageCode: language.code })}
+`;
+
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: prompt,
+            contents: prompt
         });
 
         setAiSummary(response.text);
@@ -697,218 +787,225 @@ const CalculationSheet: React.FC<CalculationSheetProps> = ({
         setIsGeneratingSummary(false);
     }
   };
-
-  const partnerCommission = isPartner ? currentUser.commissionPercentage || 0 : 0;
   
+  const totals = useMemo(() => {
+    if (!activeOption) return { totalHardwareCost: 0, totalServicesCost: 0, totalMonthlyCost: 0, totalLeaseCost: 0, totalMonthlyBundled: 0, totalLeaseBundled: 0 };
+
+    const partnerCommission = currentUser.role === UserRole.Partner ? currentUser.commissionPercentage || 0 : 0;
+    
+    return activeOption.items.reduce((acc, item) => {
+        const factor = getLeaseRateFactor(lrfData.factors, item, lrfData.nonReturnUpliftFactor || 0.008, partnerCommission);
+        const monthlyHardwareCost = item.hardwareCost * factor;
+        const oneTimeServicesCost = item.additionalServices.reduce((sum, s) => sum + s.cost, 0);
+        const packingCost = item.packingServiceApplied ? (lrfData.packingServiceCost || 0) : 0;
+        const totalOneTimeCost = oneTimeServicesCost + packingCost;
+
+        acc.totalHardwareCost += item.hardwareCost * item.quantity;
+        acc.totalServicesCost += totalOneTimeCost * item.quantity;
+        acc.totalMonthlyCost += monthlyHardwareCost * item.quantity;
+        acc.totalLeaseCost += ((monthlyHardwareCost * item.leaseTerm) + totalOneTimeCost) * item.quantity;
+
+        const monthlyServicesCost = item.leaseTerm > 0 ? totalOneTimeCost / item.leaseTerm : 0;
+        const bundledMonthly = monthlyHardwareCost + monthlyServicesCost;
+        acc.totalMonthlyBundled += bundledMonthly * item.quantity;
+        acc.totalLeaseBundled += (bundledMonthly * item.leaseTerm) * item.quantity;
+
+        return acc;
+    }, { totalHardwareCost: 0, totalServicesCost: 0, totalMonthlyCost: 0, totalLeaseCost: 0, totalMonthlyBundled: 0, totalLeaseBundled: 0 });
+  }, [activeOption, lrfData, currentUser]);
+
   return (
-    <div className="space-y-6">
-        {/* Header and Controls */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-            <div className="flex flex-wrap gap-4 justify-between items-start">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-800">{t('calculation.title')}</h2>
-                    <LrfValidityIndicator lrfData={lrfData} users={profiles} />
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="secondary" onClick={() => setQuote(createNewQuote())}>{t('calculation.buttons.new')}</Button>
-                    <Button variant="secondary" onClick={() => setIsDashboardOpen(true)} leftIcon={<FolderOpenIcon />}>{t('calculation.buttons.dashboard')}</Button>
-                    <Button variant="secondary" onClick={() => setIsTemplateModalOpen(true)} leftIcon={<SaveIcon />} disabled={!activeOption || activeOption.items.length === 0}>{t('calculation.buttons.saveTemplate')}</Button>
-                    <Button variant="secondary" onClick={() => generateQuotePdf(quote)} leftIcon={<DocumentDownloadIcon />}>{t('calculation.buttons.generatePdf')}</Button>
-                    <Button onClick={handleGenerateSummary} variant="secondary" leftIcon={<SparklesIcon />}>{t('aiSummary.button')}</Button>
-                    {isPartner && (
-                        <div title={!quote.customerName || quote.options.every(o => o.items.length === 0) ? t('creditRequestPartnerDisabledTooltip') : ''}>
-                             <Button 
-                                onClick={() => setIsCreditModalOpen(true)} 
-                                disabled={!quote.customerName || quote.options.every(o => o.items.length === 0)}
-                                leftIcon={<CheckCircleIcon />}
-                            >
-                                {t('calculation.buttons.requestCreditApproval')}
-                            </Button>
-                        </div>
-                    )}
-                     {!isPartner && (
-                        <div title={t('creditRequestAdminTooltip')}>
-                            <Button disabled leftIcon={<CheckCircleIcon />}>{t('calculation.buttons.requestCreditApproval')}</Button>
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Input label={t('calculation.customerName')} value={quote.customerName} onChange={e => handleQuoteFieldChange('customerName', e.target.value)} placeholder={t('calculation.customerNamePlaceholder')} />
-                <Input label={t('calculation.projectName')} value={quote.projectName} onChange={e => handleQuoteFieldChange('projectName', e.target.value)} placeholder={t('calculation.projectNamePlaceholder')} />
-                <Input label={t('calculation.expectedStartDate')} type="date" value={quote.expectedStartDate.split('T')[0]} onChange={e => handleQuoteFieldChange('expectedStartDate', new Date(e.target.value).toISOString())} />
-            </div>
+    <div className="bg-white p-6 rounded-xl shadow-md">
+      {itemToEdit && (
+        <EditItemModal
+          isOpen={!!itemToEdit}
+          onClose={() => setItemToEdit(null)}
+          onUpdateItem={updateItem}
+          item={itemToEdit}
+          currency={quote.currency || 'EUR'}
+        />
+      )}
+      <CalculationWizard 
+        isOpen={isWizardOpen} 
+        onClose={() => setIsWizardOpen(false)} 
+        onAddItem={addItem} 
+        currency={quote.currency || 'EUR'}
+      />
+      <QuoteDashboardModal
+        isOpen={isDashboardOpen}
+        onClose={() => setIsDashboardOpen(false)}
+        savedQuotes={savedQuotes}
+        onQuoteDelete={onQuoteDelete}
+        setQuote={setQuote}
+        createNewQuote={createNewQuote}
+        templates={templates}
+        onTemplateDelete={onTemplateDelete}
+        quote={quote}
+      />
+      <Modal isOpen={isTemplateModalOpen} onClose={() => setIsTemplateModalOpen(false)} title={t('calculation.templateModal.title')}>
+        <div className="space-y-4">
+          <Input label={t('calculation.templateModal.nameLabel')} value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder={t('calculation.templateModal.namePlaceholder')} />
         </div>
+        <div className="mt-6 flex justify-end">
+          <Button onClick={handleSaveTemplate}>{t('calculation.templateModal.saveButton')}</Button>
+        </div>
+      </Modal>
 
-      {/* Options Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200">
-        {quote.options.map(option => (
-          <div key={option.id} className="relative">
-            <button
-              onClick={() => setActiveOptionId(option.id)}
-              className={`px-4 py-2 text-sm font-semibold rounded-t-md transition-colors ${activeOptionId === option.id ? 'bg-white text-brand-600 border-x border-t border-slate-200' : 'text-slate-500 hover:bg-slate-100'}`}
-            >
-              {option.name}
-            </button>
-            {quote.options.length > 1 && (
-              <button onClick={() => removeOption(option.id)} className="absolute -top-2 -right-2 text-red-400 hover:text-red-600 bg-white rounded-full w-5 h-5 flex items-center justify-center border text-xs">&times;</button>
-            )}
-          </div>
-        ))}
-        <Button size="sm" variant="secondary" onClick={addOption} leftIcon={<PlusIcon />}>{t('calculation.buttons.addOption')}</Button>
-      </div>
+      <AiSummaryModal
+        isOpen={isSummaryModalOpen}
+        onClose={() => setIsSummaryModalOpen(false)}
+        summaryText={aiSummary}
+        isLoading={isGeneratingSummary}
+      />
       
-      {/* Active Option Content */}
-      <div className="bg-white p-6 rounded-xl shadow-md">
-         {activeOption && (
-            <div>
-              <div className="flex flex-wrap gap-4 justify-between items-center mb-4">
-                  <SegmentedControl
-                      label={t('calculation.priceView.label')}
-                      options={[
-                          { label: t('calculation.priceView.detailed'), value: 'detailed' },
-                          { label: t('calculation.priceView.bundled'), value: 'bundled' },
-                      ]}
-                      value={priceViewMode}
-                      onChange={(val) => setPriceViewMode(val as PriceViewMode)}
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button onClick={() => setIsWizardOpen(true)} leftIcon={<PlusIcon />}>{t('calculation.buttons.addItemTo', {optionName: activeOption.name})}</Button>
-                  </div>
-              </div>
-
-              {activeOption.items.length > 0 ? (
-                <>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-slate-200">
-                        <thead className="bg-slate-50">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/4">{t('calculation.table.asset')}</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/4">{t('calculation.table.details')}</th>
-                                <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.term')}</th>
-                                <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.qty')}</th>
-                                <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">{priceViewMode === 'detailed' ? t('calculation.table.monthlyCost') : t('calculation.table.monthlyBundled')}</th>
-                                <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">{priceViewMode === 'detailed' ? t('calculation.table.totalCost') : t('calculation.table.totalBundled')}</th>
-                                <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.actions')}</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-slate-200">
-                            {activeOption.items.map(item => (
-                                <CalculationRow 
-                                    key={item.id} 
-                                    item={item}
-                                    leaseRateFactor={getLeaseRateFactor(lrfData.factors, item, lrfData.nonReturnUpliftFactor || 0.008, partnerCommission)}
-                                    onRemove={removeItem}
-                                    onEdit={id => setItemToEdit(activeOption.items.find(i => i.id === id) || null)}
-                                    onDuplicate={duplicateItem}
-                                    priceViewMode={priceViewMode}
-                                    currency={quote.currency || 'EUR'}
-                                    packingServiceCost={lrfData.packingServiceCost || 0}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                  </div>
-                  <CalculationSummary 
-                      {...activeOption.items.reduce((acc, item) => {
-                          const factor = getLeaseRateFactor(lrfData.factors, item, lrfData.nonReturnUpliftFactor || 0.008, partnerCommission);
-                          const monthlyHardwareCost = item.hardwareCost * factor;
-                          const totalMonthly = monthlyHardwareCost * item.quantity;
-                          
-                          let totalServices = item.additionalServices.reduce((s, serv) => s + serv.cost, 0) * item.quantity;
-                          if (item.packingServiceApplied) {
-                              totalServices += (lrfData.packingServiceCost || 0) * item.quantity;
-                          }
-
-                          const totalLease = (monthlyHardwareCost * item.leaseTerm) * item.quantity + totalServices;
-
-                          const monthlyServices = item.leaseTerm > 0 ? totalServices / item.leaseTerm : 0;
-                          const bundledMonthly = totalMonthly + monthlyServices;
-
-                          acc.totalHardwareCost += item.hardwareCost * item.quantity;
-                          acc.totalServicesCost += totalServices;
-                          acc.totalMonthlyCost += totalMonthly;
-                          acc.totalLeaseCost += totalLease;
-                          acc.totalMonthlyBundled += bundledMonthly;
-                          acc.totalLeaseBundled += bundledMonthly * item.leaseTerm;
-
-                          return acc;
-                      }, { totalHardwareCost: 0, totalServicesCost: 0, totalMonthlyCost: 0, totalLeaseCost: 0, totalMonthlyBundled: 0, totalLeaseBundled: 0 })}
-                      priceViewMode={priceViewMode}
-                      currency={quote.currency || 'EUR'}
-                  />
-                </>
-              ) : (
-                <div className="text-center py-12 text-slate-500 border-2 border-dashed rounded-lg">
-                    <p className="text-lg font-semibold">{t('calculation.empty.title')}</p>
-                    <p className="text-sm">{t('calculation.empty.description')}</p>
-                </div>
-              )}
-            </div>
-         )}
-      </div>
-
-        {/* Disclaimer */}
-        <p className="text-xs text-slate-500 text-center mt-4">(*) {t('calculation.disclaimer')}</p>
-
-        {/* Modals */}
-        <AiSummaryModal 
-            isOpen={isSummaryModalOpen}
-            onClose={() => setIsSummaryModalOpen(false)}
-            summaryText={aiSummary}
-            isLoading={isGeneratingSummary}
-        />
-        <CalculationWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} onAddItem={addItem} currency={quote.currency || 'EUR'} />
-        {itemToEdit && (
-            <EditItemModal 
-                isOpen={!!itemToEdit} 
-                onClose={() => setItemToEdit(null)} 
-                item={itemToEdit}
-                onUpdateItem={updateItem}
-                currency={quote.currency || 'EUR'}
-            />
-        )}
-        <QuoteDashboardModal
-            isOpen={isDashboardOpen}
-            onClose={() => setIsDashboardOpen(false)}
-            savedQuotes={savedQuotes}
-            onQuoteDelete={onQuoteDelete}
-            setQuote={setQuote}
-            createNewQuote={createNewQuote}
-            templates={templates}
-            onTemplateDelete={onTemplateDelete}
-            quote={quote}
-        />
-        <Modal isOpen={isTemplateModalOpen} onClose={() => setIsTemplateModalOpen(false)} title={t('calculation.templateModal.title')}>
-            <div className="space-y-4">
-                <Input label={t('calculation.templateModal.nameLabel')} value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder={t('calculation.templateModal.namePlaceholder')} />
-            </div>
-            <div className="mt-6 flex justify-end space-x-2">
-                <Button variant="secondary" onClick={() => setIsTemplateModalOpen(false)}>{t('common.cancel')}</Button>
-                <Button onClick={handleSaveTemplate}>{t('calculation.templateModal.saveButton')}</Button>
-            </div>
-        </Modal>
-        {isPartner && (
-          <CreditRequestModal
+      {isCreditModalOpen && (
+        <CreditRequestModal
             isOpen={isCreditModalOpen}
             onClose={() => setIsCreditModalOpen(false)}
             quote={quote}
             setQuote={setQuote}
-            onSubmit={(quoteForLog, country) => {
-              const quoteWithStatus = {
-                ...quoteForLog,
-                status: QuoteStatus.CreditPending
-              };
-              setQuote(quoteWithStatus);
-              onQuoteSave(quoteWithStatus);
-              addActivityLog(ActivityType.CreditRequestSent, `Request sent for ${country} to ${getRecipientEmail()}`, quoteWithStatus);
+            onSubmit={(updatedQuote, country) => {
+                onQuoteSave(updatedQuote);
+                addActivityLog(ActivityType.CreditRequestSent, `Request sent for country: ${country}`, updatedQuote);
             }}
             workflowSettings={workflowSettings}
             currentUser={currentUser}
-          />
-        )}
+        />
+      )}
+
+      {/* Header */}
+      <div className="flex flex-wrap gap-4 justify-between items-center mb-4 pb-4 border-b">
+        <h1 className="text-xl font-semibold text-slate-800">{t('calculation.title')}</h1>
+        <div className="flex flex-wrap gap-2">
+            <Button variant="secondary" onClick={() => { setQuote(createNewQuote()); setActiveOptionId(createNewQuote().options[0].id) }} leftIcon={<PlusIcon />}>{t('calculation.buttons.new')}</Button>
+            <Button variant="secondary" onClick={() => setIsDashboardOpen(true)} leftIcon={<FolderOpenIcon />}>{t('calculation.buttons.dashboard')}</Button>
+            <Button variant="secondary" onClick={() => onQuoteSave(quote)} leftIcon={<SaveIcon />}>{t('common.save')}</Button>
+            <Button variant="secondary" onClick={() => setIsTemplateModalOpen(true)}>{t('calculation.buttons.saveTemplate')}</Button>
+            <Button variant="secondary" onClick={() => generateQuotePdf(quote)} leftIcon={<DocumentDownloadIcon />}>{t('calculation.buttons.generatePdf')}</Button>
+        </div>
+      </div>
+      
+      {/* Quote Meta */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Input label={t('calculation.customerName')} placeholder={t('calculation.customerNamePlaceholder')} value={quote.customerName} onChange={e => handleQuoteFieldChange('customerName', e.target.value)} />
+        <Input label={t('calculation.projectName')} placeholder={t('calculation.projectNamePlaceholder')} value={quote.projectName} onChange={e => handleQuoteFieldChange('projectName', e.target.value)} />
+        <Input label={t('calculation.expectedStartDate')} type="date" value={quote.expectedStartDate.split('T')[0]} onChange={e => handleQuoteFieldChange('expectedStartDate', new Date(e.target.value).toISOString())} />
+      </div>
+
+      {isPartner && <LrfValidityIndicator lrfData={lrfData} users={profiles} />}
+
+      {/* Options Tabs */}
+      <div className="flex items-center border-b mb-6">
+        {quote.options.map(option => (
+          <div key={option.id} className="relative group">
+            <button 
+              onClick={() => setActiveOptionId(option.id)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 ${activeOptionId === option.id ? 'border-brand-500 text-brand-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+            >
+              <input type="text" value={option.name} onChange={(e) => {
+                const newName = e.target.value;
+                setQuote(q => ({...q, options: q.options.map(o => o.id === option.id ? {...o, name: newName} : o)}))
+              }} className="bg-transparent focus:outline-none focus:bg-slate-100 rounded-md px-1" size={option.name.length > 0 ? option.name.length : 1} />
+            </button>
+            {quote.options.length > 1 && (
+                <button onClick={() => removeOption(option.id)} className="absolute top-1 right-1 p-1 text-gray-400 hover:text-red-500 rounded-full hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <XIcon className="w-3 h-3" />
+                </button>
+            )}
+          </div>
+        ))}
+        <button onClick={addOption} className="px-3 py-2 text-sm text-gray-500 hover:text-brand-600" title={t('calculation.buttons.addOption')}>+</button>
+      </div>
+
+      {/* Active Option Content */}
+      {activeOption ? (
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-4">
+              <Button onClick={() => setIsWizardOpen(true)} leftIcon={<PlusIcon />}>
+                {t('calculation.buttons.addItemTo', {optionName: activeOption.name})}
+              </Button>
+               <Button onClick={handleGenerateSummary} leftIcon={<SparklesIcon />} variant="secondary">
+                 {t('aiSummary.button')}
+               </Button>
+            </div>
+            <SegmentedControl
+              label={t('calculation.priceView.label')}
+              options={[
+                { label: t('calculation.priceView.detailed'), value: 'detailed' },
+                { label: t('calculation.priceView.bundled'), value: 'bundled' },
+              ]}
+              value={priceViewMode}
+              onChange={(val) => setPriceViewMode(val as PriceViewMode)}
+            />
+          </div>
+
+          {activeOption.items.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-200">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.asset')}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.details')}</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.term')}</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.qty')}</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">{priceViewMode === 'detailed' ? t('calculation.table.monthlyCost') : t('calculation.table.monthlyBundled')}</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">{priceViewMode === 'detailed' ? t('calculation.table.totalCost') : t('calculation.table.totalBundled')}</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">{t('calculation.table.actions')}</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-slate-100">
+                  {activeOption.items.map(item => (
+                    <CalculationRow
+                      key={item.id}
+                      item={item}
+                      leaseRateFactor={getLeaseRateFactor(lrfData.factors, item, lrfData.nonReturnUpliftFactor || 0.008, currentUser.role === UserRole.Partner ? (currentUser.commissionPercentage || 0) : 0)}
+                      onRemove={removeItem}
+                      onEdit={() => setItemToEdit(item)}
+                      onDuplicate={duplicateItem}
+                      priceViewMode={priceViewMode}
+                      currency={quote.currency || 'EUR'}
+                      packingServiceCost={lrfData.packingServiceCost || 0}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+             <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                <h3 className="text-lg font-medium text-slate-700">{t('calculation.empty.title')}</h3>
+                <p className="text-sm text-slate-500 mt-1">{t('calculation.empty.description')}</p>
+             </div>
+          )}
+
+          {/* Totals Section */}
+          {activeOption.items.length > 0 && (
+            <CalculationSummary 
+              totalHardwareCost={totals.totalHardwareCost}
+              totalServicesCost={totals.totalServicesCost}
+              totalMonthlyCost={totals.totalMonthlyCost}
+              totalLeaseCost={totals.totalLeaseCost}
+              priceViewMode={priceViewMode}
+              totalMonthlyBundled={totals.totalMonthlyBundled}
+              totalLeaseBundled={totals.totalLeaseBundled}
+              currency={quote.currency || 'EUR'}
+            />
+          )}
+
+           <div className="mt-8 pt-4 border-t flex justify-end">
+                <div title={!quote.customerName || activeOption.items.length === 0 ? t('calculation.creditRequestPartnerDisabledTooltip') : ''}>
+                    <Button 
+                        onClick={() => setIsCreditModalOpen(true)}
+                        disabled={!quote.customerName || activeOption.items.length === 0}
+                    >
+                        {t('calculation.buttons.requestCreditApproval')}
+                    </Button>
+                </div>
+            </div>
+        </div>
+      ) : null}
     </div>
   );
 };
-// FIX: Add default export for CalculationSheet component
+
 export default CalculationSheet;

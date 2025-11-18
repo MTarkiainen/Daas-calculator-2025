@@ -17,7 +17,7 @@ interface AiAssistantProps {
 }
 
 const AiAssistant: React.FC<AiAssistantProps> = ({ isOpen, onClose }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [chat, setChat] = useState<Chat | null>(null);
   const [history, setHistory] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -27,14 +27,24 @@ const AiAssistant: React.FC<AiAssistantProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     const initializeChat = async () => {
       try {
-        // FIX: Use process.env.API_KEY as per @google/genai guidelines.
-        // The value is provided through the define plugin in vite.config.ts.
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+        const apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
+        if (!apiKey) {
+          console.error("AI Assistant disabled: Gemini API Key not configured in .env file.");
+          return;
+        }
+        
+        const ai = new GoogleGenAI({ apiKey });
+        const systemInstruction = [
+            t('aiPrompt.assistant.persona'),
+            t('aiPrompt.assistant.appDescription'),
+            t('aiPrompt.assistant.goal'),
+            t('aiPrompt.assistant.languageInstruction', { languageName: language.name, languageCode: language.code })
+        ].join(' ');
+
         const newChat = ai.chats.create({
-          // FIX: Corrected typo in model name from 'gemini-2.s5-flash' to 'gemini-2.5-flash'.
           model: 'gemini-2.5-flash',
           config: {
-            systemInstruction: "You are a helpful and friendly AI assistant for the 'IT Hardware Rental Portal'. This application helps IT hardware rental partners create calculations and offers for their customers. It has three main sections: 1. Calculator: To build quotes with different hardware, services, and lease terms. 2. TCO Analysis: To compare the total cost of ownership of leasing versus buying hardware. 3. Admin Panel: For managing users, lease rate factors, and other settings. Your goal is to answer user questions about how to use the application, explain financial terms like TCO and WACC, and provide general assistance. Be concise and clear in your answers.",
+            systemInstruction,
           },
         });
         setChat(newChat);
@@ -43,7 +53,7 @@ const AiAssistant: React.FC<AiAssistantProps> = ({ isOpen, onClose }) => {
       }
     };
     initializeChat();
-  }, []);
+  }, [t, language]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
