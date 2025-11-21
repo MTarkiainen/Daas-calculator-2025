@@ -18,6 +18,7 @@ import LogoutIcon from './components/ui/icons/LogoutIcon';
 import AiAssistant from './components/ai/AiAssistant';
 import SparklesIcon from './components/ui/icons/SparklesIcon';
 import { Button } from './components/ui/Button';
+import { INITIAL_LEASE_RATE_FACTORS_DATA, INITIAL_TCO_SETTINGS, INITIAL_WORKFLOW_SETTINGS } from './constants';
 
 const mapQuoteFromDb = (dbQuote: any): Quote => ({
   id: dbQuote.id,
@@ -170,14 +171,15 @@ const App: React.FC = () => {
   const fetchData = async (user: SupabaseUser) => {
     setIsLoading(true);
     try {
+      // Use maybeSingle to avoid error if no row is found, returns null data instead
       let { data: profileData, error: profileErrorFromDb } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       // Handle profile not found: if a profile doesn't exist for the user, create it automatically.
-      if ((profileErrorFromDb && profileErrorFromDb.code === 'PGRST116') || !profileData) {
+      if (!profileData) {
           const { count, error: countError } = await supabase
             .from('profiles')
             .select('*', { count: 'exact', head: true });
@@ -188,11 +190,15 @@ const App: React.FC = () => {
 
             // Determine role: Use metadata if available, otherwise Admin for the first user, Partner for subsequent ones.
             const roleToAssign = userMetaData?.role || (isFirstUser ? UserRole.Admin : UserRole.Partner);
-            const nameToAssign = userMetaData?.name || user.email!;
+            const nameToAssign = userMetaData?.name || user.email || 'Unknown User';
+            
+            // FIX: Ensure email is never null to satisfy DB constraint.
+            // Some auth providers or manual creation might result in a missing email property temporarily.
+            const emailToAssign = user.email || `no-email-${user.id}@placeholder.com`;
 
             const newProfilePayload = {
               id: user.id,
-              email: user.email!,
+              email: emailToAssign,
               name: nameToAssign,
               role: roleToAssign,
               company_name: userMetaData?.company_name,
@@ -210,18 +216,19 @@ const App: React.FC = () => {
             
             if (!insertError && newProfile) {
               profileData = newProfile;
-              profileErrorFromDb = null; // Clear the original "not found" error
+              profileErrorFromDb = null; // Clear any previous error
             } else if (insertError) {
-              // If insertion fails, we'll fall through to the error screen, which is correct.
-              // Log the insertion error for debugging.
               console.error("Failed to auto-create profile:", insertError);
+              // We let it fall through to the error screen, but capture the specific insert error for debugging
+              profileErrorFromDb = insertError; 
             }
           }
       }
       
       if (profileErrorFromDb || !profileData) {
-        console.error("User profile not found. Forcing logout.", profileErrorFromDb);
-        setProfileError(t('app.error.profileMissing'));
+        console.error("User profile not found or creation failed.", profileErrorFromDb);
+        const detailedError = profileErrorFromDb?.message || "Unknown database error";
+        setProfileError(`${t('app.error.profileMissing')} (${detailedError})`);
         await supabase.auth.signOut();
         setIsLoading(false);
         return;
@@ -238,8 +245,9 @@ const App: React.FC = () => {
       
       await fetchTcoSettings();
       await fetchBrandingSettings();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching data:", error);
+      setProfileError(`Unexpected error: ${error?.message || error}`);
     } finally {
       setIsLoading(false);
     }
@@ -262,14 +270,33 @@ const App: React.FC = () => {
     if (quotesRes.error) console.error('Error fetching quotes:', quotesRes.error);
     else setSavedQuotes((quotesRes.data || []).map(mapQuoteFromDb));
     
-    if (lrfRes.error) console.error('Error fetching LRF data:', lrfRes.error);
-    else setLrfData(lrfRes.data?.data as LeaseRateFactorsData);
+    // Fallback to defaults if LRF data is missing or empty
+    if (lrfRes.error || !lrfRes.data || !lrfRes.data.data) {
+        console.warn('Error fetching LRF data or no data found, using defaults:', lrfRes.error);
+        setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
+    } else {
+        const loadedLrf = lrfRes.data.data as Partial<LeaseRateFactorsData>;
+        setLrfData({
+            ...INITIAL_LEASE_RATE_FACTORS_DATA,
+            ...loadedLrf,
+            factors: loadedLrf.factors || INITIAL_LEASE_RATE_FACTORS_DATA.factors
+        });
+    }
 
     if (templatesRes.error) console.error('Error fetching templates:', templatesRes.error);
     else setTemplates((templatesRes.data || []).map(mapTemplateFromDb));
     
-    if (workflowRes.error) console.error('Error fetching workflow settings:', workflowRes.error);
-    else setWorkflowSettings(workflowRes.data?.data as WorkflowSettings);
+    // Fallback to defaults if workflow settings are missing
+    if (workflowRes.error || !workflowRes.data || !workflowRes.data.data) {
+        console.warn('Error fetching workflow settings or no data found, using defaults:', workflowRes.error);
+        setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
+    } else {
+        const raw = workflowRes.data.data as Partial<WorkflowSettings>;
+        setWorkflowSettings({
+            primaryCreditApprovalEmail: raw.primaryCreditApprovalEmail || INITIAL_WORKFLOW_SETTINGS.primaryCreditApprovalEmail,
+            substitutes: Array.isArray(raw.substitutes) ? raw.substitutes : []
+        });
+    }
 
     if (activityRes.error) console.error('Error fetching activity log:', activityRes.error);
     else setActivityLog((activityRes.data || []).map(mapActivityLogFromDb));
@@ -292,17 +319,45 @@ const App: React.FC = () => {
     if (templatesRes.error) console.error('Error fetching templates:', templatesRes.error);
     else setTemplates((templatesRes.data || []).map(mapTemplateFromDb));
     
-    if(lrfRes.error) console.error("Error fetching LRF data", lrfRes.error);
-    else setLrfData(lrfRes.data?.data as LeaseRateFactorsData);
+    // Fallback to defaults
+    if (lrfRes.error || !lrfRes.data || !lrfRes.data.data) {
+        console.warn("Error fetching LRF data or no data found, using defaults", lrfRes.error);
+        setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
+    } else {
+        const loadedLrf = lrfRes.data.data as Partial<LeaseRateFactorsData>;
+        setLrfData({
+            ...INITIAL_LEASE_RATE_FACTORS_DATA,
+            ...loadedLrf,
+            factors: loadedLrf.factors || INITIAL_LEASE_RATE_FACTORS_DATA.factors
+        });
+    }
     
-    if(workflowRes.error) console.error("Error fetching workflow settings", workflowRes.error);
-    else setWorkflowSettings(workflowRes.data?.data as WorkflowSettings);
+    // Fallback to defaults
+    if (workflowRes.error || !workflowRes.data || !workflowRes.data.data) {
+        console.warn("Error fetching workflow settings or no data found, using defaults", workflowRes.error);
+        setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
+    } else {
+        const raw = workflowRes.data.data as Partial<WorkflowSettings>;
+        setWorkflowSettings({
+            primaryCreditApprovalEmail: raw.primaryCreditApprovalEmail || INITIAL_WORKFLOW_SETTINGS.primaryCreditApprovalEmail,
+            substitutes: Array.isArray(raw.substitutes) ? raw.substitutes : []
+        });
+    }
   };
   
   const fetchTcoSettings = async () => {
      const { data, error } = await supabase.from('tco_settings').select('data').single();
-     if(error) console.error("Error fetching TCO settings", error);
-     else setTcoSettings(data?.data as TcoSettings);
+     // FIX: Fallback to defaults if DB is empty or error occurs
+     if (error || !data || !data.data) {
+         console.warn("Error fetching TCO settings or no data found, using defaults", error);
+         setTcoSettings(INITIAL_TCO_SETTINGS);
+     } else {
+         // CRITICAL FIX: Merge with INITIAL settings to fill any missing keys and prevent NaN
+         setTcoSettings({
+             ...INITIAL_TCO_SETTINGS,
+             ...(data.data as Partial<TcoSettings>)
+         });
+     }
   };
   
   const fetchBrandingSettings = async () => {
@@ -543,7 +598,7 @@ const App: React.FC = () => {
               createNewQuote={createNewQuote}
               currentUser={currentProfile}
               profiles={profiles}
-              tcoSettings={tcoSettings}
+              tcoSettings={tcoSettings || INITIAL_TCO_SETTINGS} // FIX: Immediate fallback
               templates={templates}
               onTemplateSave={async (template) => {
                   const { userId, ...rest } = template;
@@ -564,7 +619,7 @@ const App: React.FC = () => {
               <TcoSheet 
                   quote={quote}
                   lrfData={lrfData}
-                  tcoSettings={tcoSettings}
+                  tcoSettings={tcoSettings || INITIAL_TCO_SETTINGS} // FIX: Immediate fallback
                   setTcoSettings={async (settings) => {
                       const { error } = await supabase.from('tco_settings').update({ data: settings }).eq('id', 1);
                       if (error) console.error("Error saving TCO settings", error);
@@ -638,9 +693,28 @@ const App: React.FC = () => {
                       if (authError) {
                           alert(`${t('admin.users.error.createUserFailed')}: ${authError.message}`);
                       } else if (signUpData.user) {
-                          // The profile will be created automatically on the new user's first login.
-                          alert(t('admin.users.userCreationNote'));
-                          await fetchAllAdminData();
+                          // FIX: Manually insert the profile row immediately so the user appears in the list.
+                          // We do not wait for the user to log in (which was the previous auto-creation logic).
+                          const { error: profileInsertError } = await supabase.from('profiles').insert({
+                              id: signUpData.user.id,
+                              name: profileData.name!,
+                              email: profileData.email!,
+                              role: profileData.role!,
+                              company_name: profileData.companyName,
+                              phone: profileData.phone,
+                              logo_base_64: profileData.logoBase64,
+                              commission_percentage: profileData.commissionPercentage,
+                              country: profileData.country,
+                              must_change_password_on_next_login: true // Force password change for admin-created users
+                          });
+
+                          if (profileInsertError) {
+                              console.error("Failed to create profile for new user:", profileInsertError);
+                              alert(`${t('admin.users.error.createProfileFailed')}: ${profileInsertError.message}`);
+                          } else {
+                              alert(t('admin.users.userCreationNote'));
+                              await fetchAllAdminData();
+                          }
                       }
                   }}
                   lrfData={lrfData}
