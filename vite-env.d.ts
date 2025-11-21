@@ -1,6 +1,4 @@
-// By providing explicit definitions for `import.meta.env`, we can resolve
-// TypeScript errors without relying on `vite/client` types, which may not be
-// resolving correctly in the current environment.
+/// <reference types="vite/client" />
 
 interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL: string;
