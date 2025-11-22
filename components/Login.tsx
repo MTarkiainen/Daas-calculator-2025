@@ -55,14 +55,14 @@ const Login: React.FC<LoginProps> = ({ brandingSettings }) => {
               {t('login.title')}
             </p>
           </div>
-          <form className="mt-8 space-y-6 bg-white p-8 shadow-md rounded-xl" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6 bg-white p-8 shadow-md rounded-xl" onSubmit={handleSubmit} autoComplete="off">
             <div className="rounded-md shadow-sm space-y-4">
               <Input
                 label={t('login.emailPlaceholder')}
                 id="email-address"
                 name="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="off" 
                 required
                 placeholder="you@example.com"
                 value={email}
@@ -73,7 +73,7 @@ const Login: React.FC<LoginProps> = ({ brandingSettings }) => {
                     label={t('login.passwordPlaceholder')}
                     id="password"
                     name="password"
-                    autoComplete="current-password"
+                    autoComplete="off"
                     required
                     placeholder="••••••••"
                     value={password}
