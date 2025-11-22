@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { Profile, LeaseRateFactorsData, UserRole, Quote, TcoSettings, Template, QuoteStatus, ActivityLogEntry, ActivityType, LoginAttempt, BrandingSettings, WorkflowSettings } from './types';
 import CalculationSheet from './components/calculation/CalculationSheet';
@@ -102,6 +102,10 @@ const App: React.FC = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Lock to prevent auth state changes from triggering data fetch during user creation
+  const isRestoringSession = useRef(false);
+  
   const { t } = useLanguage();
 
   const createNewQuote = (): Quote => {
@@ -148,9 +152,35 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
-    // When using the mock, this will immediately return a session.
-    // When using real Supabase, it will wait for the auth state.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Safety Timeout: If loading takes longer than 8 seconds, force stop loading and show error/fallback
+    const timeoutId = setTimeout(() => {
+      if (isLoading) {
+        console.warn("Data fetching timed out. Forcing loading to stop.");
+        setIsLoading(false);
+        
+        // If we still don't have a profile after timeout, it's a critical failure
+        if (!currentProfile && session) {
+            setProfileError("Connection timed out. Please check your internet connection or try refreshing.");
+        }
+        
+        // Force defaults for settings if they failed to load
+        if (!lrfData) setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
+        if (!tcoSettings) setTcoSettings(INITIAL_TCO_SETTINGS);
+        if (!workflowSettings) setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
+      }
+    }, 8000);
+
+    return () => clearTimeout(timeoutId);
+  }, [isLoading, session, currentProfile]); // Added currentProfile dependency to check if we need to error out
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Ignore auth changes if we are manually restoring the admin session
+      if (isRestoringSession.current) {
+        console.log("Ignoring auth change due to manual session restoration.");
+        return;
+      }
+
       setSession(session);
 
       if (session?.user) {
@@ -171,29 +201,22 @@ const App: React.FC = () => {
   const fetchData = async (user: SupabaseUser) => {
     setIsLoading(true);
     try {
-      // Use maybeSingle to avoid error if no row is found, returns null data instead
       let { data: profileData, error: profileErrorFromDb } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .maybeSingle();
       
-      // Handle profile not found: if a profile doesn't exist for the user, create it automatically.
       if (!profileData) {
           const { count, error: countError } = await supabase
             .from('profiles')
             .select('*', { count: 'exact', head: true });
 
-          if (countError === null) { // Proceed only if we could count successfully
+          if (countError === null) {
             const isFirstUser = count === 0;
             const userMetaData = user.user_metadata;
-
-            // Determine role: Use metadata if available, otherwise Admin for the first user, Partner for subsequent ones.
             const roleToAssign = userMetaData?.role || (isFirstUser ? UserRole.Admin : UserRole.Partner);
             const nameToAssign = userMetaData?.name || user.email || 'Unknown User';
-            
-            // FIX: Ensure email is never null to satisfy DB constraint.
-            // Some auth providers or manual creation might result in a missing email property temporarily.
             const emailToAssign = user.email || `no-email-${user.id}@placeholder.com`;
 
             const newProfilePayload = {
@@ -216,10 +239,9 @@ const App: React.FC = () => {
             
             if (!insertError && newProfile) {
               profileData = newProfile;
-              profileErrorFromDb = null; // Clear any previous error
+              profileErrorFromDb = null; 
             } else if (insertError) {
               console.error("Failed to auto-create profile:", insertError);
-              // We let it fall through to the error screen, but capture the specific insert error for debugging
               profileErrorFromDb = insertError; 
             }
           }
@@ -270,7 +292,6 @@ const App: React.FC = () => {
     if (quotesRes.error) console.error('Error fetching quotes:', quotesRes.error);
     else setSavedQuotes((quotesRes.data || []).map(mapQuoteFromDb));
     
-    // Fallback to defaults if LRF data is missing or empty
     if (lrfRes.error || !lrfRes.data || !lrfRes.data.data) {
         console.warn('Error fetching LRF data or no data found, using defaults:', lrfRes.error);
         setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
@@ -286,7 +307,6 @@ const App: React.FC = () => {
     if (templatesRes.error) console.error('Error fetching templates:', templatesRes.error);
     else setTemplates((templatesRes.data || []).map(mapTemplateFromDb));
     
-    // Fallback to defaults if workflow settings are missing
     if (workflowRes.error || !workflowRes.data || !workflowRes.data.data) {
         console.warn('Error fetching workflow settings or no data found, using defaults:', workflowRes.error);
         setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
@@ -319,7 +339,6 @@ const App: React.FC = () => {
     if (templatesRes.error) console.error('Error fetching templates:', templatesRes.error);
     else setTemplates((templatesRes.data || []).map(mapTemplateFromDb));
     
-    // Fallback to defaults
     if (lrfRes.error || !lrfRes.data || !lrfRes.data.data) {
         console.warn("Error fetching LRF data or no data found, using defaults", lrfRes.error);
         setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
@@ -332,7 +351,6 @@ const App: React.FC = () => {
         });
     }
     
-    // Fallback to defaults
     if (workflowRes.error || !workflowRes.data || !workflowRes.data.data) {
         console.warn("Error fetching workflow settings or no data found, using defaults", workflowRes.error);
         setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
@@ -347,15 +365,15 @@ const App: React.FC = () => {
   
   const fetchTcoSettings = async () => {
      const { data, error } = await supabase.from('tco_settings').select('data').single();
-     // FIX: Fallback to defaults if DB is empty or error occurs
      if (error || !data || !data.data) {
          console.warn("Error fetching TCO settings or no data found, using defaults", error);
          setTcoSettings(INITIAL_TCO_SETTINGS);
      } else {
-         // CRITICAL FIX: Merge with INITIAL settings to fill any missing keys and prevent NaN
+         // SAFE MERGE: Ensure all required numeric fields are present
          setTcoSettings({
              ...INITIAL_TCO_SETTINGS,
-             ...(data.data as Partial<TcoSettings>)
+             ...(data.data as Partial<TcoSettings>),
+             industryWaccs: (data.data as Partial<TcoSettings>).industryWaccs || INITIAL_TCO_SETTINGS.industryWaccs
          });
      }
   };
@@ -598,7 +616,7 @@ const App: React.FC = () => {
               createNewQuote={createNewQuote}
               currentUser={currentProfile}
               profiles={profiles}
-              tcoSettings={tcoSettings || INITIAL_TCO_SETTINGS} // FIX: Immediate fallback
+              tcoSettings={tcoSettings}
               templates={templates}
               onTemplateSave={async (template) => {
                   const { userId, ...rest } = template;
@@ -619,7 +637,7 @@ const App: React.FC = () => {
               <TcoSheet 
                   quote={quote}
                   lrfData={lrfData}
-                  tcoSettings={tcoSettings || INITIAL_TCO_SETTINGS} // FIX: Immediate fallback
+                  tcoSettings={tcoSettings}
                   setTcoSettings={async (settings) => {
                       const { error } = await supabase.from('tco_settings').update({ data: settings }).eq('id', 1);
                       if (error) console.error("Error saving TCO settings", error);
@@ -652,6 +670,9 @@ const App: React.FC = () => {
                       }
                   }}
                   onUserCreate={async (profileData, password) => {
+                      // Lock to prevent auth state change handler from interfering
+                      isRestoringSession.current = true;
+                      
                       // 1. Get admin's current session to restore it later
                       const { data: { session: adminSession } } = await supabase.auth.getSession();
                       if (!adminSession) {
@@ -660,7 +681,7 @@ const App: React.FC = () => {
                           return;
                       }
 
-                      // 2. Create the new user. This will sign out the admin.
+                      // 2. Create the new user. This will sign out the admin in the client.
                       const { data: signUpData, error: authError } = await supabase.auth.signUp({
                           email: profileData.email!,
                           password: password,
@@ -682,6 +703,9 @@ const App: React.FC = () => {
                           access_token: adminSession.access_token,
                           refresh_token: adminSession.refresh_token,
                       });
+                      
+                      // Unlock after session restore
+                      isRestoringSession.current = false;
 
                       if (sessionError) {
                           alert(t('app.error.sessionRestoreFailed'));
@@ -693,8 +717,6 @@ const App: React.FC = () => {
                       if (authError) {
                           alert(`${t('admin.users.error.createUserFailed')}: ${authError.message}`);
                       } else if (signUpData.user) {
-                          // FIX: Manually insert the profile row immediately so the user appears in the list.
-                          // We do not wait for the user to log in (which was the previous auto-creation logic).
                           const { error: profileInsertError } = await supabase.from('profiles').insert({
                               id: signUpData.user.id,
                               name: profileData.name!,
@@ -705,7 +727,7 @@ const App: React.FC = () => {
                               logo_base_64: profileData.logoBase64,
                               commission_percentage: profileData.commissionPercentage,
                               country: profileData.country,
-                              must_change_password_on_next_login: true // Force password change for admin-created users
+                              must_change_password_on_next_login: true 
                           });
 
                           if (profileInsertError) {
@@ -739,6 +761,12 @@ const App: React.FC = () => {
                        else setWorkflowSettings(settings);
                   }}
                   activityLog={activityLog}
+                  tcoSettings={tcoSettings}
+                  setTcoSettings={async (settings) => {
+                      const { error } = await supabase.from('tco_settings').update({ data: settings }).eq('id', 1);
+                      if (error) console.error("Error saving TCO settings", error);
+                      else setTcoSettings(settings);
+                  }}
               />
           )}
         </div>
