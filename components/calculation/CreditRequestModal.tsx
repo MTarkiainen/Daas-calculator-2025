@@ -27,15 +27,8 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
     isOpen, onClose, quote, setQuote, onSubmit, workflowSettings, currentUser,
 }) => {
   const { t, locale } = useLanguage();
-  const [view, setView] = useState<'hub' | 'form'>('hub');
-  const [activeCountry, setActiveCountry] = useState<string | null>(null);
-
-  // State for the form view
-  const [countryDetails, setCountryDetails] = useState<Partial<CountryCustomerDetails>>({});
-  const [aiText, setAiText] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  
+  // Helper to determine initial view state
   const { countriesInQuote, itemsByCountry, itemsWithoutCountry } = useMemo(() => {
     const allItems = quote.options.flatMap(o => o.items);
     const itemsByCountry: Record<string, CalculationItem[]> = {};
@@ -54,14 +47,39 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
     return { countriesInQuote: Object.keys(itemsByCountry).sort(), itemsByCountry, itemsWithoutCountry };
   }, [quote]);
 
+  // Initialize view based on number of countries
+  const [view, setView] = useState<'hub' | 'form'>('hub');
+  const [activeCountry, setActiveCountry] = useState<string | null>(null);
+
+  // State for the form view
+  const [countryDetails, setCountryDetails] = useState<Partial<CountryCustomerDetails>>({});
+  const [aiText, setAiText] = useState('');
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   useEffect(() => {
-    if (!isOpen) {
-        setTimeout(() => { // Delay reset to allow for closing animation
+    if (isOpen) {
+        // If only one country, go directly to form
+        if (countriesInQuote.length === 1) {
+            const country = countriesInQuote[0];
+            setActiveCountry(country);
+            setCountryDetails(quote.countrySpecificDetails?.[country] || { customerCountry: country });
+            setView('form');
+        } else {
             setView('hub');
             setActiveCountry(null);
+        }
+    } else {
+        // Reset state on close
+        setTimeout(() => { 
+            setView('hub');
+            setActiveCountry(null);
+            setCountryDetails({});
+            setAiText('');
+            setErrorMessage(null);
         }, 300);
     }
-  }, [isOpen]);
+  }, [isOpen, countriesInQuote, quote.countrySpecificDetails]);
 
   const handleEnterDetails = (country: string) => {
     setActiveCountry(country);
@@ -80,13 +98,7 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
     if (!aiText.trim()) return;
     setIsAiLoading(true);
     try {
-        const apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
-        if (!apiKey) {
-            alert("AI features are disabled. Please configure your Gemini API key in the .env file.");
-            setIsAiLoading(false);
-            return;
-        }
-        const ai = new GoogleGenAI({ apiKey });
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: `Extract the following details from the text below. If a value isn't found, leave it as an empty string. Text: "${aiText}"`,
@@ -146,22 +158,109 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
   const handleSaveCountryDetails = () => {
     if (!validateForm()) return;
 
-    setQuote(prevQuote => ({
-      ...prevQuote,
+    const updatedQuote = {
+      ...quote,
       countrySpecificDetails: {
-        ...prevQuote.countrySpecificDetails,
+        ...quote.countrySpecificDetails,
         [activeCountry!]: countryDetails,
       }
-    }));
-    setView('hub');
+    };
+    
+    setQuote(updatedQuote);
+
+    // If only one country, saving details essentially prepares it for sending immediately
+    // or returns to the single-country view if we want a confirmation step.
+    // For simplicity, if multiple countries, go back to hub. If single, stay here or show success?
+    // The requirements say "sends that one only". So let's change the button behavior in renderForm.
+    
+    if (countriesInQuote.length > 1) {
+        setView('hub');
+    } else {
+        // For single country, 'Save' basically just updates state. The user needs to click 'Send'
+        // We can make the form submission trigger the send directly for single country flows?
+        // Or keep the "Prepare Request" button.
+        // Let's keep the "Prepare Request" button in the form view for single country flow.
+    }
   };
 
   const getRecipientEmail = () => {
+    if (!workflowSettings) return '';
     const today = new Date().toISOString().split('T')[0];
-    const activeSubstitute = workflowSettings.substitutes.find(s => s.startDate <= today && s.endDate >= today);
-    return activeSubstitute?.email || workflowSettings.primaryCreditApprovalEmail;
+    const substitutes = workflowSettings.substitutes || [];
+    const activeSubstitute = substitutes.find(s => 
+        s.startDate <= today && s.endDate >= today
+    );
+    return activeSubstitute?.email || workflowSettings.primaryCreditApprovalEmail || '';
   };
   
+  const generatePdfForCountry = (country: string) => {
+      const doc = new jsPDF();
+      const countryData = countryDetails; // Use current form state
+      const countryItems = itemsByCountry[country];
+      const formatCurrency = (val: number) => new Intl.NumberFormat(locale, { style: 'currency', currency: quote.currency || 'EUR' }).format(val);
+
+      doc.setFontSize(18).text(`Credit Request for ${countryData.customerName}`, 14, 20);
+      doc.setFontSize(12).text(`Project: ${quote.projectName}`, 14, 28);
+      doc.setFontSize(10).text(`Country: ${country}`, 14, 34);
+      
+      let finalY = 40;
+
+      autoTable(doc, {
+            startY: finalY,
+            head: [[{content: t('pdf.customerDetails.title'), colSpan: 2, styles: {fillColor: [230, 230, 230], textColor: 20}}]],
+            body: [
+                [t('creditModal.companyName'), countryData.customerName],
+                [t('creditModal.address'), `${countryData.customerAddress}, ${countryData.customerPostalCode} ${countryData.customerCity}`],
+                [t('creditModal.vatId'), countryData.customerVatId],
+                [t('creditModal.contactName'), countryData.customerContactName],
+                [t('creditModal.contactEmail'), countryData.customerContactEmail],
+                [t('creditModal.contactPhone'), countryData.customerContactPhone],
+            ],
+            theme: 'grid'
+        });
+        finalY = (doc as any).lastAutoTable.finalY + 5;
+        
+        autoTable(doc, {
+            startY: finalY,
+            head: [[t('pdf.table.asset'), t('pdf.table.qty'), t('pdf.table.term'), t('pdf.table.total')]],
+            body: countryItems.map(item => [
+                `${item.assetType} - ${item.brand}`,
+                item.quantity,
+                item.leaseTerm,
+                formatCurrency(item.hardwareCost * item.quantity)
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [8, 5, 147] }
+        });
+
+      doc.save(`Credit-Request-${country}-${countryData.customerName}.pdf`);
+  };
+
+  const handleSendSingleRequest = () => {
+      if (!validateForm()) return;
+      
+      // Ensure quote state is up to date with form data before sending
+      const updatedQuote = {
+        ...quote,
+        countrySpecificDetails: {
+            ...quote.countrySpecificDetails,
+            [activeCountry!]: countryDetails,
+        },
+        status: QuoteStatus.CreditPending
+      };
+      
+      generatePdfForCountry(activeCountry!);
+      
+      const recipient = getRecipientEmail();
+      const subject = `Credit Request for ${countryDetails.customerName} (${activeCountry}) from ${currentUser.companyName || currentUser.name}`;
+      const body = `Dear Credit Team,\n\nPlease find the credit request attached for your review.\n\nProject: ${quote.projectName}\nCustomer: ${countryDetails.customerName}\nCountry: ${activeCountry}\n\nThank you,\n${currentUser.name}`;
+      
+      window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      onSubmit(updatedQuote, activeCountry!);
+      onClose();
+  };
+
   const generateConsolidatedPdf = () => {
     const doc = new jsPDF();
     const formatCurrency = (val: number) => new Intl.NumberFormat(locale, { style: 'currency', currency: quote.currency || 'EUR' }).format(val);
@@ -281,7 +380,7 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
   );
 
   const renderForm = () => (
-    <form onSubmit={(e) => { e.preventDefault(); handleSaveCountryDetails(); }} className="space-y-6">
+    <form onSubmit={(e) => { e.preventDefault(); countriesInQuote.length === 1 ? handleSendSingleRequest() : handleSaveCountryDetails(); }} className="space-y-6">
         <div className="p-4 border rounded-lg bg-slate-50">
             <label className="block text-sm font-medium text-slate-700 mb-1">{t('creditModal.ai.label')}</label>
             <textarea
@@ -314,8 +413,14 @@ const CreditRequestModal: React.FC<CreditRequestModalProps> = ({
         </div>
         {errorMessage && <div className="p-3 bg-red-100 border-l-4 border-red-500 text-red-700 text-sm"><p className="font-bold">{t('creditModal.error.title')}</p><p>{errorMessage}</p></div>}
         <div className="mt-6 flex justify-between">
-            <Button type="button" variant="secondary" onClick={() => setView('hub')} leftIcon={<ChevronLeftIcon />}>{t('common.back')}</Button>
-            <Button type="submit">{t('common.save')}</Button>
+            {/* Back button behavior depends on if we are in single or multi mode */}
+            <Button type="button" variant="secondary" onClick={() => countriesInQuote.length === 1 ? onClose() : setView('hub')} leftIcon={<ChevronLeftIcon />}>
+                {countriesInQuote.length === 1 ? t('common.cancel') : t('common.back')}
+            </Button>
+            
+            <Button type="submit">
+                {countriesInQuote.length === 1 ? t('creditModal.sendButton') : t('common.save')}
+            </Button>
         </div>
     </form>
   );
