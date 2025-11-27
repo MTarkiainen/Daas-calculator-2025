@@ -1,2813 +1,334 @@
-const en = {
-  app: {
-    title: "IT Hardware Rental Portal",
-    welcome: "Welcome, {name} ({role})",
-    lastLogin: "Last login",
-    myProfile: "My Profile",
-    logout: "Logout",
-    copyright: "© {year} CHG-MERIDIAN. All rights reserved.",
-    error: {
-      profileMissing: "Your user profile is missing or corrupted. Please contact an administrator.",
-      sessionExpired: "Your session has expired. Please log in again to create a user.",
-      sessionRestoreFailed: "Could not restore your session after creating the user. Please log in again.",
-    }
-  },
-  tabs: {
-    calculator: "Calculator",
-    tco: "TCO Analysis",
-    admin: "Admin",
-  },
-  common: {
-    edit: "Edit",
-    save: "Save",
-    saving: "Saving...",
-    saveChanges: "Save Changes",
-    saved: "Saved",
-    cancel: "Cancel",
-    na: "N/A",
-    cost: "Cost",
-    costInCurrency: "Cost ({currency})",
-    description: "Description",
-    back: "Back",
-    next: "Next",
-    step: "Step {current} of {total}",
-    month: "month",
-    months: "months",
-    monthsShort: "mo",
-    yes: "Yes",
-    no: "No",
-    custom: "Custom",
-    avgFor: "avg. for",
-    loading: "Processing...",
-    close: "Close"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Laptop",
-      Mobile: "Mobile",
-      Tablet: "Tablet",
-      Desktop: "Desktop",
-      OtherIT: "Other IT",
-      Accessory: "Accessory",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Other",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Other",
-    },
-    Condition: {
-      New: "New",
-      Used: "Used",
-    },
-    AdditionalService: {
-      Deployment: "Deployment",
-      PreConfiguration: "Pre-configuration (staging)",
-      Delivery: "Delivery",
-      Support: "Support (24h Swap)",
-    }
-  },
-  password: {
-    changeTitle: "Change Your Password",
-    changeSubtitle: "For security, you must set a new password to continue.",
-    newPassword: "New Password",
-    confirmNewPassword: "Confirm New Password",
-    updatePasswordButton: "Update Password & Login",
-    error: {
-      allFieldsRequired: "All password fields are required.",
-      mismatch: "The new passwords do not match.",
-      incorrectOld: "The old password you entered is incorrect.",
-      minLength: "Must be at least 10 characters long.",
-      uppercase: "Must contain at least one uppercase letter.",
-      lowercase: "Must contain at least one lowercase letter.",
-      number: "Must contain at least one number.",
-      specialChar: "Must contain at least one special character.",
-    },
-  },
-  login: {
-    title: "Sign in to your account",
-    subtitle: "IT Hardware Rental Portal",
-    emailPlaceholder: "Email address",
-    passwordPlaceholder: "Password",
-    signInButton: "Sign in",
-    forgotPassword: "Forgot your password?",
-    resetModal: {
-      title: "Reset Password",
-      instructions: "Enter your email address and we will send you a link to reset your password.",
-      emailLabel: "Email Address",
-      sendButton: "Send Reset Link",
-      success: "Check your email for a password reset link.",
-      error: "An error occurred. Please try again or contact an administrator.",
-    },
-    error: {
-      bothFieldsRequired: "Please enter both email and password.",
-      invalidCredentials: "Invalid email or password. Please try again.",
-    },
-  },
-  calculation: {
-    title: "Create Calculation",
-    option: "Option",
-    removeOption: "Remove",
-    packingService: "Packing service (End of lease)",
-    packingServiceOption: "Packing Service Option",
-    disclaimer: "(*) All pricing shown is indicative only and is not an offer capable of acceptance. Applicants are subject to credit assessment by CHG-MERDIAN and a minimum order quantity of 100 devices is required.",
-    buttons: {
-      new: "New",
-      dashboard: "Dashboard",
-      saveTemplate: "Save as Template",
-      generatePdf: "Generate PDF",
-      addItemTo: "Add Item to {optionName}",
-      requestCreditApproval: "Request Credit Approval",
-      addOption: "Add Option",
-    },
-    creditRequestAdminTooltip: "This feature is for Partner users to request credit approval.",
-    creditRequestPartnerDisabledTooltip: "Please add a customer name and at least one item to the quote to enable this feature.",
-    priceView: {
-      label: "Price Display",
-      detailed: "Detailed Breakdown",
-      bundled: "Bundled Price",
-    },
-    customerName: "Customer Name",
-    customerNamePlaceholder: "Enter customer's name",
-    projectName: "Project Name",
-    projectNamePlaceholder: "Enter project name",
-    expectedStartDate: "Expected Contract Start Date",
-    empty: {
-      title: "This option is empty.",
-      description: 'Click "Add Item" to get started.',
-    },
-    table: {
-      asset: "Asset",
-      details: "Details",
-      term: "Term",
-      qty: "Qty",
-      monthlyCost: "Monthly Cost",
-      totalCost: "Total Cost",
-      monthlyBundled: "Bundled Monthly",
-      totalBundled: "Bundled Total",
-      commission: "Commission",
-      actions: "Actions",
-      os: "OS",
-      condition: "Condition",
-      country: "Country",
-      nonReturn: "Non-Return",
-      servicesLabel: "Services (One-Time)",
-      unit: "Unit",
-    },
-    actions: {
-      duplicate: "Duplicate item",
-      edit: "Edit item",
-      remove: "Remove item",
-    },
-    editModal: {
-      title: "Edit Item",
-      servicesLabel: "Additional Services (One-Time Cost)",
-    },
-    templateModal: {
-      title: "Save as Template",
-      nameLabel: "Template Name",
-      namePlaceholder: "e.g., Standard Employee Setup",
-      saveButton: "Save Template",
-    },
-    wizard: {
-      title: "Add Item Wizard",
-      assetType: "Asset Type",
-      brand: "Brand",
-      os: "Operating System",
-      condition: "Condition",
-      country: "Country",
-      selectCountry: "Select country...",
-      hardwareCost: "Hardware Unit Price ({currency})",
-      quantity: "Number of Units",
-      leaseTerm: "Lease Term (Months)",
-      nonReturnOption: "Non-Return Option",
-      customDescriptionLabel: "Asset Description",
-      customDescriptionPlaceholder: "e.g., High-performance scanner",
-      submitButton: "Add to Calculation",
-      step1: {
-        title: "Step 1: Hardware Details",
-      },
-      step2: {
-        title: "Step 2: Services",
-        description: "All costs entered here are one-time costs per asset.",
-        supportHelpText: "Note: Total cost per asset for the entire lease term.",
-        otherServiceDescription: "Other Service",
-        otherServicePlaceholder: "e.g. Custom Software Setup",
-      },
-      step3: {
-        title: "Step 3: Lease Term & Summary",
-        summaryTitle: "Item Summary",
-        asset: "Asset",
-        quantity: "Quantity",
-        totalUnitCost: "Total Unit Cost",
-        leaseTerm: "Lease Term",
-      },
-    },
-    error: {
-      cannotDeleteLastOption: "You cannot delete the last option.",
-      templateNameAndItemsRequired: "Please provide a name and ensure the active option has items.",
-    },
-    confirm: {
-      deleteOption: "Are you sure you want to delete this option?",
-    },
-  },
-  summary: {
-    hardwareValue: "Hardware Value",
-    oneTimeServices: "Total One-Time Services",
-    totalCommission: "Total Commission",
-    totalMonthlyCost: "Total Monthly Cost",
-    totalLeaseCost: "Total Lease Cost",
-    totalMonthlyBundled: "Total Monthly Bundled Rate",
-    totalBundledCost: "Total Bundled Lease Cost",
-  },
-  dashboard: {
-    title: "Dashboard",
-    tabs: {
-      quotes: "Quotes",
-      templates: "Templates",
-    },
-    searchPlaceholder: "Search customers or projects...",
-    allStatuses: "All Statuses",
-    untitledCustomer: "Untitled Customer",
-    untitledProject: "Untitled Project",
-    updated: "Updated",
-    loadButton: "Load",
-    useTemplateButton: "Use Template",
-    projectFromTemplate: "{templateName} Project",
-    noQuotesFound: "No quotes found.",
-    noTemplatesFound: "No templates found.",
-    confirmDeleteQuote: "Are you sure you want to delete this quote?",
-    confirmDeleteTemplate: "Are you sure you want to delete this template?",
-  },
-  aiSummary: {
-    button: "Generate Summary",
-    modalTitle: "AI-Generated Quote Summary",
-    loadingText: "Generating summary, please wait...",
-    copyButton: "Copy to Clipboard",
-    copied: "Copied!",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "You are a professional sales assistant for an IT leasing company.",
-      task: "Your task is to generate a concise, compelling executive summary for a customer proposal based on the following quote details. The summary should be well-written, professional, and highlight the key value propositions.",
-      customer: "Customer",
-      project: "Project",
-      notSpecified: "Not specified",
-      optionsSummary: "Quote Options Summary",
-      tcoResults: "TCO Analysis Results",
-      tcoSavingDetail: "By leasing instead of purchasing, the customer can achieve a potential saving of {amount} {currency}.",
-      tcoPercentageDetail: "This represents a {percent}% reduction in the Total Cost of Ownership over the average lease term of {term} months.",
-      instructionsTitle: "Instructions",
-      instruction1: "Start with a polite opening addressing the customer.",
-      instruction2: "Briefly summarize the proposed options.",
-      instruction3WithTco: "Emphasize the financial benefits, especially the TCO savings. Frame it as a strategic advantage (e.g., preserving capital, predictable costs).",
-      instruction3WithoutTco: "Mention the benefits of the included services (e.g., simplified management, predictable operational expenses).",
-      instruction4WithTco: "Mention the benefits of the included services (e.g., simplified management, minimized downtime).",
-      instruction5: "End with a professional closing statement, encouraging the next step (e.g., a follow-up discussion).",
-      instruction6: "The tone should be confident, professional, and customer-focused.",
-      instruction7: "Do not include placeholders like \"[Your Name]\". The summary should be ready to be copied and pasted directly into an email body or a proposal document.",
-      languageInstruction: "VERY IMPORTANT: The entire response must be in the following language: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "You are a helpful and friendly AI assistant for the 'IT Hardware Rental Portal'.",
-      appDescription: "This application helps IT hardware rental partners create calculations and offers for their customers. It has three main sections: 1. Calculator: To build quotes with different hardware, services, and lease terms. 2. TCO Analysis: To compare the total cost of ownership of leasing versus buying hardware. 3. Admin Panel: For managing users, lease rate factors, and other settings.",
-      goal: "Your goal is to answer user questions about how to use the application, explain financial terms like TCO and WACC, and provide general assistance. Be concise and clear in your answers.",
-      languageInstruction: "Always respond in the user's selected language: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    expiredOn: "Rates Expired on: {date}",
-    validUntil: "Rates valid until: {date}",
-    lastUpdated: "Last updated on {date} by {user}",
-    unknownUser: "Unknown User",
-    warningExpired: "These rates are more than 6 months old and may be out of date.",
-    warningExpiresSoon: "These rates will expire in {days} days.",
-    requestUpdateButton: "Request Update",
-    updateRequestSent: "An email has been sent to {name} ({email}) requesting an update to the Lease Rate Factors.",
-    updateRequestFailed: "Notification admin not found. Please contact support.",
-  },
-  profile: {
-    title: "My Profile",
-    name: "Name",
-    companyName: "Company Name",
-    phone: "Phone",
-    email: "Email",
-    companyLogo: "Company Logo",
-    uploadLogoButton: "Upload Logo",
-    saveButton: "Save Profile",
-    changePasswordButton: "Change Password",
-    oldPassword: "Old Password",
-    newPassword: "New Password",
-    confirmNewPassword: "Confirm New Password",
-  },
-  tco: {
-    title: "Total Cost of Ownership Analysis",
-    empty: {
-      title: "The calculation is empty.",
-      description: 'Please add items in the "Calculator" tab to see the TCO analysis.',
-    },
-    assumptions: {
-      title: "TCO Assumptions",
-      operationalCosts: "Operational Costs",
-      deploymentCost: "Deployment Cost / Device",
-      supportHours: "IT Support Hours / Device / Year",
-      staffRate: "IT Staff Hourly Rate",
-      eoldCost: "End-of-Life Cost / Device",
-      downtimeProductivity: "Downtime & Productivity",
-      failures: "Failures / Device / Year",
-      downtimeHours: "Downtime Hours / Failure",
-      employeeCost: "Avg. Employee Cost / Hour",
-      assetValue: "Asset Value",
-      residualValue: "Residual Value (%)",
-      table: {
-        assumption: "Assumption",
-        value: "Value"
-      }
-    },
-    tuning: {
-      button: "Tune with AI",
-      modalTitle: "AI-Powered TCO Tuning",
-      description: "Based on your quote and industry, the AI has suggested the following adjustments to create a more realistic TCO comparison.",
-      table: {
-        parameter: "Parameter",
-        current: "Current",
-        suggested: "Suggested",
-        reasoning: "AI's Reasoning",
-      },
-      applyButton: "Apply Selected ({count})",
-      noSuggestions: "The AI reviewed your current assumptions and found them to be reasonable for the provided quote context. No changes are suggested at this time.",
-    },
-    chart: {
-      title: "Lease vs. Purchase Cost Comparison",
-      leaseCostLabel: "Total Lease Cost",
-      purchaseCostLabel: "Total Ownership Cost",
-    },
-    breakdown: {
-      title: "Detailed Cost Breakdown",
-      averageLeaseTerm: "Average Lease Term (Value-Weighted)",
-    },
-    table: {
-      category: "Cost Category",
-      purchase: "Purchase Scenario",
-      lease: "Lease Scenario",
-      hardwareCost: "Hardware Cost (Initial)",
-      capitalCost: "Capital Cost (WACC)",
-      deployment: "Deployment Costs",
-      support: "Ongoing IT Support",
-      downtime: "Productivity Loss (Downtime)",
-      eold: "End-of-Life Disposal",
-      residualValue: "Less: Residual Value",
-      leasePayments: "Total Lease Payments",
-      totalTco: "Total Cost of Ownership",
-    },
-    savingsWithLease: "Savings with Lease",
-    included: "Included",
-    mitigated: "Mitigated",
-    wacc: {
-      title: "Capital Cost (WACC)",
-      industry: "Industry",
-      industryAverage: "WACC (Industry average)",
-      applyIndividual: "Apply WACC (Individual)",
-      individualWacc: "WACC (Individual) in %",
-    },
-    glossary: {
-      title: "Glossary",
-      wacc: "WACC = Weighted Average Cost of Capital. The WACC is used to calculate the time value of money, providing a more accurate 'effective purchase price'. This is a simplified model for illustrative purposes.",
-    },
-    industries: {
-      Automotive: "Automotive",
-      Banking: "Banking",
-      HealthcarePharma: "Healthcare & Pharma",
-      Industrialproduction: "Industrial production",
-      RetailConsumerGoods: "Retail & Consumer Goods",
-      Realestate: "Real estate",
-      Media: "Media",
-      SoftwareIndustry: "Software Industry",
-      Technology: "Technology",
-      Telecommunication: "Telecommunication",
-      TransportLogistics: "Transport & Logistics",
-      Insurance: "Insurance",
-      Utilities: "Utilities",
-      Materialsindustry: "Materials industry",
-    }
-  },
-  admin: {
-    branding: {
-      title: "Branding Management",
-      appLogo: "Application Logo (Login Page)",
-      currentLogo: "Current Logo",
-      uploadNewLabel: "Upload a new logo",
-      uploadButton: "Upload Logo",
-      removeButton: "Remove Custom Logo",
-      uploadHint: "Recommended: SVG or PNG with transparent background.",
-      confirmRemoveLogo: "Are you sure you want to remove the custom logo and revert to the default?"
-    },
-    users: {
-      title: "User Management",
-      addUserButton: "Add User",
-      table: {
-        name: "Name",
-        emailCompany: "Email / Company",
-        role: "Role",
-        totalCalculatedValue: "Total Calculated Value",
-        totalCommissionEarned: "Total Commission Earned",
-        actions: "Actions",
-      },
-      modal: {
-        addTitle: "Add New User",
-        editTitle: "Edit User",
-        name: "Name",
-        email: "Email",
-        password: "Password",
-        resetPassword: "Reset Password",
-        sendResetLink: "Send Reset Link",
-        passwordPlaceholderEdit: "Leave blank to keep unchanged",
-        forceResetNote: "This will require the user to change their password on next login.",
-        role: "Role",
-        selectRole: "Select a role",
-        partnerDetailsTitle: "Partner Details",
-        companyName: "Company Name",
-        phone: "Phone",
-        country: "Country",
-        selectCountry: "Select a country",
-        commission: "Commission (%)",
-        commissionHelpText: "The commission is calculated on the hardware cost and spread over the lease term, increasing the monthly lease factor.",
-        companyLogo: "Company Logo",
-        uploadLogoButton: "Upload Logo",
-      },
-      error: {
-        fillRequiredFields: "Please fill name, email, and role.",
-        passwordRequired: "Password is required for new users.",
-        commissionRange: "Commission must be a valid percentage.",
-        updateFailed: "Failed to update profile",
-        profileSavedButResetFailed: "Profile saved, but failed to send password reset email",
-        createUserFailed: "Failed to create user",
-        createProfileFailed: "User auth record created, but profile creation failed. Please fix manually.",
-        createUserRollback: "Failed to create user profile. The user has been removed. Please try again.",
-      },
-      success: {
-        profileSavedAndResetSent: "Profile saved. A password reset link has been sent to {email}.",
-      },
-      warning: {
-        adminLogoutOnCreate: "Warning: Creating a new user will sign you out of your admin account. You will need to log back in manually afterwards.",
-      },
-      inviteSuccess: "Invitation sent to {email}. They will receive an email to set their password.",
-      resetSuccess: "Password reset link sent to {email}.",
-      userCreationNote: "The user will receive an email to set up their password and log in.",
-    },
-    lrf: {
-      title: "Lease Rate Factor Management",
-      description: "Set specific lease rates. Empty fields will automatically use the rate from the parent category (e.g., 'Laptop-Windows' will use 'Laptop' rates if its own field is blank).",
-      table: {
-        categoryOsBrand: "Category / OS / Brand",
-        termMonths: "{term} Months",
-      },
-      allUsedAssets: "All Used Assets",
-      globalSettings: {
-        title: "Global Calculation Settings",
-        nonReturnUpliftLabel: "Non-Return Uplift (% per 1% non-return)",
-        nonReturnUpliftHelp: "e.g., enter 0.8 for a 0.8% uplift on the LRF per 1% non-return. A 5% option will increase the LRF by 4%.",
-        packingServiceCostLabel: "Packing Service Cost per Asset",
-      },
-      notifications: {
-        title: "Notification Settings",
-        description: "Select an admin to receive email notifications when partners request an LRF update.",
-        recipientLabel: "Notification Recipient",
-      },
-      history: {
-        title: "History Log",
-        date: "Date",
-        admin: "Admin",
-      },
-      upload: {
-          button: "Upload CSV",
-          sampleLink: "Download CSV template.",
-          excelHint: "(You can edit this in Excel and save as a .csv file).",
-          confirm: "This will overwrite all current LRFs with data from the file. Are you sure you want to proceed?",
-          success: "LRFs imported successfully. Click 'Save Changes' to apply them.",
-          error: {
-            generic: "Error parsing CSV file",
-            header: "Invalid CSV header. The header must contain 'key' followed by the lease terms (12, 24, etc.).",
-            noData: "No valid LRF data found in the file."
-          }
-      }
-    },
-    loginHistory: {
-      title: "Login History",
-      table: {
-        date: "Date",
-        user: "User",
-        status: "Status",
-        attemptedEmail: "Attempted Email",
-      },
-      statuses: {
-        Success: "Success",
-        Failure: "Failure",
-      },
-      noHistory: "No login attempts have been recorded yet.",
-    },
-    workflow: {
-      title: "Workflow & Notifications",
-      currentRecipient: "Current Recipient",
-      primaryEmail: {
-        title: "Credit Approval Recipient",
-        description: "This email address will receive all credit approval requests sent by partners.",
-      },
-      substitutes: {
-        title: "Vacation / Substitute Forwarding",
-        description: "Add a substitute email address for a specific time frame. Requests will be automatically forwarded if the date falls within the range.",
-        add: "Add New Substitute",
-        email: "Substitute Email",
-        startDate: "Start Date",
-        endDate: "End Date",
-        addButton: "Add Substitute",
-        status: "Status",
-        statuses: {
-          active: "Active",
-          past: "Past",
-          upcoming: "Upcoming",
-        },
-        error: {
-          allFieldsRequired: "Please fill in all fields for the substitute.",
-        },
-        confirmRemove: "Are you sure you want to remove this substitute?",
-      },
-    },
-    activityLog: {
-      title: "Activity Log",
-      table: {
-        date: "Date",
-        user: "User",
-        activity: "Activity",
-        details: "Details",
-      },
-      activities: {
-        CreditRequestSent: "Credit Request Sent",
-      },
-      noActivity: "No activity has been recorded yet.",
-    },
-  },
-  pdf: {
-    quoteFor: "Quote for: {customerName}",
-    project: "Project: {projectName}",
-    customerStatus: "Customer Status",
-    currency: "Currency",
-    startDate: "First Possible Start Date",
-    assetSummary: {
-      title: "Asset Summary",
-      assetClass: "Asset Class",
-      totalValue: "Total Value",
-      leaseTerms: "Lease Terms (Months)",
-    },
-    customerDetails: {
-      title: "Customer Details",
-      companyName: "Company Name",
-      address: "Address",
-      city: "City",
-      postalCode: "Postal Code",
-      country: "Country",
-      vatId: "VAT / Company ID",
-      contactName: "Contact Name",
-      contactEmail: "Contact Email",
-      contactPhone: "Contact Phone"
-    },
-    table: {
-      asset: "Asset",
-      details: "Details",
-      term: "Term",
-      qty: "Qty",
-      monthly: "Monthly",
-      total: "Total",
-      monthlyBundled: "Bundled Monthly",
-      totalBundled: "Bundled Total",
-    },
-    subtotalFor: "Subtotal for",
-    subtotalBundledFor: "Bundled Subtotal for",
-    optionsSummary: "Options Summary",
-    totalMonthlyCost: "Total Monthly Cost",
-    totalLeaseCost: "Total Lease Cost",
-    totalMonthlyBundled: "Total Bundled Monthly",
-    totalBundledCost: "Total Bundled Cost",
-    fileName: "Quote",
-    serviceSummary: {
-      title: "Service Summary (One-Time Costs)",
-      service: "Service",
-      totalCost: "Total Cost"
-    },
-    serviceDescriptions: {
-      title: "Included Service Descriptions",
-      Deployment: "On-site or remote setup and installation of devices, ensuring they are ready for immediate use by employees.",
-      PreConfiguration: "Pre-loading of company-specific software images, applications, and security settings before delivery.",
-      Delivery: "Secure logistics and delivery of hardware directly to office locations or employee homes.",
-      Support: "A 24-hour replacement service for defective devices to minimize employee downtime.",
-      PackingService: "Our team will handle the professional packing of all assets at the end of the lease, ensuring they are secure for transport.",
-      Other: "Custom services as described in the quote."
-    },
-    standardServices: {
-      title: "Standard Included Services",
-      invoice: {
-        title: "Invoice Management",
-        desc: "Comprehensive invoice management with automated data capture for seamless financial tracking and reporting."
-      },
-      tesma: {
-        title: "TESMA® Asset & Contract Management",
-        desc: "Full access to our TESMA® platform, providing transparent, real-time management of your assets, contracts, and financial data."
-      },
-      eol: {
-        title: "Secure End-of-Life Services",
-        desc: "Certified data erasure and professional handling of assets at the end of the lease, including secure logistics and matching to ensure full compliance and security."
-      }
-    },
-    tco: {
-      summary: "Based on a value-weighted average term of {term} and a WACC of {wacc}.",
-      savings: "Leasing offers potential savings of {amount} ({percent}) over purchasing.",
-    }
-  },
-  creditModal: {
-    title: "Request Credit Approval",
-    multiCountryTitle: "Multi-Country Credit Approval Hub",
-    hub: {
-      description: "This project includes assets for multiple countries. Please provide customer details for each country below and send the requests individually.",
-      description_consolidated: "This project includes assets for multiple countries. Please enter the legal entity details for each country below. Once all details are complete, you can prepare a single consolidated request to send to your primary credit team for internal coordination.",
-      assetsForCountry: "Assets for {country}",
-      itemSummary: "{count} items, total value {value}",
-      status: "Status",
-      statusNeeded: "Details Needed",
-      statusComplete: "Details Complete",
-      statusReady: "Ready to Send",
-      statusSent: "Request Sent",
-      enterDetailsButton: "Enter Customer Details",
-      editDetailsButton: "Edit Details",
-      sendButton: "Prepare & Send Request",
-      consolidatedButton: "Prepare Consolidated Request",
-      consolidatedButtonTooltip: "Please enter details for all countries before preparing the request.",
-      noCountryWarning: "Some items in this quote do not have a country assigned. Please edit each item and select a country before requesting approval.",
-    },
-    form: {
-      title: "Enter Customer Details for {country}",
-    },
-    customerDetails: "Customer Company Details",
-    companyName: "Company Name",
-    address: "Full Street Address",
-    city: "City",
-    postalCode: "Postal Code",
-    country: "Country",
-    vatId: "VAT / Company ID",
-    creditType: "New credit or existing CHG customer?",
-    creditTypeNew: "New Credit",
-    creditTypeExisting: "Existing Customer",
-    currency: "Currency",
-    contactPerson: "Primary Contact Person",
-    contactName: "Contact Name",
-    contactEmail: "Contact Email",
-    contactPhone: "Contact Phone",
-    sendRequestButton: "Prepare Request",
-    ai: {
-      label: "Auto-fill with AI",
-      description: "Paste customer details from an email signature or document to fill the form automatically.",
-      placeholder: "Paste text here...",
-      button: "Fill from Text"
-    },
-    email: {
-      subject: "Credit Approval Request for {customer} from {partner}",
-      multiCountrySubject: "Credit Approval Request for {customer} ({country}) from {partner}",
-      bodyWithAttachment: "Dear Credit Team,\n\nPlease find the quote attached for your review and approval.\n\nProject: {projectName}\nCustomer: {customerName}\n\nThank you,\n{partnerName}",
-    },
-    error: {
-      title: "Missing Information",
-      missingFields: "Please fill in the following required fields: {fields}"
-    }
-  },
-  cart: {
-    title: "Shopping Cart",
-    empty: "Your cart is empty.",
-    subtotalMonthly: "Subtotal (Monthly)",
-    proceedToOrder: "Proceed to Order",
-  },
-  legal: {
-    checkboxLabel: "I have read and agree to the",
-    termsLink: "Terms and Conditions",
-    modal: {
-      title: "Terms and Conditions",
-      close: "Close",
-    },
-    terms: {
-      legalDisclaimer: "LEGAL DISCLAIMER: The following terms and conditions are for illustrative purposes only and do not constitute legal advice. You must consult with a qualified legal professional to draft terms and conditions that are appropriate for your specific business, jurisdiction, and legal requirements.",
-      lastUpdated: "Last Updated: {date}",
-      acceptance: {
-        title: "1. Acceptance of Terms",
-        p1: "By logging into and using this IT Hardware Rental Portal (the \"Service\"), you agree to be bound by these Terms and Conditions (\"T&Cs\"). If you do not agree to these terms, do not use the Service."
-      },
-      useOfService: {
-        title: "2. Use of the Service",
-        p1: "The Service is provided to assist partners of CHG-MERIDIAN in creating calculations and offers for their customers. You agree to use the Service only for its intended purpose and in compliance with all applicable laws and regulations."
-      },
-      data: {
-        title: "3. Personal Data Management",
-        p1: "In compliance with the General Data Protection Regulation (GDPR) and other applicable data protection laws, we are committed to protecting your privacy. By using the Service, you acknowledge and agree that your data is securely transmitted and stored in a centralized cloud database.",
-        listTitle: "Data We Collect:",
-        li1: "User Account Information: Your name, email address, company name, phone number, and encrypted password information.",
-        li2: "Quote Information: Customer names, project names, and details of calculations you create.",
-        li3: "Login History: We record timestamps and success/failure statuses of login attempts for security purposes.",
-        purposeTitle: "Purpose of Data Collection:",
-        purposeLi1: "To provide, maintain, and improve the Service.",
-        purposeLi2: "To identify you as a user and manage your account.",
-        purposeLi3: "To allow you to create, save, and manage rental quotes.",
-        purposeLi4: "For security auditing and to prevent fraudulent activity.",
-        storageTitle: "Data Storage and Security:",
-        storageLi1: "Your data is stored on secure servers managed by our database provider (Supabase). We take reasonable measures to protect your information from unauthorized access, use, or disclosure.",
-        storageLi2: "You are responsible for maintaining the confidentiality of your account password.",
-        rightsTitle: "Your Rights:",
-        rightsLi1: "You have the right to access, rectify, or request erasure of your personal data. To exercise these rights, please contact the administrator of this portal within your organization."
-      },
-      intellectualProperty: {
-          title: "4. Intellectual Property",
-          p1: "The Service and its original content, features, and functionality are and will remain the exclusive property of CHG-MERIDIAN and its licensors."
-      },
-      disclaimer: {
-          title: "5. Disclaimer of Warranties",
-          p1: "The Service is provided \"as is\" and \"as available\" without any warranties of any kind, either express or implied. All calculations are indicative and non-binding."
-      },
-      liability: {
-          title: "6. Limitation of Liability",
-          p1: "In no event shall CHG-MERIDIAN, nor its directors, employees, or partners, be liable for any indirect, incidental, special, consequential or punitive damages arising out of your use of the Service."
-      },
-      governingLaw: {
-          title: "7. Governing Law",
-          p1: "These T&Cs shall be governed by the laws of the jurisdiction in which CHG-MERIDIAN operates, without regard to its conflict of law provisions."
-      },
-      changes: {
-          title: "8. Changes to Terms",
-          p1: "We reserve the right to modify or replace these T&Cs at any time. We will provide notice of any changes by updating the \"Last Updated\" date. Your continued use of the Service after any such changes constitutes your acceptance of the new T&Cs."
+import { enTranslations } from './enTranslations'; // Self-referential for structure if needed, but here we define it inline.
+
+// 1. Helper for Deep Merging
+function deepMerge(base: any, update: any): any {
+  if (!update) return base;
+  const result = { ...base };
+  for (const key in update) {
+    if (Object.prototype.hasOwnProperty.call(update, key)) {
+      if (
+        typeof update[key] === 'object' && 
+        update[key] !== null && 
+        !Array.isArray(update[key]) && 
+        base[key]
+      ) {
+        result[key] = deepMerge(base[key], update[key]);
+      } else {
+        result[key] = update[key];
       }
     }
   }
-};
+  return result;
+}
 
-const de = {
-  app: {
-    title: "IT-Hardware-Mietportal",
-    welcome: "Willkommen, {name} ({role})",
-    myProfile: "Mein Profil",
-    logout: "Abmelden",
-    copyright: "© {year} CHG-MERIDIAN. Alle Rechte vorbehalten.",
-    error: {
-      profileMissing: "Ihr Benutzerprofil fehlt oder ist beschädigt. Bitte kontaktieren Sie einen Administrator.",
-      sessionExpired: "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um einen Benutzer zu erstellen.",
-      sessionRestoreFailed: "Ihre Sitzung konnte nach dem Erstellen des Benutzers nicht wiederhergestellt werden. Bitte melden Sie sich erneut an.",
-    }
-  },
-  tabs: {
-    calculator: "Rechner",
-    tco: "TCO-Analyse",
-    admin: "Verwaltung",
-  },
+// 2. Base English Translations (The Source of Truth)
+const baseEnglish = {
   common: {
-    edit: "Bearbeiten",
-    save: "Speichern",
-    saving: "Speichern...",
-    saveChanges: "Änderungen speichern",
-    saved: "Gespeichert",
-    cancel: "Abbrechen",
-    na: "N/V",
-    cost: "Kosten",
-    costInCurrency: "Kosten ({currency})",
-    description: "Beschreibung",
-    back: "Zurück",
-    next: "Weiter",
-    monthsShort: "Mo.",
-    yes: "Ja",
-    no: "Nein",
-    custom: "Benutzerdef.",
-    avgFor: "Ø für",
-    step: "Schritt {current} von {total}",
-    month: "monat",
-    months: "monate",
-    loading: "Verarbeite...",
-    close: "Schließen"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Laptop",
-      Mobile: "Mobilgerät",
-      Tablet: "Tablet",
-      Desktop: "Desktop",
-      OtherIT: "Sonstige IT",
-      Accessory: "Zubehör",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Sonstige",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Sonstige",
-    },
-    Condition: {
-      New: "Neu",
-      Used: "Gebraucht",
-    },
-    AdditionalService: {
-      Deployment: "Deployment",
-      PreConfiguration: "Vorkonfiguration (Staging)",
-      Delivery: "Lieferung",
-      Support: "Support (24h Austausch)",
-    }
-  },
-  password: {
-    changeTitle: "Passwort ändern",
-    changeSubtitle: "Aus Sicherheitsgründen müssen Sie ein neues Passwort festlegen, um fortzufahren.",
-    newPassword: "Neues Passwort",
-    confirmNewPassword: "Neues Passwort bestätigen",
-    updatePasswordButton: "Passwort aktualisieren & Anmelden",
-    error: {
-      mismatch: "Die neuen Passwörter stimmen nicht überein.",
-    },
-  },
-  login: {
-    title: "Melden Sie sich bei Ihrem Konto an",
-    subtitle: "IT-Hardware-Mietportal",
-    emailPlaceholder: "Email-Adresse",
-    passwordPlaceholder: "Passwort",
-    signInButton: "Anmelden",
-    forgotPassword: "Passwort vergessen?",
-    resetModal: {
-      title: "Passwort zurücksetzen",
-      instructions: "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
-      emailLabel: "E-Mail-Addresse",
-      sendButton: "Link zum Zurücksetzen senden",
-      success: "Überprüfen Sie Ihre E-Mails auf einen Link zum Zurücksetzen des Passworts.",
-      error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut oder wenden Sie sich an einen Administrator.",
-    },
-    error: {
-      invalidCredentials: "Ungültige E-Mail oder Passwort. Bitte versuchen Sie es erneut.",
-    },
-  },
-  calculation: {
-    title: "Kalkulation erstellen",
-    option: "Option",
-    removeOption: "Entfernen",
-    packingService: "Verpackungsservice (Ende der Laufzeit)",
-    packingServiceOption: "Option Verpackungsservice",
-    buttons: {
-      new: "Neu",
-      dashboard: "Dashboard",
-      saveTemplate: "Als Vorlage speichern",
-      generatePdf: "PDF generieren",
-      addItemTo: "Artikel zu {optionName} hinzufügen",
-      requestCreditApproval: "Kreditgenehmigung anfordern",
-      addOption: "Option hinzufügen",
-    },
-    priceView: {
-      label: "Preisanzeige",
-      detailed: "Detaillierte Aufschlüsselung",
-      bundled: "Paketpreis",
-    },
-    customerName: "Kundenname",
-    customerNamePlaceholder: "Namen des Kunden eingeben",
-    projectName: "Projektname",
-    projectNamePlaceholder: "Projektnamen eingeben",
-    expectedStartDate: "Erwartetes Vertragsstartdatum",
-    empty: {
-        title: "Diese Option ist leer.",
-        description: 'Klicken Sie auf "Artikel hinzufügen", um zu beginnen.',
-    },
-    table: {
-      asset: "Gerät",
-      details: "Details",
-      term: "Laufzeit",
-      qty: "Menge",
-      monthlyCost: "Monatl. Kosten",
-      totalCost: "Gesamtkosten",
-      monthlyBundled: "Monatl. Paketpreis",
-      totalBundled: "Gesamtpaketpreis",
-      actions: "Aktionen",
-      os: "Betriebssystem",
-      condition: "Zustand",
-      country: "Land",
-      nonReturn: "Keine Rückgabe",
-      servicesLabel: "Dienstleistungen (einmalig)",
-      unit: "Einheit",
-    },
-  },
-  aiSummary: {
-    button: "Zusammenfassung erstellen",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Sie sind ein professioneller Vertriebsassistent für ein IT-Leasingunternehmen.",
-      task: "Ihre Aufgabe ist es, eine prägnante, überzeugende Zusammenfassung für ein Kundenangebot auf der Grundlage der folgenden Angebotsdetails zu erstellen. Die Zusammenfassung sollte gut geschrieben, professionell und die wichtigsten Wertversprechen hervorheben.",
-      customer: "Kunde",
-      project: "Projekt",
-      notSpecified: "Nicht angegeben",
-      optionsSummary: "Zusammenfassung der Angebotsoptionen",
-      tcoResults: "Ergebnisse der TCO-Analyse",
-      tcoSavingDetail: "Durch Leasing anstelle von Kauf kann der Kunde potenzielle Einsparungen von {amount} {currency} erzielen.",
-      tcoPercentageDetail: "Dies entspricht einer Reduzierung der Gesamtbetriebskosten um {percent}% über die durchschnittliche Leasingdauer von {term} Monaten.",
-      instructionsTitle: "Anweisungen",
-      instruction1: "Beginnen Sie mit einer höflichen Eröffnung, die sich an den Kunden richtet.",
-      instruction2: "Fassen Sie die vorgeschlagenen Optionen kurz zusammen.",
-      instruction3WithTco: "Betonen Sie die finanziellen Vorteile, insbesondere die TCO-Einsparungen. Stellen Sie es als strategischen Vorteil dar (z. B. Kapitalerhaltung, vorhersehbare Kosten).",
-      instruction3WithoutTco: "Erwähnen Sie die Vorteile der enthaltenen Dienstleistungen (z. B. vereinfachte Verwaltung, vorhersehbare Betriebskosten).",
-      instruction4WithTco: "Erwähnen Sie die Vorteile der enthaltenen Dienstleistungen (z. B. vereinfachte Verwaltung, minimierte Ausfallzeiten).",
-      instruction5: "Beenden Sie mit einer professionellen Abschlusserklärung, die zum nächsten Schritt ermutigt (z. B. ein Folgegespräch).",
-      instruction6: "Der Ton sollte selbstbewusst, professionell und kundenorientiert sein.",
-      instruction7: "Verwenden Sie keine Platzhalter wie \"[Ihr Name]\". Die Zusammenfassung sollte bereit sein, direkt in den Text einer E-Mail oder eines Angebotsdokuments kopiert und eingefügt zu werden.",
-      languageInstruction: "SEHR WICHTIG: Die gesamte Antwort muss in der folgenden Sprache verfasst sein: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Sie sind ein hilfreicher und freundlicher KI-Assistent für das 'IT-Hardware-Mietportal'.",
-      appDescription: "Diese Anwendung hilft Partnern von IT-Hardware-Vermietservices bei der Erstellung von Kalkulationen und Angeboten für ihre Kunden. Sie hat drei Hauptbereiche: 1. Rechner: Zum Erstellen von Angeboten mit verschiedener Hardware, Dienstleistungen und Leasingbedingungen. 2. TCO-Analyse: Zum Vergleich der Gesamtbetriebskosten von Leasing gegenüber Kauf von Hardware. 3. Admin-Panel: Zur Verwaltung von Benutzern, Leasingraten-Faktoren und anderen Einstellungen.",
-      goal: "Ihr Ziel ist es, Benutzerfragen zur Anwendung zu beantworten, Finanzbegriffe wie TCO und WACC zu erklären und allgemeine Unterstützung zu leisten. Seien Sie in Ihren Antworten prägnant und klar.",
-      languageInstruction: "Antworten Sie immer in der vom Benutzer ausgewählten Sprache: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    validUntil: "Preise gültig bis: {date}",
-  },
-  tco: {
-    title: "Analyse der Gesamtbetriebskosten (TCO)",
-    empty: {
-      title: "Die Kalkulation ist leer.",
-      description: 'Bitte fügen Sie Artikel im Reiter "Rechner" hinzu, um die TCO-Analyse zu sehen.',
-    },
-    assumptions: {
-      title: "TCO-Annahmen",
-      operationalCosts: "Betriebskosten",
-      deploymentCost: "Bereitstellungskosten / Gerät",
-      supportHours: "IT-Supportstunden / Gerät / Jahr",
-      staffRate: "Stundensatz IT-Personal",
-      eoldCost: "End-of-Life-Kosten / Gerät",
-      downtimeProductivity: "Ausfallzeit & Produktivität",
-      failures: "Ausfälle / Gerät / Jahr",
-      downtimeHours: "Ausfallstunden / Ausfall",
-      employeeCost: "Durchschn. Mitarbeiterkosten / Stunde",
-      assetValue: "Anlagewert",
-      residualValue: "Restwert (%)",
-      table: {
-        assumption: "Annahme",
-        value: "Wert",
-      },
-    },
-    tuning: {
-      button: "Mit KI optimieren",
-      modalTitle: "KI-gestützte TCO-Optimierung",
-      description: "Basierend auf Ihrem Angebot und Ihrer Branche hat die KI die folgenden Anpassungen vorgeschlagen, um einen realistischeren TCO-Vergleich zu erstellen.",
-      table: {
-        parameter: "Parameter",
-        current: "Aktuell",
-        suggested: "Vorgeschlagen",
-        reasoning: "KI-Begründung",
-      },
-      applyButton: "Ausgewählte anwenden ({count})",
-      noSuggestions: "Die KI hat Ihre aktuellen Annahmen überprüft und sie für den gegebenen Angebotskontext als angemessen befunden. Derzeit werden keine Änderungen vorgeschlagen.",
-    },
-    chart: {
-      title: "Kostenvergleich: Miete vs. Kauf",
-      leaseCostLabel: "Gesamte Mietkosten",
-      purchaseCostLabel: "Gesamtbetriebskosten",
-    },
-    breakdown: {
-      title: "Detaillierte Kostenaufschlüsselung",
-      averageLeaseTerm: "Durchschnittliche Laufzeit (wertgewichtet)",
-    },
-    table: {
-      category: "Kostenkategorie",
-      purchase: "Kaufszenario",
-      lease: "Mietszenario",
-      hardwareCost: "Hardwarekosten (initial)",
-      capitalCost: "Kapitalkosten (WACC)",
-      deployment: "Bereitstellungskosten",
-      support: "Laufender IT-Support",
-      downtime: "Produktivitätsverlust (Ausfallzeit)",
-      eold: "End-of-Life-Entsorgung",
-      residualValue: "Abzgl. Restwert",
-      leasePayments: "Mietzahlungen gesamt",
-      totalTco: "Gesamtbetriebskosten",
-    },
-    savingsWithLease: "Einsparungen durch Miete",
-    included: "Inklusive",
-    mitigated: "Gemindert",
-    wacc: {
-      title: "Kapitalkosten (WACC)",
-      industry: "Branche",
-      industryAverage: "WACC (Branchendurchschnitt)",
-      applyIndividual: "WACC (Individuell) anwenden",
-      individualWacc: "WACC (Individuell) in %",
-    },
-    glossary: {
-      title: "Glossar",
-      wacc: "WACC = Gewichteter durchschnittlicher Kapitalkostensatz. Der WACC wird verwendet, um den Zeitwert des Geldes zu berechnen und so einen genaueren 'effektiven Kaufpreis' zu ermitteln. Dies ist ein vereinfachtes Modell zu Veranschaulichungszwecken.",
-    },
-    industries: {
-      Automotive: "Automobil",
-      Banking: "Bankwesen",
-      HealthcarePharma: "Gesundheitswesen & Pharma",
-      Industrialproduction: "Industrielle Produktion",
-      RetailConsumerGoods: "Einzelhandel & Konsumgüter",
-      Realestate: "Immobilien",
-      Media: "Medien",
-      SoftwareIndustry: "Softwareindustrie",
-      Technology: "Technologie",
-      Telecommunication: "Telekommunikation",
-      TransportLogistics: "Transport & Logistik",
-      Insurance: "Versicherung",
-      Utilities: "Versorgungsunternehmen",
-      Materialsindustry: "Werkstoffindustrie",
-    }
-  },
-  admin: {
-    users: {
-      error: {
-        createUserRollback: "Benutzerprofil konnte nicht erstellt werden. Der Benutzer wurde entfernt. Bitte versuchen Sie es erneut.",
-      }
-    },
-    lrf: {
-        globalSettings: {
-            packingServiceCostLabel: "Kosten für Verpackungsservice pro Gerät",
-        }
-    }
-  },
-};
-
-const fi = {
-  app: {
-    title: "IT-laitteiden vuokrausportaali",
-    welcome: "Tervetuloa, {name} ({role})",
-    myProfile: "Oma profiili",
-    logout: "Kirjaudu ulos",
-    copyright: "© {year} CHG-MERIDIAN. Kaikki oikeudet pidätetään.",
-    error: {
-      profileMissing: "Käyttäjäprofiilisi puuttuu tai on vioittunut. Ota yhteyttä järjestelmänvalvojaan.",
-      sessionExpired: "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen luodaksesi käyttäjän.",
-      sessionRestoreFailed: "Istuntoasi ei voitu palauttaa käyttäjän luomisen jälkeen. Kirjaudu sisään uudelleen.",
-    }
-  },
-  tabs: {
-    calculator: "Laskuri",
-    tco: "TCO-analyysi",
-    admin: "Hallinta",
-  },
-  common: {
-    edit: "Muokkaa",
-    save: "Tallenna",
-    saving: "Tallennetaan...",
-    saveChanges: "Tallenna muutokset",
-    saved: "Tallennettu",
-    cancel: "Peruuta",
-    na: "Ei saatavilla",
-    cost: "Hinta",
-    costInCurrency: "Hinta ({currency})",
-    description: "Kuvaus",
-    back: "Takaisin",
-    next: "Seuraava",
-    step: "Vaihe {current}/{total}",
-    month: "kuukausi",
-    months: "kuukautta",
-    monthsShort: "kk",
-    yes: "Kyllä",
-    no: "Ei",
-    custom: "Muu",
-    avgFor: "ka. arvo",
-    loading: "Käsitellään...",
-    close: "Sulje"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Kannettava",
-      Mobile: "Mobiili",
-      Tablet: "Tabletti",
-      Desktop: "Pöytäkone",
-      OtherIT: "Muu IT",
-      Accessory: "Lisälaite",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Muu",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Muu",
-    },
-    Condition: {
-      New: "Uusi",
-      Used: "Käytetty",
-    },
-    AdditionalService: {
-      Deployment: "Käyttöönotto",
-      PreConfiguration: "Esiasennus (staging)",
-      Delivery: "Toimitus",
-      Support: "Tuki (24h vaihtolaite)",
-    }
-  },
-  password: {
-    changeTitle: "Vaihda salasanasi",
-    changeSubtitle: "Turvallisuussyistä sinun on asetettava uusi salasana jatkaaksesi.",
-    newPassword: "Uusi salasana",
-    confirmNewPassword: "Vahvista uusi salasana",
-    updatePasswordButton: "Päivitä salasana & kirjaudu sisään",
-    error: {
-      mismatch: "Uudet salasanat eivät täsmää.",
-    },
-  },
-  login: {
-    title: "Kirjaudu sisään tilillesi",
-    subtitle: "IT-laitteiden vuokrausportaali",
-    emailPlaceholder: "Sähköpostiosoite",
-    passwordPlaceholder: "Salasana",
-    signInButton: "Kirjaudu sisään",
-    forgotPassword: "Unohditko salasanasi?",
-    resetModal: {
-      title: "Nollaa salasana",
-      instructions: "Anna sähköpostiosoitteesi, niin lähetämme sinulle linkin salasanan nollaamiseksi.",
-      emailLabel: "Sähköpostiosoite",
-      sendButton: "Lähetä nollauslinkki",
-      success: "Tarkista sähköpostistasi salasanan nollauslinkki.",
-      error: "Tapahtui virhe. Yritä uudelleen tai ota yhteyttä järjestelmänvalvojaan.",
-    },
-    error: {
-      invalidCredentials: "Virheellinen sähköpostiosoite tai salasana. Yritä uudelleen.",
-    },
-  },
-  calculation: {
-    title: "Luo laskelma",
-    option: "Vaihtoehto",
-    packingService: "Pakkauspalvelu (sopimuskauden päättyessä)",
-    packingServiceOption: "Pakkauspalvelu",
-    buttons: {
-      new: "Uusi",
-      dashboard: "Kojelauta",
-      saveTemplate: "Tallenna mallina",
-      generatePdf: "Luo PDF",
-      addItemTo: "Lisää tuote {optionName}",
-      requestCreditApproval: "Pyydä luottohyväksyntää",
-      addOption: "Lisää vaihtoehto",
-    },
-    priceView: {
-      label: "Hinnan näyttö",
-      detailed: "Yksityiskohtainen erittely",
-      bundled: "Pakettihinta",
-    },
-    customerName: "Asiakkaan nimi",
-    customerNamePlaceholder: "Syötä asiakkaan nimi",
-    projectName: "Projektin nimi",
-    projectNamePlaceholder: "Syötä projektin nimi",
-    expectedStartDate: "Odotettu sopimuksen alkamispäivä",
-    empty: {
-      title: "Tämä vaihtoehto on tyhjä.",
-      description: 'Aloita napsauttamalla "Lisää tuote".',
-    },
-    table: {
-      asset: "Laite",
-      details: "Tiedot",
-      term: "Kausi",
-      qty: "Määrä",
-      monthlyCost: "Kuukausihinta",
-      totalCost: "Kokonaiskustannus",
-      monthlyBundled: "Paketin kk-hinta",
-      totalBundled: "Paketin kokonaishinta",
-      actions: "Toiminnot",
-      os: "OS",
-      condition: "Kunto",
-      country: "Maa",
-      nonReturn: "Ei-palautus",
-      servicesLabel: "Palvelut (kertamaksu)",
-      unit: "Yksikkö",
-    },
-  },
-  aiSummary: {
-    button: "Luo yhteenveto",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Olet ammattimainen myyntiassistentti IT-leasing-yrityksessä.",
-      task: "Tehtäväsi on luoda tiivis ja vakuuttava yhteenveto asiakastarjouksesta seuraavien tarjoustietojen perusteella. Yhteenvedon tulee olla hyvin kirjoitettu, ammattimainen ja korostaa keskeisiä arvolupauksia.",
-      customer: "Asiakas",
-      project: "Projekti",
-      notSpecified: "Ei määritelty",
-      optionsSummary: "Tarjousvaihtoehtojen yhteenveto",
-      tcoResults: "TCO-analyysin tulokset",
-      tcoSavingDetail: "Vuokraamalla ostamisen sijaan asiakas voi saavuttaa potentiaalisen säästön, joka on {amount} {currency}.",
-      tcoPercentageDetail: "Tämä vastaa {percent}%:n alennusta kokonaiskustannuksissa (TCO) keskimääräisen {term} kuukauden vuokra-ajan aikana.",
-      instructionsTitle: "Ohjeet",
-      instruction1: "Aloita kohteliaalla avauksella, joka on osoitettu asiakkaalle.",
-      instruction2: "Tee lyhyt yhteenveto ehdotetuista vaihtoehdoista.",
-      instruction3WithTco: "Korosta taloudellisia etuja, erityisesti TCO-säästöjä. Kehystä se strategiseksi eduksi (esim. pääoman säilyttäminen, ennustettavat kustannukset).",
-      instruction3WithoutTco: "Mainitse sisältyvien palveluiden edut (esim. yksinkertaistettu hallinta, ennustettavat käyttökustannukset).",
-      instruction4WithTco: "Mainitse sisältyvien palveluiden edut (esim. yksinkertaistettu hallinta, minimoidut seisokit).",
-      instruction5: "Päätä ammattimaiseen loppulauseeseen, joka kannustaa seuraavaan vaiheeseen (esim. jatkokeskusteluun).",
-      instruction6: "Äänensävyn tulee olla itsevarma, ammattimainen ja asiakaslähtöinen.",
-      instruction7: "Älä käytä paikkamerkkejä, kuten \"[Oma Nimi]\". Yhteenvedon tulee olla valmis kopioitavaksi ja liitettäväksi suoraan sähköpostin tai tarjousasiakirjan runkoon.",
-      languageInstruction: "ERITTÄIN TÄRKEÄÄ: Koko vastauksen on oltava seuraavalla kielellä: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Olet avulias ja ystävällinen tekoälyassistentti 'IT-laitteiden vuokrausportaalissa'.",
-      appDescription: "Tämä sovellus auttaa IT-laitteiden vuokrauskumppaneita luomaan laskelmia ja tarjouksia asiakkailleen. Siinä on kolme pääosiota: 1. Laskuri: Tarjousten rakentamiseen eri laitteistoilla, palveluilla ja vuokra-ajoilla. 2. TCO-analyysi: Vuokraamisen ja ostamisen kokonaiskustannusten vertailuun. 3. Hallintapaneeli: Käyttäjien, vuokrakertoimien ja muiden asetusten hallintaan.",
-      goal: "Tavoitteenasi on vastata käyttäjien kysymyksiin sovelluksen käytöstä, selittää taloudellisia termejä kuten TCO ja WACC sekä tarjota yleistä apua. Ole vastauksissasi tiivis ja selkeä.",
-      languageInstruction: "Vastaa aina käyttäjän valitsemalla kielellä: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    validUntil: "Hinnat voimassa asti: {date}",
-  },
-  tco: {
-    title: "Kokonaiskustannusanalyysi (TCO)",
-    empty: {
-      title: "Laskelma on tyhjä.",
-      description: "Lisää tuotteita \"Laskuri\"-välilehdellä nähdäksesi TCO-analyysin.",
-    },
-    assumptions: {
-      title: "TCO-oletukset",
-      operationalCosts: "Käyttökustannukset",
-      deploymentCost: "Käyttöönottokustannus / laite",
-      supportHours: "IT-tukitunnit / laite / vuosi",
-      staffRate: "IT-henkilöstön tuntihinta",
-      eoldCost: "Elinkaaren lopun kustannus / laite",
-      downtimeProductivity: "Seisokit & tuottavuus",
-      failures: "Vikaantumiset / laite / vuosi",
-      downtimeHours: "Seisokkitunnit / vikaantuminen",
-      employeeCost: "Keskim. työntekijän kustannus / tunti",
-      assetValue: "Omaisuuden arvo",
-      residualValue: "Jäännösarvo (%)",
-      table: {
-        assumption: "Oletus",
-        value: "Arvo",
-      },
-    },
-    tuning: {
-      button: "Hienosäädä tekoälyllä",
-      modalTitle: "Tekoälypohjainen TCO-hienosäätö",
-      description: "Tarjouksesi ja toimialasi perusteella tekoäly on ehdottanut seuraavia muutoksia realistisemman TCO-vertailun luomiseksi.",
-      table: {
-        parameter: "Parametri",
-        current: "Nykyinen",
-        suggested: "Ehdotettu",
-        reasoning: "Tekoälyn perustelut",
-      },
-      applyButton: "Ota käyttöön valitut ({count})",
-      noSuggestions: "Tekoäly tarkisti nykyiset oletuksesi ja totesi ne kohtuullisiksi annetun tarjouksen kontekstissa. Muutoksia ei ehdoteta tällä hetkellä.",
-    },
-    chart: {
-      title: "Vuokrauksen ja ostamisen kustannusvertailu",
-      leaseCostLabel: "Vuokrauksen kokonaiskustannus",
-      purchaseCostLabel: "Omistamisen kokonaiskustannus",
-    },
-    breakdown: {
-      title: "Yksityiskohtainen kustannuserittely",
-      averageLeaseTerm: "Keskimääräinen vuokra-aika (arvopainotettu)",
-    },
-    table: {
-      category: "Kustannusluokka",
-      purchase: "Osto-skenaario",
-      lease: "Vuokra-skenaario",
-      hardwareCost: "Laitteiston hankintakustannus (alussa)",
-      capitalCost: "Pääomakustannus (WACC)",
-      deployment: "Käyttöönottokustannukset",
-      support: "Jatkuva IT-tuki",
-      downtime: "Tuottavuuden menetys (seisokit)",
-      eold: "Elinkaaren lopun hävittäminen",
-      residualValue: "Vähennettynä: Jäännösarvo",
-      leasePayments: "Vuokramaksut yhteensä",
-      totalTco: "Omistamisen kokonaiskustannus",
-    },
-    savingsWithLease: "Säästöt vuokrauksella",
-    included: "Sisältyy",
-    mitigated: "Lievennetty",
-    wacc: {
-      title: "Pääomakustannus (WACC)",
-      industry: "Toimiala",
-      industryAverage: "WACC (toimialan keskiarvo)",
-      applyIndividual: "Käytä yksilöllistä WACCia",
-      individualWacc: "Yksilöllinen WACC (%)",
-    },
-    glossary: {
-      title: "Sanasto",
-      wacc: "WACC = Pääoman painotettu keskimääräinen kustannus. WACCia käytetään rahan aika-arvon laskemiseen, mikä antaa tarkemman 'tehollisen ostohinnan'. Tämä on yksinkertaistettu malli havainnollistamistarkoituksessa.",
-    },
-    industries: {
-      Automotive: "Autoteollisuus",
-      Banking: "Pankkitoiminta",
-      HealthcarePharma: "Terveydenhuolto & lääketeollisuus",
-      Industrialproduction: "Teollinen tuotanto",
-      RetailConsumerGoods: "Vähittäiskauppa & kulutustavarat",
-      Realestate: "Kiinteistöala",
-      Media: "Media",
-      SoftwareIndustry: "Ohjelmistoteollisuus",
-      Technology: "Teknologia",
-      Telecommunication: "Televiestintä",
-      TransportLogistics: "Kuljetus & logistiikka",
-      Insurance: "Vakuutusala",
-      Utilities: "Yleishyödylliset palvelut",
-      Materialsindustry: "Materiaaliteollisuus",
-    }
-  },
-  admin: {
-     users: {
-      error: {
-        createUserRollback: "Käyttäjäprofiilin luominen epäonnistui. Käyttäjä on poistettu. Yritä uudelleen.",
-      }
-    },
-     lrf: {
-        globalSettings: {
-            packingServiceCostLabel: "Pakkauspalvelun hinta per laite",
-        }
-    }
-  },
-};
-
-const sv = {
-  app: {
-    title: "Portal för uthyrning av IT-hårdvara",
-    welcome: "Välkommen, {name} ({role})",
-    myProfile: "Min profil",
-    logout: "Logga ut",
-    copyright: "© {year} CHG-MERIDIAN. Alla rättigheter förbehållna.",
-    error: {
-      profileMissing: "Din användarprofil saknas eller är korrupt. Vänligen kontakta en administratör.",
-      sessionExpired: "Din session har gått ut. Logga in igen för att skapa en användare.",
-      sessionRestoreFailed: "Kunde inte återställa din session efter att ha skapat användaren. Logga in igen.",
-    }
-  },
-  tabs: {
-    calculator: "Kalkylator",
-    tco: "TCO-analys",
-    admin: "Admin",
-  },
-  common: {
-    edit: "Redigera",
-    save: "Spara",
-    saving: "Sparar...",
-    saveChanges: "Spara ändringar",
-    saved: "Sparad",
-    cancel: "Avbryt",
-    na: "Ej tillämpligt",
-    cost: "Kostnad",
-    costInCurrency: "Kostnad ({currency})",
-    description: "Beskrivning",
-    back: "Tillbaka",
-    next: "Nästa",
-    step: "Steg {current} av {total}",
-    month: "månad",
-    months: "månader",
-    monthsShort: "mån",
-    yes: "Ja",
-    no: "Nej",
-    custom: "Anpassad",
-    avgFor: "genomsnitt för",
-    loading: "Bearbetar...",
-    close: "Stäng"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Bärbar dator",
-      Mobile: "Mobil",
-      Tablet: "Surfplatta",
-      Desktop: "Stationär dator",
-      OtherIT: "Övrig IT",
-      Accessory: "Tillbehör",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Annat",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Annat",
-    },
-    Condition: {
-      New: "Ny",
-      Used: "Begagnad",
-    },
-    AdditionalService: {
-      Deployment: "Driftsättning",
-      PreConfiguration: "Förkonfiguration (staging)",
-      Delivery: "Leverans",
-      Support: "Support (24h utbyte)",
-    }
-  },
-  password: {
-    changeTitle: "Ändra ditt lösenord",
-    changeSubtitle: "Av säkerhetsskäl måste du ange ett nytt lösenord för att fortsätta.",
-    newPassword: "Nytt lösenord",
-    confirmNewPassword: "Bekräfta nytt lösenord",
-    updatePasswordButton: "Uppdatera lösenord & logga in",
-    error: {
-      mismatch: "De nya lösenorden matchar inte.",
-    },
-  },
-  login: {
-    title: "Logga in på ditt konto",
-    subtitle: "Portal för uthyrning av IT-hårdvara",
-    emailPlaceholder: "E-postadress",
-    passwordPlaceholder: "Lösenord",
-    signInButton: "Logga in",
-    forgotPassword: "Glömt ditt lösenord?",
-    resetModal: {
-      title: "Återställ lösenord",
-      instructions: "Ange din e-postadress så skickar vi dig en länk för att återställa ditt lösenord.",
-      emailLabel: "E-postadress",
-      sendButton: "Skicka återställningslänk",
-      success: "Kontrollera din e-post för en länk för att återställa lösenordet.",
-      error: "Ett fel uppstod. Försök igen eller kontakta en administratör.",
-    },
-    error: {
-      invalidCredentials: "Ogiltig e-post eller lösenord. Försök igen.",
-    },
-  },
-  calculation: {
-    title: "Skapa kalkyl",
-    option: "Alternativ",
-    packingService: "Packningstjänst (vid hyresavtalets slut)",
-    packingServiceOption: "Packningstjänst",
-    buttons: {
-      new: "Ny",
-      dashboard: "Översikt",
-      saveTemplate: "Spara som mall",
-      generatePdf: "Skapa PDF",
-      addItemTo: "Lägg till artikel i {optionName}",
-      requestCreditApproval: "Begär kreditgodkännande",
-      addOption: "Lägg till alternativ",
-    },
-    priceView: {
-      label: "Prisvisning",
-      detailed: "Detaljerad specifikation",
-      bundled: "Paketpris",
-    },
-    customerName: "Kundnamn",
-    customerNamePlaceholder: "Ange kundens namn",
-    projectName: "Projektnamn",
-    projectNamePlaceholder: "Ange projektnamn",
-    expectedStartDate: "Förväntat startdatum för avtal",
-    empty: {
-        title: "Det här alternativet är tomt.",
-        description: 'Klicka på "Lägg till artikel" för att börja.',
-    },
-    table: {
-      asset: "Tillgång",
-      details: "Detaljer",
-      term: "Period",
-      qty: "Antal",
-      monthlyCost: "Månadskostnad",
-      totalCost: "Total kostnad",
-      monthlyBundled: "Paketpris / mån",
-      totalBundled: "Totalt paketpris",
-      actions: "Åtgärder",
-      os: "OS",
-      condition: "Skick",
-      country: "Land",
-      nonReturn: "Ej retur",
-      servicesLabel: "Tjänster (engångs)",
-      unit: "Enhet",
-    },
-  },
-  aiSummary: {
-    button: "Generera sammanfattning",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Du är en professionell säljassistent för ett IT-leasingföretag.",
-      task: "Din uppgift är att skapa en koncis, övertygande sammanfattning för ett kunderbjudande baserat på följande offertdetaljer. Sammanfattningen ska vara välskriven, professionell och lyfta fram de viktigaste värdeerbjudandena.",
-      customer: "Kund",
-      project: "Projekt",
-      notSpecified: "Ej specificerat",
-      optionsSummary: "Sammanfattning av offertalternativ",
-      tcoResults: "Resultat av TCO-analys",
-      tcoSavingDetail: "Genom att leasa istället för att köpa kan kunden uppnå en potentiell besparing på {amount} {currency}.",
-      tcoPercentageDetail: "Detta motsvarar en minskning av den totala ägandekostnaden (TCO) med {percent}% över den genomsnittliga leasingperioden på {term} månader.",
-      instructionsTitle: "Instruktioner",
-      instruction1: "Börja med en artig inledning riktad till kunden.",
-      instruction2: "Sammanfatta kort de föreslagna alternativen.",
-      instruction3WithTco: "Betona de ekonomiska fördelarna, särskilt TCO-besparingarna. Framställ det som en strategisk fördel (t.ex. bevara kapital, förutsägbara kostnader).",
-      instruction3WithoutTco: "Nämn fördelarna med de inkluderade tjänsterna (t.ex. förenklad hantering, förutsägbara driftskostnader).",
-      instruction4WithTco: "Nämn fördelarna med de inkluderade tjänsterna (t.ex. förenklad hantering, minimerad stilleståndstid).",
-      instruction5: "Avsluta med ett professionellt avslutande uttalande som uppmuntrar till nästa steg (t.ex. en uppföljande diskussion).",
-      instruction6: "Tonen ska vara självsäker, professionell och kundfokuserad.",
-      instruction7: "Inkludera inte platshållare som \"[Ditt Namn]\". Sammanfattningen ska vara redo att kopieras och klistras in direkt i en e-post eller ett offertdokument.",
-      languageInstruction: "MYCKET VIKTIGT: Hela svaret måste vara på följande språk: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Du är en hjälpsam och vänlig AI-assistent för 'Portal för uthyrning av IT-hårdvara'.",
-      appDescription: "Denna applikation hjälper partners för uthyrning av IT-hårdvara att skapa kalkyler och erbjudanden till sina kunder. Den har tre huvudsektioner: 1. Kalkylator: För att bygga offerter med olika hårdvara, tjänster och leasingvillkor. 2. TCO-analys: För att jämföra den totala ägandekostnaden mellan leasing och köp av hårdvara. 3. Adminpanel: För att hantera användare, leasingräntefaktorer och andra inställningar.",
-      goal: "Ditt mål är att svara på användarfrågor om hur man använder applikationen, förklara finansiella termer som TCO och WACC och ge allmän hjälp. Var koncis och tydlig i dina svar.",
-      languageInstruction: "Svara alltid på användarens valda språk: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    validUntil: "Priser giltiga till: {date}",
-  },
-  tco: {
-    title: "Total Cost of Ownership-analys (TCO)",
-    empty: {
-      title: "Kalkylen är tom.",
-      description: 'Vänligen lägg till artiklar i fliken "Kalkylator" för att se TCO-analysen.',
-    },
-    assumptions: {
-      title: "TCO-antaganden",
-      operationalCosts: "Driftskostnader",
-      deploymentCost: "Driftsättningskostnad / enhet",
-      supportHours: "IT-supporttimmar / enhet / år",
-      staffRate: "Timpris IT-personal",
-      eoldCost: "End-of-Life-kostnad / enhet",
-      downtimeProductivity: "Stillestånd & produktivitet",
-      failures: "Fel / enhet / år",
-      downtimeHours: "Stilleståndstimmar / fel",
-      employeeCost: "Genomsnittlig personalkostnad / timme",
-      assetValue: "Tillgångsvärde",
-      residualValue: "Restvärde (%)",
-      table: {
-        assumption: "Antagande",
-        value: "Värde",
-      },
-    },
-    tuning: {
-      button: "Justera med AI",
-      modalTitle: "AI-driven TCO-justering",
-      description: "Baserat på din offert och bransch har AI föreslagit följande justeringar för att skapa en mer realistisk TCO-jämförelse.",
-      table: {
-        parameter: "Parameter",
-        current: "Nuvarande",
-        suggested: "Föreslaget",
-        reasoning: "AI:s resonemang",
-      },
-      applyButton: "Tillämpa valda ({count})",
-      noSuggestions: "AI har granskat dina nuvarande antaganden och funnit dem rimliga för den angivna offerten. Inga ändringar föreslås för närvarande.",
-    },
-    chart: {
-      title: "Kostnadsjämförelse: Leasing vs. Köp",
-      leaseCostLabel: "Total leasingkostnad",
-      purchaseCostLabel: "Total ägandekostnad",
-    },
-    breakdown: {
-      title: "Detaljerad kostnadsspecifikation",
-      averageLeaseTerm: "Genomsnittlig leasingperiod (värdevägd)",
-    },
-    table: {
-      category: "Kostnadskategori",
-      purchase: "Köpscenario",
-      lease: "Leasingscenario",
-      hardwareCost: "Hårdvarukostnad (initial)",
-      capitalCost: "Kapitalkostnad (WACC)",
-      deployment: "Driftsättningskostnader",
-      support: "Löpande IT-support",
-      downtime: "Produktivitetsförlust (stillestånd)",
-      eold: "Avyttring vid livscykelns slut",
-      residualValue: "Minus: Restvärde",
-      leasePayments: "Totala leasingbetalningar",
-      totalTco: "Total ägandekostnad",
-    },
-    savingsWithLease: "Besparingar med leasing",
-    included: "Inkluderat",
-    mitigated: "Minskat",
-    wacc: {
-      title: "Kapitalkostnad (WACC)",
-      industry: "Bransch",
-      industryAverage: "WACC (branschgenomsnitt)",
-      applyIndividual: "Tillämpa individuell WACC",
-      individualWacc: "Individuell WACC i %",
-    },
-    glossary: {
-      title: "Ordlista",
-      wacc: "WACC = Vägd genomsnittlig kapitalkostnad. WACC används för att beräkna pengars tidsvärde, vilket ger ett mer exakt 'effektivt inköpspris'. Detta är en förenklad modell i illustrativt syfte.",
-    },
-    industries: {
-      Automotive: "Fordonsindustri",
-      Banking: "Bankväsende",
-      HealthcarePharma: "Hälso- & sjukvård, Läkemedel",
-      Industrialproduction: "Industriell produktion",
-      RetailConsumerGoods: "Detaljhandel & konsumentvaror",
-      Realestate: "Fastigheter",
-      Media: "Media",
-      SoftwareIndustry: "Mjukvaruindustri",
-      Technology: "Teknik",
-      Telecommunication: "Telekommunikation",
-      TransportLogistics: "Transport & logistik",
-      Insurance: "Försäkring",
-      Utilities: "El, vatten, avlopp",
-      Materialsindustry: "Materialindustri",
-    }
-  },
-  admin: {
-    users: {
-      error: {
-        createUserRollback: "Misslyckades med att skapa användarprofil. Användaren har tagits bort. Försök igen.",
-      }
-    },
-     lrf: {
-        globalSettings: {
-            packingServiceCostLabel: "Kostnad för packningstjänst per enhet",
-        }
-    }
-  },
-};
-
-const no = {
-  app: {
-    title: "Portal for leie av IT-utstyr",
-    welcome: "Velkommen, {name} ({role})",
-    myProfile: "Min profil",
-    logout: "Logg ut",
-    copyright: "© {year} CHG-MERIDIAN. Alle rettigheter forbeholdt.",
-    error: {
-      profileMissing: "Brukerprofilen din mangler eller er korrupt. Vennligst kontakt en administrator.",
-      sessionExpired: "Sesjonen din har utløpt. Logg inn på nytt for å opprette en bruker.",
-      sessionRestoreFailed: "Kunne ikke gjenopprette sesjonen din etter å ha opprettet brukeren. Logg inn på nytt.",
-    }
-  },
-  tabs: {
-    calculator: "Kalkulator",
-    tco: "TCO-analyse",
-    admin: "Admin",
-  },
-  common: {
-    edit: "Rediger",
-    save: "Lagre",
-    saving: "Lagrer...",
-    saveChanges: "Lagre endringer",
-    saved: "Lagret",
-    cancel: "Avbryt",
-    na: "I/T",
-    cost: "Kostnad",
-    costInCurrency: "Kostnad ({currency})",
-    description: "Beskrivelse",
-    back: "Tilbake",
-    next: "Neste",
-    step: "Steg {current} av {total}",
-    month: "måned",
-    months: "måneder",
-    monthsShort: "mnd",
-    yes: "Ja",
-    no: "Nei",
-    custom: "Egendefinert",
-    avgFor: "gj.sn. for",
-    loading: "Behandler...",
-    close: "Lukk"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Bærbar PC",
-      Mobile: "Mobil",
-      Tablet: "Nettbrett",
-      Desktop: "Stasjonær PC",
-      OtherIT: "Annet IT",
-      Accessory: "Tilbehør",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Annet",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Annet",
-    },
-    Condition: {
-      New: "Ny",
-      Used: "Brukt",
-    },
-    AdditionalService: {
-      Deployment: "Utrulling",
-      PreConfiguration: "Forhåndskonfigurering (staging)",
-      Delivery: "Levering",
-      Support: "Support (24t bytte)",
-    }
-  },
-  password: {
-    changeTitle: "Endre passordet ditt",
-    changeSubtitle: "Av sikkerhetsgrunner må du angi et nytt passord for å fortsette.",
-    newPassword: "Nytt passord",
-    confirmNewPassword: "Bekreft nytt passord",
-    updatePasswordButton: "Oppdater passord & logg inn",
-    error: {
-      mismatch: "De nye passordene stemmer ikke overens.",
-    },
-  },
-  login: {
-    title: "Logg inn på kontoen din",
-    subtitle: "Portal for leie av IT-utstyr",
-    emailPlaceholder: "E-postadresse",
-    passwordPlaceholder: "Passord",
-    signInButton: "Logg inn",
-    forgotPassword: "Glemt passord?",
-    resetModal: {
-      title: "Tilbakestill passord",
-      instructions: "Skriv inn e-postadressen din, så sender vi deg en lenke for å tilbakestille passordet.",
-      emailLabel: "E-postadresse",
-      sendButton: "Send tilbakestillingslenke",
-      success: "Sjekk e-posten din for en lenke for å tilbakestille passordet.",
-      error: "En feil oppstod. Prøv igjen eller kontakt en administrator.",
-    },
-    error: {
-      invalidCredentials: "Ugyldig e-post eller passord. Prøv igjen.",
-    },
-  },
-  calculation: {
-    title: "Opprett kalkyle",
-    option: "Alternativ",
-    buttons: {
-      new: "Ny",
-      dashboard: "Dashbord",
-      saveTemplate: "Lagre som mal",
-      generatePdf: "Generer PDF",
-      addItemTo: "Legg til vare i {optionName}",
-      requestCreditApproval: "Be om kredittgodkjenning",
-      addOption: "Legg til alternativ",
-    },
-    priceView: {
-      label: "Prisvisning",
-      detailed: "Detaljert oversikt",
-      bundled: "Pakkepris",
-    },
-    customerName: "Kundenavn",
-    customerNamePlaceholder: "Skriv inn kundenavn",
-    projectName: "Prosjektnavn",
-    projectNamePlaceholder: "Skriv inn prosjektnavn",
-    expectedStartDate: "Forventet startdato for kontrakt",
-    empty: {
-        title: "Dette alternativet er tomt.",
-        description: 'Klikk "Legg til vare" for å starte.',
-    },
-    table: {
-      asset: "Eiendel",
-      details: "Detaljer",
-      term: "Periode",
-      qty: "Antall",
-      monthlyCost: "Månedlig kostnad",
-      totalCost: "Total kostnad",
-      monthlyBundled: "Pakkepris / mnd",
-      totalBundled: "Total pakkepris",
-      actions: "Handlinger",
-      os: "OS",
-      condition: "Tilstand",
-      country: "Land",
-      nonReturn: "Ingen retur",
-      servicesLabel: "Tjenester (engangs)",
-      unit: "Enhet",
-    },
-  },
-  aiSummary: {
-    button: "Generer sammendrag",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Du er en profesjonell salgsassistent for et IT-leasingselskap.",
-      task: "Din oppgave er å generere en konsis, overbevisende oppsummering for et kundetilbud basert på følgende tilbudsdetaljer. Oppsummeringen skal være velskrevet, profesjonell og fremheve de viktigste verdiforslagene.",
-      customer: "Kunde",
-      project: "Prosjekt",
-      notSpecified: "Ikke spesifisert",
-      optionsSummary: "Oppsummering av tilbudsalternativer",
-      tcoResults: "Resultater fra TCO-analyse",
-      tcoSavingDetail: "Ved å lease i stedet for å kjøpe, kan kunden oppnå en potensiell besparelse på {amount} {currency}.",
-      tcoPercentageDetail: "Dette representerer en reduksjon i de totale eierkostnadene (TCO) på {percent}% over den gjennomsnittlige leieperioden på {term} måneder.",
-      instructionsTitle: "Instruksjoner",
-      instruction1: "Start med en høflig åpning rettet mot kunden.",
-      instruction2: "Oppsummer kort de foreslåtte alternativene.",
-      instruction3WithTco: "Fremhev de økonomiske fordelene, spesielt TCO-besparelsene. Ramm det inn som en strategisk fordel (f.eks. bevaring av kapital, forutsigbare kostnader).",
-      instruction3WithoutTco: "Nevn fordelene med de inkluderte tjenestene (f.eks. forenklet administrasjon, forutsigbare driftskostnader).",
-      instruction4WithTco: "Nevn fordelene med de inkluderte tjenestene (f.eks. forenklet administrasjon, minimal nedetid).",
-      instruction5: "Avslutt med en profesjonell avslutningserklæring som oppfordrer til neste skritt (f.eks. en oppfølgingssamtale).",
-      instruction6: "Tonen skal være selvsikker, profesjonell og kundefokusert.",
-      instruction7: "Ikke inkluder plassholdere som \"[Ditt Navn]\". Oppsummeringen skal være klar til å kopieres og limes inn direkte i en e-post eller et tilbudsdokument.",
-      languageInstruction: "VELDIG VIKTIG: Hele svaret må være på følgende språk: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Du er en hjelpsom og vennlig AI-assistent for 'Portal for leie av IT-utstyr'.",
-      appDescription: "Denne applikasjonen hjelper partnere for utleie av IT-utstyr med å lage kalkyler og tilbud til kundene sine. Den har tre hovedseksjoner: 1. Kalkulator: For å bygge tilbud med forskjellig utstyr, tjenester og leievilkår. 2. TCO-analyse: For å sammenligne de totale eierkostnadene ved å lease kontra å kjøpe utstyr. 3. Adminpanel: For å administrere brukere, leieratefaktorer og andre innstillinger.",
-      goal: "Ditt mål er å svare på brukerspørsmål om hvordan man bruker applikasjonen, forklare økonomiske termer som TCO og WACC, og gi generell hjelp. Vær konsis og tydelig i svarene dine.",
-      languageInstruction: "Svar alltid på brukerens valgte språk: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    validUntil: "Priser gyldige til: {date}",
-  },
-  tco: {
-    title: "Total Cost of Ownership-analyse (TCO)",
-    empty: {
-      title: "Kalkylen er tom.",
-      description: 'Vennligst legg til varer i "Kalkulator"-fanen for å se TCO-analysen.',
-    },
-    assumptions: {
-      title: "TCO-forutsetninger",
-      operationalCosts: "Driftskostnader",
-      deploymentCost: "Utrullingskostnad / enhet",
-      supportHours: "IT-supporttimer / enhet / år",
-      staffRate: "Timepris IT-personell",
-      eoldCost: "End-of-Life-kostnad / enhet",
-      downtimeProductivity: "Nedetid & produktivitet",
-      failures: "Feil / enhet / år",
-      downtimeHours: "Nedetidstimer / feil",
-      employeeCost: "Gj.sn. ansattkostnad / time",
-      assetValue: "Eiendelsverdi",
-      residualValue: "Restverdi (%)",
-      table: {
-        assumption: "Forutsetning",
-        value: "Verdi",
-      },
-    },
-    tuning: {
-      button: "Juster med AI",
-      modalTitle: "AI-drevet TCO-justering",
-      description: "Basert på ditt tilbud og din bransje, har AI foreslått følgende justeringer for å skape en mer realistisk TCO-sammenligning.",
-      table: {
-        parameter: "Parameter",
-        current: "Nåværende",
-        suggested: "Foreslått",
-        reasoning: "AIs resonnement",
-      },
-      applyButton: "Bruk valgte ({count})",
-      noSuggestions: "AI har gjennomgått dine nåværende forutsetninger og funnet dem rimelige for den gitte tilbudskonteksten. Ingen endringer foreslås på nåværende tidspunkt.",
-    },
-    chart: {
-      title: "Kostnadssammenligning: Leie vs. Kjøp",
-      leaseCostLabel: "Total leiekostnad",
-      purchaseCostLabel: "Total eierkostnad",
-    },
-    breakdown: {
-      title: "Detaljert kostnadsoversikt",
-      averageLeaseTerm: "Gjennomsnittlig leieperiode (verdi-vektet)",
-    },
-    table: {
-      category: "Kostnadskategori",
-      purchase: "Kjøpsscenario",
-      lease: "Leiescenario",
-      hardwareCost: "Maskinvarekostnad (initial)",
-      capitalCost: "Kapitalkostnad (WACC)",
-      deployment: "Utrullingskostnader",
-      support: "Løpende IT-support",
-      downtime: "Produktivitetstap (nedetid)",
-      eold: "Avhending ved levetidens slutt",
-      residualValue: "Minus: Restverdi",
-      leasePayments: "Totale leiebetalinger",
-      totalTco: "Total eierkostnad",
-    },
-    savingsWithLease: "Besparelser med leie",
-    included: "Inkludert",
-    mitigated: "Redusert",
-    wacc: {
-      title: "Kapitalkostnad (WACC)",
-      industry: "Bransje",
-      industryAverage: "WACC (bransjegjennomsnitt)",
-      applyIndividual: "Bruk individuell WACC",
-      individualWacc: "Individuell WACC i %",
-    },
-    glossary: {
-      title: "Ordliste",
-      wacc: "WACC = Vektet gjennomsnittlig kapitalkostnad. WACC brukes til å beregne pengenes tidsverdi, noe som gir en mer nøyaktig 'effektiv kjøpspris'. Dette er en forenklet modell for illustrasjonsformål.",
-    },
-    industries: {
-      Automotive: "Bilindustri",
-      Banking: "Bank",
-      HealthcarePharma: "Helse & farmasi",
-      Industrialproduction: "Industriell produksjon",
-      RetailConsumerGoods: "Detaljhandel & forbruksvarer",
-      Realestate: "Eiendom",
-      Media: "Media",
-      SoftwareIndustry: "Programvareindustri",
-      Technology: "Teknologi",
-      Telecommunication: "Telekommunikasjon",
-      TransportLogistics: "Transport & logistikk",
-      Insurance: "Forsikring",
-      Utilities: "Forsyning",
-      Materialsindustry: "Materialindustri",
-    }
-  },
-  admin: {
-    users: {
-      error: {
-        createUserRollback: "Kunne ikke opprette brukerprofil. Brukeren er fjernet. Prøv igjen.",
-      }
-    }
-  },
-};
-
-const da = {
-  app: {
-    title: "Portal for leje af IT-hardware",
-    welcome: "Velkommen, {name} ({role})",
-    myProfile: "Min profil",
-    logout: "Log ud",
-    copyright: "© {year} CHG-MERIDIAN. Alle rettigheder forbeholdes.",
-    error: {
-      profileMissing: "Din brugerprofil mangler eller er beskadiget. Kontakt venligst en administrator.",
-      sessionExpired: "Din session er udløbet. Log venligst ind igen for at oprette en bruger.",
-      sessionRestoreFailed: "Kunne ikke gendanne din session efter oprettelse af brugeren. Log venligst ind igen.",
-    }
-  },
-  tabs: {
-    calculator: "Beregner",
-    tco: "TCO-analyse",
-    admin: "Admin",
-  },
-  common: {
-    edit: "Rediger",
-    save: "Gem",
-    saving: "Gemmer...",
-    saveChanges: "Gem ændringer",
-    saved: "Gemt",
-    cancel: "Annuller",
-    na: "I/T",
-    cost: "Pris",
-    costInCurrency: "Pris ({currency})",
-    description: "Beskrivelse",
-    back: "Tilbage",
-    next: "Næste",
-    step: "Trin {current} af {total}",
-    month: "måned",
-    months: "måneder",
-    monthsShort: "mdr.",
-    yes: "Ja",
-    no: "Nej",
-    custom: "Brugerdefineret",
-    avgFor: "gns. for",
-    loading: "Behandler...",
-    close: "Luk"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Bærbar",
-      Mobile: "Mobil",
-      Tablet: "Tablet",
-      Desktop: "Stationær",
-      OtherIT: "Andet IT",
-      Accessory: "Tilbehør",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Andet",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Andet",
-    },
-    Condition: {
-      New: "Ny",
-      Used: "Brugt",
-    },
-    AdditionalService: {
-      Deployment: "Implementering",
-      PreConfiguration: "Forkonfiguration (staging)",
-      Delivery: "Levering",
-      Support: "Support (24t ombytning)",
-    }
-  },
-  password: {
-    changeTitle: "Skift din adgangskode",
-    changeSubtitle: "Af sikkerhedsmæssige årsager skal du angive en ny adgangskode for at fortsætte.",
-    newPassword: "Ny adgangskode",
-    confirmNewPassword: "Bekræft ny adgangskode",
-    updatePasswordButton: "Opdater adgangskode & log ind",
-    error: {
-      mismatch: "De nye adgangskoder stemmer ikke overens.",
-    },
-  },
-  login: {
-    title: "Log ind på din konto",
-    subtitle: "Portal for leje af IT-hardware",
-    emailPlaceholder: "E-mailadresse",
-    passwordPlaceholder: "Adgangskode",
-    signInButton: "Log ind",
-    forgotPassword: "Glemt din adgangskode?",
-    resetModal: {
-      title: "Nulstil adgangskode",
-      instructions: "Indtast din e-mailadresse, og vi sender dig et link til at nulstille din adgangskode.",
-      emailLabel: "E-mailadresse",
-      sendButton: "Send nulstillingslink",
-      success: "Tjek din e-mail for et link til nulstilling af adgangskode.",
-      error: "Der opstod en fejl. Prøv igen eller kontakt en administrator.",
-    },
-    error: {
-      invalidCredentials: "Ugyldig e-mail eller adgangskode. Prøv igen.",
-    },
-  },
-  calculation: {
-    title: "Opret beregning",
-    option: "Mulighed",
-    buttons: {
-      new: "Ny",
-      dashboard: "Dashboard",
-      saveTemplate: "Gem som skabelon",
-      generatePdf: "Generer PDF",
-      addItemTo: "Tilføj vare til {optionName}",
-      requestCreditApproval: "Anmod om kreditgodkendelse",
-      addOption: "Tilføj mulighed",
-    },
-    priceView: {
-      label: "Prisvisning",
-      detailed: "Detaljeret specificering",
-      bundled: "Samlet pris",
-    },
-    customerName: "Kundenavn",
-    customerNamePlaceholder: "Indtast kundenavn",
-    projectName: "Projektnavn",
-    projectNamePlaceholder: "Indtast projektnavn",
-    expectedStartDate: "Forventet startdato for kontrakt",
-    empty: {
-        title: "Denne mulighed er tom.",
-        description: 'Klik på "Tilføj vare" for at begynde.',
-    },
-    table: {
-      asset: "Aktiv",
-      details: "Detaljer",
-      term: "Periode",
-      qty: "Antal",
-      monthlyCost: "Månedlig pris",
-      totalCost: "Totalpris",
-      monthlyBundled: "Samlet månedlig pris",
-      totalBundled: "Samlet totalpris",
-      actions: "Handlinger",
-      os: "OS",
-      condition: "Stand",
-      country: "Land",
-      nonReturn: "Ingen returnering",
-      servicesLabel: "Tjenester (engangs)",
-      unit: "Enhed",
-    },
-  },
-  aiSummary: {
-    button: "Generer resumé",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Du er en professionel salgsassistent for et IT-leasingselskab.",
-      task: "Din opgave er at generere et kortfattet og overbevisende resumé til et kundetilbud baseret på følgende tilbudsdetaljer. Resuméet skal være velskrevet, professionelt og fremhæve de vigtigste værditilbud.",
-      customer: "Kunde",
-      project: "Projekt",
-      notSpecified: "Ikke specificeret",
-      optionsSummary: "Resumé af tilbudsmuligheder",
-      tcoResults: "Resultater af TCO-analyse",
-      tcoSavingDetail: "Ved at lease i stedet for at købe kan kunden opnå en potentiel besparelse på {amount} {currency}.",
-      tcoPercentageDetail: "Dette repræsenterer en reduktion i de samlede ejeromkostninger (TCO) på {percent}% over den gennemsnitlige leasingperiode på {term} måneder.",
-      instructionsTitle: "Instruktioner",
-      instruction1: "Begynd med en høflig åbning henvendt til kunden.",
-      instruction2: "Opsummer kort de foreslåede muligheder.",
-      instruction3WithTco: "Fremhæv de økonomiske fordele, især TCO-besparelserne. Formuler det som en strategisk fordel (f.eks. bevarelse af kapital, forudsigelige omkostninger).",
-      instruction3WithoutTco: "Nævn fordelene ved de inkluderede ydelser (f.eks. forenklet administration, forudsigelige driftsomkostninger).",
-      instruction4WithTco: "Nævn fordelene ved de inkluderede ydelser (f.eks. forenklet administration, minimeret nedetid).",
-      instruction5: "Afslut med en professionel afsluttende bemærkning, der opfordrer til næste skridt (f.eks. en opfølgende samtale).",
-      instruction6: "Tonen skal være selvsikker, professionel og kundefokuseret.",
-      instruction7: "Inkluder ikke pladsholdere som \"[Dit Navn]\". Resuméet skal være klar til at blive kopieret og indsat direkte i en e-mail eller et tilbudsdokument.",
-      languageInstruction: "MEGET VIGTIGT: Hele svaret skal være på følgende sprog: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Du er en hjælpsom og venlig AI-assistent for 'Portalen for leje af IT-hardware'.",
-      appDescription: "Denne applikation hjælper partnere inden for udlejning af IT-hardware med at lave beregninger og tilbud til deres kunder. Den har tre hovedsektioner: 1. Beregner: Til at opbygge tilbud med forskellig hardware, ydelser og leasingvilkår. 2. TCO-analyse: Til at sammenligne de samlede ejeromkostninger ved at lease kontra at købe hardware. 3. Admin-panel: Til at administrere brugere, leasingrentefaktorer og andre indstillinger.",
-      goal: "Dit mål er at besvare brugeres spørgsmål om, hvordan man bruger applikationen, forklare økonomiske termer som TCO og WACC og yde generel assistance. Vær kortfattet og klar i dine svar.",
-      languageInstruction: "Svar altid på brugerens valgte sprog: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    validUntil: "Priser er gyldige indtil: {date}",
-  },
-  tco: {
-    title: "Analyse af de samlede ejeromkostninger (TCO)",
-    empty: {
-      title: "Beregningen er tom.",
-      description: 'Tilføj venligst varer i fanen "Beregner" for at se TCO-analysen.',
-    },
-    assumptions: {
-      title: "TCO-antagelser",
-      operationalCosts: "Driftsomkostninger",
-      deploymentCost: "Implementeringsomkostning / enhed",
-      supportHours: "IT-supporttimer / enhed / år",
-      staffRate: "Timeløn for IT-personale",
-      eoldCost: "End-of-Life-omkostning / enhed",
-      downtimeProductivity: "Nedetid & produktivitet",
-      failures: "Fejl / enhed / år",
-      downtimeHours: "Nedetidstimer / fejl",
-      employeeCost: "Gns. medarbejderomkostning / time",
-      assetValue: "Aktivværdi",
-      residualValue: "Restværdi (%)",
-      table: {
-        assumption: "Antagelse",
-        value: "Værdi",
-      },
-    },
-    tuning: {
-      button: "Juster med AI",
-      modalTitle: "AI-drevet TCO-justering",
-      description: "Baseret på dit tilbud og din branche har AI foreslået følgende justeringer for at skabe en mere realistisk TCO-sammenligning.",
-      table: {
-        parameter: "Parameter",
-        current: "Nuværende",
-        suggested: "Foreslået",
-        reasoning: "AI's begrundelse",
-      },
-      applyButton: "Anvend valgte ({count})",
-      noSuggestions: "AI har gennemgået dine nuværende antagelser og fundet dem rimelige for den givne tilbudskontekst. Der foreslås ingen ændringer på nuværende tidspunkt.",
-    },
-    chart: {
-      title: "Omkostningssammenligning: Leasing vs. Køb",
-      leaseCostLabel: "Samlet leasingomkostning",
-      purchaseCostLabel: "Samlede ejeromkostninger",
-    },
-    breakdown: {
-      title: "Detaljeret omkostningsspecificering",
-      averageLeaseTerm: "Gennemsnitlig leasingperiode (vægtet efter værdi)",
-    },
-    table: {
-      category: "Omkostningskategori",
-      purchase: "Købsscenarie",
-      lease: "Leasingscenarie",
-      hardwareCost: "Hardwareomkostning (indledende)",
-      capitalCost: "Kapitalomkostning (WACC)",
-      deployment: "Implementeringsomkostninger",
-      support: "Løbende IT-support",
-      downtime: "Produktivitetstab (nedetid)",
-      eold: "Bortskaffelse ved levetidsophør",
-      residualValue: "Minus: Restværdi",
-      leasePayments: "Samlede leasingbetalinger",
-      totalTco: "Samlede ejeromkostninger",
-    },
-    savingsWithLease: "Besparelser med leasing",
-    included: "Inkluderet",
-    mitigated: "Minimeret",
-    wacc: {
-      title: "Kapitalomkostning (WACC)",
-      industry: "Branche",
-      industryAverage: "WACC (branchegennemsnit)",
-      applyIndividual: "Anvend individuel WACC",
-      individualWacc: "Individuel WACC i %",
-    },
-    glossary: {
-      title: "Ordliste",
-      wacc: "WACC = Vægtet gennemsnitlig kapitalomkostning. WACC bruges til at beregne pengenes tidsværdi, hvilket giver en mere præcis 'effektiv købspris'. Dette er en forenklet model til illustrative formål.",
-    },
-    industries: {
-      Automotive: "Bilindustri",
-      Banking: "Bank",
-      HealthcarePharma: "Sundhed & medicinal",
-      Industrialproduction: "Industriel produktion",
-      RetailConsumerGoods: "Detailhandel & forbrugsvarer",
-      Realestate: "Ejendom",
-      Media: "Medier",
-      SoftwareIndustry: "Softwareindustri",
-      Technology: "Teknologi",
-      Telecommunication: "Telekommunikation",
-      TransportLogistics: "Transport & logistik",
-      Insurance: "Forsikring",
-      Utilities: "Forsyning",
-      Materialsindustry: "Materialeindustri",
-    }
-  },
-  admin: {
-    users: {
-      error: {
-        createUserRollback: "Kunne ikke oprette brugerprofil. Brugeren er blevet fjernet. Prøv venligst igen.",
-      }
-    }
-  },
-};
-
-const pl = {
-  app: {
-    title: "Portal wynajmu sprzętu IT",
-    welcome: "Witaj, {name} ({role})",
-    myProfile: "Mój profil",
-    logout: "Wyloguj się",
-    copyright: "© {year} CHG-MERIDIAN. Wszelkie prawa zastrzeżone.",
-    error: {
-      profileMissing: "Twój profil użytkownika brakuje lub jest uszkodzony. Skontaktuj się z administratorem.",
-      sessionExpired: "Twoja sesja wygasła. Zaloguj się ponownie, aby utworzyć użytkownika.",
-      sessionRestoreFailed: "Nie można było przywrócić sesji po utworzeniu użytkownika. Zaloguj się ponownie.",
-    }
-  },
-  tabs: {
-    calculator: "Kalkulator",
-    tco: "Analiza TCO",
-    admin: "Admin",
-  },
-  common: {
-    edit: "Edytuj",
-    save: "Zapisz",
-    saving: "Zapisywanie...",
-    saveChanges: "Zapisz zmiany",
-    saved: "Zapisano",
-    cancel: "Anuluj",
-    na: "Brak danych",
-    cost: "Koszt",
-    costInCurrency: "Koszt ({currency})",
-    description: "Opis",
-    back: "Wstecz",
-    next: "Dalej",
-    step: "Krok {current} z {total}",
-    month: "miesiąc",
-    months: "miesiące",
-    monthsShort: "mies.",
-    yes: "Tak",
-    no: "Nie",
-    custom: "Niestandardowy",
-    avgFor: "śr. dla",
-    loading: "Przetwarzanie...",
-    close: "Zamknij"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Laptop",
-      Mobile: "Telefon komórkowy",
-      Tablet: "Tablet",
-      Desktop: "Komputer stacjonarny",
-      OtherIT: "Inne IT",
-      Accessory: "Akcesorium",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Inny",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Inny",
-    },
-    Condition: {
-      New: "Nowy",
-      Used: "Używany",
-    },
-    AdditionalService: {
-      Deployment: "Wdrożenie",
-      PreConfiguration: "Prekonfiguracja (staging)",
-      Delivery: "Dostawa",
-      Support: "Wsparcie (wymiana w 24h)",
-    }
-  },
-  password: {
-    changeTitle: "Zmień swoje hasło",
-    changeSubtitle: "Ze względów bezpieczeństwa musisz ustawić nowe hasło, aby kontynuować.",
-    newPassword: "Nowe hasło",
-    confirmNewPassword: "Potwierdź nowe hasło",
-    updatePasswordButton: "Zaktualizuj hasło i zaloguj się",
-    error: {
-      mismatch: "Nowe hasła nie są zgodne.",
-    },
-  },
-  login: {
-    title: "Zaloguj się na swoje konto",
-    subtitle: "Portal wynajmu sprzętu IT",
-    emailPlaceholder: "Adres e-mail",
-    passwordPlaceholder: "Hasło",
-    signInButton: "Zaloguj się",
-    forgotPassword: "Zapomniałeś hasła?",
-    resetModal: {
-      title: "Zresetuj hasło",
-      instructions: "Wprowadź swój adres e-mail, a my wyślemy Ci link do zresetowania hasła.",
-      emailLabel: "Adres e-mail",
-      sendButton: "Wyślij link do resetowania",
-      success: "Sprawdź swoją skrzynkę e-mail w poszukiwaniu linku do zresetowania hasła.",
-      error: "Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z administratorem.",
-    },
-    error: {
-      invalidCredentials: "Nieprawidłowy e-mail lub hasło. Spróbuj ponownie.",
-    },
-  },
-  calculation: {
-    title: "Utwórz kalkulację",
-    option: "Opcja",
-    removeOption: "Usuń",
-    disclaimer: "(*) Wszystkie podane ceny są orientacyjne i nie stanowią oferty handlowej. Wnioskodawcy podlegają ocenie kredytowej przez CHG-MERIDIAN, a minimalna ilość zamówienia wynosi 100 urządzeń.",
-    buttons: {
-      new: "Nowa",
-      dashboard: "Pulpit",
-      saveTemplate: "Zapisz jako szablon",
-      generatePdf: "Generuj PDF",
-      addItemTo: "Dodaj pozycję do {optionName}",
-      requestCreditApproval: "Złóż wniosek o zatwierdzenie kredytowe",
-      addOption: "Dodaj opcję",
-    },
-    creditRequestAdminTooltip: "Ta funkcja jest przeznaczona dla użytkowników partnerskich do składania wniosków o zatwierdzenie kredytowe.",
-    creditRequestPartnerDisabledTooltip: "Dodaj nazwę klienta i co najmniej jedną pozycję do oferty, aby włączyć tę funkcję.",
-    priceView: {
-      label: "Wyświetlanie ceny",
-      detailed: "Szczegółowe",
-      bundled: "Pakietowe",
-    },
-    customerName: "Nazwa klienta",
-    customerNamePlaceholder: "Wprowadź nazwę klienta",
-    projectName: "Nazwa projektu",
-    projectNamePlaceholder: "Wprowadź nazwę projektu",
-    expectedStartDate: "Oczekiwana data rozpoczęcia umowy",
-    empty: {
-      title: "Ta opcja jest pusta.",
-      description: 'Kliknij "Dodaj pozycję", aby rozpocząć.',
-    },
-    table: {
-      asset: "Zasób",
-      details: "Szczegóły",
-      term: "Okres",
-      qty: "Ilość",
-      monthlyCost: "Koszt miesięczny",
-      totalCost: "Koszt całkowity",
-      monthlyBundled: "Miesięcznie w pakiecie",
-      totalBundled: "Całkowity koszt pakietu",
-      actions: "Akcje",
-      os: "System operacyjny",
-      condition: "Stan",
-      country: "Kraj",
-      nonReturn: "Brak zwrotu",
-      servicesLabel: "Usługi (jednorazowe)",
-      unit: "szt.",
-    },
-  },
-  aiSummary: {
-    button: "Generuj podsumowanie",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Jesteś profesjonalnym asystentem sprzedaży w firmie leasingowej IT.",
-      task: "Twoim zadaniem jest wygenerowanie zwięzłego, przekonującego podsumowania oferty dla klienta na podstawie poniższych szczegółów. Podsumowanie powinno być dobrze napisane, profesjonalne i podkreślać kluczowe propozycje wartości.",
-      customer: "Klient",
-      project: "Projekt",
-      notSpecified: "Nie określono",
-      optionsSummary: "Podsumowanie opcji oferty",
-      tcoResults: "Wyniki analizy TCO",
-      tcoSavingDetail: "Dzięki leasingowi zamiast zakupu klient może osiągnąć potencjalne oszczędności w wysokości {amount} {currency}.",
-      tcoPercentageDetail: "Oznacza to redukcję całkowitego kosztu posiadania (TCO) o {percent}% w ciągu średniego okresu leasingu wynoszącego {term} miesięcy.",
-      instructionsTitle: "Instrukcje",
-      instruction1: "Zacznij od uprzejmego powitania skierowanego do klienta.",
-      instruction2: "Krótko podsumuj proponowane opcje.",
-      instruction3WithTco: "Podkreśl korzyści finansowe, zwłaszcza oszczędności TCO. Przedstaw to jako strategiczną przewagę (np. zachowanie kapitału, przewidywalne koszty).",
-      instruction3WithoutTco: "Wspomnij o korzyściach płynących z zawartych usług (np. uproszczone zarządzanie, przewidywalne koszty operacyjne).",
-      instruction4WithTco: "Wspomnij o korzyściach płynących z zawartych usług (np. uproszczone zarządzanie, zminimalizowany czas przestoju).",
-      instruction5: "Zakończ profesjonalnym oświadczeniem, zachęcającym do następnego kroku (np. dalszej dyskusji).",
-      instruction6: "Ton powinien być pewny siebie, profesjonalny i skoncentrowany na kliencie.",
-      instruction7: "Nie używaj symboli zastępczych, takich jak „[Twoje imię]”. Podsumowanie powinno być gotowe do skopiowania i wklejenia bezpośrednio do treści wiadomości e-mail lub dokumentu ofertowego.",
-      languageInstruction: "BARDZO WAŻNE: Cała odpowiedź musi być w następującym języku: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Jesteś pomocnym i przyjaznym asystentem AI dla 'Portalu wynajmu sprzętu IT'.",
-      appDescription: "Ta aplikacja pomaga partnerom wynajmującym sprzęt IT w tworzeniu kalkulacji i ofert dla swoich klientów. Posiada trzy główne sekcje: 1. Kalkulator: Do tworzenia ofert z różnym sprzętem, usługami i warunkami leasingu. 2. Analiza TCO: Do porównywania całkowitego kosztu posiadania (TCO) leasingu w porównaniu z zakupem sprzętu. 3. Panel administracyjny: Do zarządzania użytkownikami, współczynnikami stawek leasingowych i innymi ustawieniami.",
-      goal: "Twoim celem jest odpowiadanie na pytania użytkowników dotyczące korzystania z aplikacji, wyjaśnianie terminów finansowych, takich jak TCO i WACC, oraz udzielanie ogólnej pomocy. Bądź zwięzły i jasny w swoich odpowiedziach.",
-      languageInstruction: "Zawsze odpowiadaj w wybranym przez użytkownika języku: {languageName} ({languageCode}).",
-    }
-  },
-  lrf: {
-    validUntil: "Ceny ważne do: {date}",
-  },
-  tco: {
-    title: "Analiza całkowitego kosztu posiadania (TCO)",
-    empty: {
-      title: "Kalkulacja jest pusta.",
-      description: 'Dodaj pozycje w zakładce "Kalkulator", aby zobaczyć analizę TCO.',
-    },
-    assumptions: {
-      title: "Założenia TCO",
-      operationalCosts: "Koszty operacyjne",
-      deploymentCost: "Koszt wdrożenia / urządzenie",
-      supportHours: "Godziny wsparcia IT / urządzenie / rok",
-      staffRate: "Stawka godzinowa personelu IT",
-      eoldCost: "Koszt końca życia / urządzenie",
-      downtimeProductivity: "Przestoje i produktywność",
-      failures: "Awarie / urządzenie / rok",
-      downtimeHours: "Godziny przestoju / awaria",
-      employeeCost: "Średni koszt pracownika / godzinę",
-      assetValue: "Wartość aktywów",
-      residualValue: "Wartość rezydualna (%)",
-      table: {
-        assumption: "Założenie",
-        value: "Wartość",
-      },
-    },
-    tuning: {
-      button: "Dostrój z AI",
-      modalTitle: "Dostrajanie TCO z AI",
-      description: "Na podstawie Twojej oferty i branży, AI zasugerowało następujące korekty, aby stworzyć bardziej realistyczne porównanie TCO.",
-      table: {
-        parameter: "Parametr",
-        current: "Obecny",
-        suggested: "Sugerowany",
-        reasoning: "Uzasadnienie AI",
-      },
-      applyButton: "Zastosuj wybrane ({count})",
-      noSuggestions: "AI przeanalizowało Twoje obecne założenia i uznało je za rozsądne w kontekście podanej oferty. Obecnie nie sugeruje się żadnych zmian.",
-    },
-    chart: {
-      title: "Porównanie kosztów: Leasing vs. Zakup",
-      leaseCostLabel: "Całkowity koszt leasingu",
-      purchaseCostLabel: "Całkowity koszt posiadania",
-    },
-    breakdown: {
-      title: "Szczegółowy podział kosztów",
-      averageLeaseTerm: "Średni okres leasingu (ważony wartością)",
-    },
-    table: {
-      category: "Kategoria kosztów",
-      purchase: "Scenariusz zakupu",
-      lease: "Scenariusz leasingu",
-      hardwareCost: "Koszt sprzętu (początkowy)",
-      capitalCost: "Koszt kapitału (WACC)",
-      deployment: "Koszty wdrożenia",
-      support: "Bieżące wsparcie IT",
-      downtime: "Utrata produktywności (przestoje)",
-      eold: "Utylizacja po zakończeniu eksploatacji",
-      residualValue: "Minus: Wartość rezydualna",
-      leasePayments: "Całkowite opłaty leasingowe",
-      totalTco: "Całkowity koszt posiadania",
-    },
-    savingsWithLease: "Oszczędności z leasingiem",
-    included: "W cenie",
-    mitigated: "Złagodzone",
-    wacc: {
-      title: "Koszt kapitału (WACC)",
-      industry: "Branża",
-      industryAverage: "WACC (średnia branżowa)",
-      applyIndividual: "Zastosuj indywidualny WACC",
-      individualWacc: "Indywidualny WACC w %",
-    },
-    glossary: {
-      title: "Słowniczek",
-      wacc: "WACC = Średni ważony koszt kapitału. WACC służy do obliczenia wartości pieniądza w czasie, co pozwala uzyskać dokładniejszą 'efektywną cenę zakupu'. Jest to uproszczony model do celów ilustracyjnych.",
-    },
-    industries: {
-      Automotive: "Motoryzacja",
-      Banking: "Bankowość",
-      HealthcarePharma: "Opieka zdrowotna i farmacja",
-      Industrialproduction: "Produkcja przemysłowa",
-      RetailConsumerGoods: "Handel detaliczny i dobra konsumpcyjne",
-      Realestate: "Nieruchomości",
-      Media: "Media",
-      SoftwareIndustry: "Przemysł oprogramowania",
-      Technology: "Technologia",
-      Telecommunication: "Telekomunikacja",
-      TransportLogistics: "Transport i logistyka",
-      Insurance: "Ubezpieczenia",
-      Utilities: "Usługi komunalne",
-      Materialsindustry: "Przemysł materiałowy",
-    }
-  },
-  admin: {
-    users: {
-        warning: {
-            adminLogoutOnCreate: "Ostrzeżenie: Utworzenie nowego użytkownika spowoduje wylogowanie z konta administratora. Będziesz musiał zalogować się ponownie ręcznie.",
-        },
-        error: {
-          createUserRollback: "Nie udało się utworzyć profilu użytkownika. Użytkownik został usunięty. Spróbuj ponownie.",
-        }
-    }
-  },
-};
-
-const cs = {
-  app: {
-    title: "Portál pro pronájem IT hardwaru",
-    welcome: "Vítejte, {name} ({role})",
-    myProfile: "Můj profil",
-    logout: "Odhlásit se",
-    copyright: "© {year} CHG-MERIDIAN. Všechna práva vyhrazena.",
-    error: {
-      profileMissing: "Váš uživatelský profil chybí nebo je poškozen. Kontaktujte prosím administrátora.",
-      sessionExpired: "Vaše relace vypršela. Pro vytvoření uživatele se prosím znovu přihlaste.",
-      sessionRestoreFailed: "Po vytvoření uživatele se nepodařilo obnovit vaši relaci. Přihlaste se prosím znovu.",
-    }
-  },
-  tabs: {
-    calculator: "Kalkulačka",
-    tco: "Analýza TCO",
-    admin: "Správa",
-  },
-  common: {
-    edit: "Upravit",
-    save: "Uložit",
-    saving: "Ukládání...",
-    saveChanges: "Uložit změny",
-    saved: "Uloženo",
-    cancel: "Zrušit",
+    save: "Save",
+    saving: "Saving...",
+    cancel: "Cancel",
+    edit: "Edit",
+    delete: "Delete",
+    back: "Back",
+    next: "Next",
+    step: "Step {current} of {total}",
+    close: "Close",
+    loading: "Loading...",
     na: "N/A",
-    cost: "Cena",
-    costInCurrency: "Cena ({currency})",
-    description: "Popis",
-    back: "Zpět",
-    next: "Další",
-    step: "Krok {current} z {total}",
-    month: "měsíc",
-    months: "měsíce",
-    monthsShort: "měs.",
-    yes: "Ano",
-    no: "Ne",
-    custom: "Vlastní",
-    avgFor: "prům. pro",
-    loading: "Zpracovávání...",
-    close: "Zavřít"
-  },
-  enums: {
-    AssetType: {
-      Laptop: "Notebook",
-      Mobile: "Mobilní telefon",
-      Tablet: "Tablet",
-      Desktop: "Stolní počítač",
-      OtherIT: "Ostatní IT",
-      Accessory: "Příslušenství",
-    },
-    OperatingSystem: {
-      Windows: "Windows",
-      MacOS: "MacOS",
-      Chrome: "Chrome",
-      iOS: "iOS",
-      Android: "Android",
-      Other: "Jiný",
-    },
-    Brand: {
-      HP: "HP",
-      Lenovo: "Lenovo",
-      Dell: "Dell",
-      Acer: "Acer",
-      Apple: "Apple",
-      Samsung: "Samsung",
-      Microsoft: "Microsoft",
-      Other: "Jiná",
-    },
-    Condition: {
-      New: "Nový",
-      Used: "Použitý",
-    },
-    AdditionalService: {
-      Deployment: "Nasazení",
-      PreConfiguration: "Předkonfigurace (staging)",
-      Delivery: "Doručení",
-      Support: "Podpora (výměna do 24h)",
-    }
-  },
-  password: {
-    changeTitle: "Změňte si heslo",
-    changeSubtitle: "Z bezpečnostních důvodů musíte pro pokračování nastavit nové heslo.",
-    newPassword: "Nové heslo",
-    confirmNewPassword: "Potvrďte nové heslo",
-    updatePasswordButton: "Aktualizovat heslo a přihlásit se",
-    error: {
-      mismatch: "Nová hesla se neshodují.",
-    },
+    yes: "Yes",
+    no: "No",
+    months: "Months",
+    monthsShort: "mo",
+    saved: "Saved",
+    saveChanges: "Save Changes",
+    cost: "Cost",
+    description: "Description",
+    costInCurrency: "Cost ({currency})",
+    copy: "Copy",
+    copied: "Copied!"
   },
   login: {
-    title: "Přihlaste se ke svému účtu",
-    subtitle: "Portál pro pronájem IT hardwaru",
-    emailPlaceholder: "E-mailová adresa",
-    passwordPlaceholder: "Heslo",
-    signInButton: "Přihlásit se",
-    forgotPassword: "Zapomněli jste heslo?",
-    resetModal: {
-      title: "Obnovit heslo",
-      instructions: "Zadejte svou e-mailovou adresu a my vám zašleme odkaz pro obnovení hesla.",
-      emailLabel: "E-mailová adresa",
-      sendButton: "Odeslat odkaz pro obnovení",
-      success: "Zkontrolujte si e-mail pro odkaz na obnovení hesla.",
-      error: "Došlo k chybě. Zkuste to prosím znovu nebo kontaktujte administrátora.",
-    },
+    title: "Sign in to your account",
+    subtitle: "Partner Portal",
+    emailPlaceholder: "Email address",
+    passwordPlaceholder: "Password",
+    forgotPassword: "Forgot password?",
+    signInButton: "Sign in",
     error: {
-      invalidCredentials: "Neplatný e-mail nebo heslo. Zkuste to znovu.",
+      bothFieldsRequired: "Both email and password are required.",
+      invalidCredentials: "Invalid email or password."
     },
-  },
-  calculation: {
-    title: "Vytvořit kalkulaci",
-    option: "Možnost",
-    buttons: {
-      new: "Nová",
-      dashboard: "Nástěnka",
-      saveTemplate: "Uložit jako šablonu",
-      generatePdf: "Generovat PDF",
-      addItemTo: "Přidat položku do {optionName}",
-      requestCreditApproval: "Požádat o schválení úvěru",
-      addOption: "Přidat možnost",
-    },
-    priceView: {
-      label: "Zobrazení ceny",
-      detailed: "Podrobný rozpis",
-      bundled: "Balíčková cena",
-    },
-    customerName: "Jméno zákazníka",
-    customerNamePlaceholder: "Zadejte jméno zákazníka",
-    projectName: "Název projektu",
-    projectNamePlaceholder: "Zadejte název projektu",
-    expectedStartDate: "Očekávané datum zahájení smlouvy",
-    empty: {
-        title: "Tato možnost je prázdná.",
-        description: 'Začněte kliknutím na "Přidat položku".',
-    },
-    table: {
-      asset: "Majetek",
-      details: "Podrobnosti",
-      term: "Doba",
-      qty: "Množství",
-      monthlyCost: "Měsíční náklady",
-      totalCost: "Celkové náklady",
-      monthlyBundled: "Balíček měsíčně",
-      totalBundled: "Celkem balíček",
-      actions: "Akce",
-      os: "OS",
-      condition: "Stav",
-      country: "Země",
-      nonReturn: "Nevrácení",
-      servicesLabel: "Služby (jednorázové)",
-      unit: "Jednotka",
-    },
-  },
-  aiSummary: {
-    button: "Generovat souhrn",
-  },
-  aiPrompt: {
-    summary: {
-      persona: "Jste profesionální prodejní asistent pro IT leasingovou společnost.",
-      task: "Vaším úkolem je vytvořit stručné a přesvědčivé shrnutí nabídky pro zákazníka na základě následujících údajů. Shrnutí by mělo být dobře napsané, profesionální a zdůrazňovat klíčové hodnotové nabídky.",
-      customer: "Zákazník",
-      project: "Projekt",
-      notSpecified: "Nespecifikováno",
-      optionsSummary: "Shrnutí možností nabídky",
-      tcoResults: "Výsledky analýzy TCO",
-      tcoSavingDetail: "Díky leasingu namísto nákupu může zákazník dosáhnout potenciální úspory ve výši {amount} {currency}.",
-      tcoPercentageDetail: "To představuje snížení celkových nákladů na vlastnictví (TCO) o {percent}% během průměrné doby leasingu {term} měsíců.",
-      instructionsTitle: "Pokyny",
-      instruction1: "Začněte zdvořilým oslovením zákazníka.",
-      instruction2: "Stručně shrňte navrhované možnosti.",
-      instruction3WithTco: "Zdůrazněte finanční výhody, zejména úspory TCO. Formulujte to jako strategickou výhodu (např. zachování kapitálu, předvídatelné náklady).",
-      instruction3WithoutTco: "Zmiňte výhody zahrnutých služeb (např. zjednodušená správa, předvídatelné provozní náklady).",
-      instruction4WithTco: "Zmiňte výhody zahrnutých služeb (např. zjednodušená správa, minimalizované prostoje).",
-      instruction5: "Ukončete profesionálním závěrečným prohlášením, které vybízí k dalšímu kroku (např. následná diskuse).",
-      instruction6: "Tón by měl být sebevědomý, profesionální a zaměřený na zákazníka.",
-      instruction7: "Nepoužívejte zástupné symboly jako „[Vaše jméno]“. Shrnutí by mělo být připraveno k přímému zkopírování a vložení do těla e-mailu nebo nabídkového dokumentu.",
-      languageInstruction: "VELMI DŮLEŽITÉ: Celá odpověď musí být v následujícím jazyce: {languageName} ({languageCode}).",
-    },
-    assistant: {
-      persona: "Jste nápomocný a přátelský asistent AI pro 'Portál pro pronájem IT hardwaru'.",
-      appDescription: "Tato aplikace pomáhá partnerům pro pronájem IT hardwaru vytvářet kalkulace a nabídky pro jejich zákazníky. Má tři hlavní sekce: 1. Kalkulačka: Pro vytváření nabídek s různým hardwarem, službami a dobami pronájmu. 2. Analýza TCO: Pro porovnání celkových nákladů na vlastnictví (TCO) mezi leasingem a nákupem hardwaru. 3. Administrátorský panel: Pro správu uživatelů, faktorů leasingových sazeb a dalších nastavení.",
-      goal: "Vaším cílem je odpovídat na dotazy uživatelů ohledně používání aplikace, vysvětlovat finanční pojmy jako TCO a WACC a poskytovat obecnou pomoc. Buďte ve svých odpovědích struční a jasní.",
-      languageInstruction: "Vždy odpovídejte ve zvoleném jazyce uživatele: {languageName} ({languageCode}).",
+    resetModal: {
+      title: "Reset Password",
+      instructions: "Enter your email address and we'll send you a link to reset your password.",
+      emailLabel: "Email address",
+      sendButton: "Send Reset Link",
+      success: "Check your email for the password reset link.",
+      error: "Error sending reset email. Please try again."
     }
-  },
-  lrf: {
-    validUntil: "Ceny platné do: {date}",
-  },
-  tco: {
-    title: "Analýza celkových nákladů na vlastnictví (TCO)",
-    empty: {
-      title: "Kalkulace je prázdná.",
-      description: 'Přidejte prosím položky v záložce "Kalkulačka" pro zobrazení analýzy TCO.',
-    },
-    assumptions: {
-      title: "Předpoklady TCO",
-      operationalCosts: "Provozní náklady",
-      deploymentCost: "Náklady na nasazení / zařízení",
-      supportHours: "Hodiny IT podpory / zařízení / rok",
-      staffRate: "Hodinová sazba IT personálu",
-      eoldCost: "Náklady na konec životnosti / zařízení",
-      downtimeProductivity: "Prostoje a produktivita",
-      failures: "Poruchy / zařízení / rok",
-      downtimeHours: "Hodiny prostoje / porucha",
-      employeeCost: "Průměrné náklady na zaměstnance / hodinu",
-      assetValue: "Hodnota majetku",
-      residualValue: "Zbytková hodnota (%)",
-      table: {
-        assumption: "Předpoklad",
-        value: "Hodnota",
-      },
-    },
-    tuning: {
-      button: "Vyladit s AI",
-      modalTitle: "Vyladění TCO s pomocí AI",
-      description: "Na základě vaší nabídky a odvětví navrhla AI následující úpravy pro realističtější srovnání TCO.",
-      table: {
-        parameter: "Parametr",
-        current: "Současný",
-        suggested: "Navrhovaný",
-        reasoning: "Odůvodnění AI",
-      },
-      applyButton: "Použít vybrané ({count})",
-      noSuggestions: "AI zkontrolovala vaše současné předpoklady a shledala je přiměřenými pro daný kontext nabídky. V tuto chvíli nejsou navrhovány žádné změny.",
-    },
-    chart: {
-      title: "Srovnání nákladů: Leasing vs. Nákup",
-      leaseCostLabel: "Celkové náklady na leasing",
-      purchaseCostLabel: "Celkové náklady na vlastnictví",
-    },
-    breakdown: {
-      title: "Podrobný rozpis nákladů",
-      averageLeaseTerm: "Průměrná doba leasingu (vážená hodnotou)",
-    },
-    table: {
-      category: "Kategorie nákladů",
-      purchase: "Scénář nákupu",
-      lease: "Scénář leasingu",
-      hardwareCost: "Náklady na hardware (počáteční)",
-      capitalCost: "Náklady na kapitál (WACC)",
-      deployment: "Náklady na nasazení",
-      support: "Průběžná IT podpora",
-      downtime: "Ztráta produktivity (prostoje)",
-      eold: "Likvidace na konci životnosti",
-      residualValue: "Mínus: Zbytková hodnota",
-      leasePayments: "Celkové leasingové splátky",
-      totalTco: "Celkové náklady na vlastnictví",
-    },
-    savingsWithLease: "Úspory s leasingem",
-    included: "Zahrnuto",
-    mitigated: "Zmírněno",
-    wacc: {
-      title: "Náklady na kapitál (WACC)",
-      industry: "Odvětví",
-      industryAverage: "WACC (průměr odvětví)",
-      applyIndividual: "Použít individuální WACC",
-      individualWacc: "Individuální WACC v %",
-    },
-    glossary: {
-      title: "Slovníček",
-      wacc: "WACC = Vážené průměrné náklady na kapitál. WACC se používá k výpočtu časové hodnoty peněz a poskytuje přesnější 'efektivní kupní cenu'. Jedná se o zjednodušený model pro ilustrační účely.",
-    },
-    industries: {
-      Automotive: "Automobilový průmysl",
-      Banking: "Bankovnictví",
-      HealthcarePharma: "Zdravotnictví a farmacie",
-      Industrialproduction: "Průmyslová výroba",
-      RetailConsumerGoods: "Maloobchod a spotřební zboží",
-      Realestate: "Nemovitosti",
-      Media: "Média",
-      SoftwareIndustry: "Softwarový průmysl",
-      Technology: "Technologie",
-      Telecommunication: "Telekomunikace",
-      TransportLogistics: "Doprava a logistika",
-      Insurance: "Pojišťovnictví",
-      Utilities: "Veřejné služby",
-      Materialsindustry: "Materiálový průmysl",
-    },
   },
   admin: {
     users: {
-        error: {
-          createUserRollback: "Nepodařilo se vytvořit profil uživatele. Uživatel byl odstraněn. Zkuste to prosím znovu.",
-        }
-    }
+      title: "User Management",
+      addUserButton: "Add User",
+      error: {
+        fillRequiredFields: "Please fill in all required fields.",
+        passwordRequired: "Password is required for new users.",
+        createUserFailed: "Failed to create auth user",
+        createProfileFailed: "Auth user created, but profile failed",
+        emailExists: "A user with this email address already exists.",
+        userExistsGeneric: "User creation failed. This email is likely already registered in the system."
+      },
+      userCreationNote: "User created successfully.",
+      table: {
+          name: "Name",
+          emailCompany: "Email / Company",
+          country: "Country",
+          role: "Role",
+          actions: "Actions"
+      },
+      modal: {
+          addTitle: "Add New User",
+          editTitle: "Edit User",
+          name: "Full Name",
+          email: "Email Address",
+          password: "Password",
+          resetPassword: "Reset Password",
+          passwordPlaceholderEdit: "Leave blank to keep current",
+          forceResetNote: "Entering a value here will change the user's password immediately.",
+          role: "Role",
+          selectRole: "Select Role",
+          partnerDetailsTitle: "Partner Details",
+          organization: "Partner Organization",
+          selectOrganization: "Select Organization",
+          noOrganization: "No Organization",
+          phone: "Phone Number",
+          country: "Country",
+          selectCountry: "Select Country",
+          managedCountries: "Managed Countries"
+      },
+      confirmDelete: "Are you sure you want to delete user {email}?"
+    },
+    partners: { title: "Partners", add: "Add Partner", table: { name: "Name", country: "Country", commission: "Commission", actions: "Actions" }, noData: "No partners found", modal: { name: "Organization Name", country: "Country", selectCountry: "Select Country", commission: "Commission (%)", commissionHelp: "Default markup for this partner", logo: "Logo", upload: "Upload Logo" }, error: { nameRequired: "Organization name is required" }, edit: "Edit Partner" },
+    lrf: { title: "Lease Rate Factors", upload: { button: "Upload CSV", success: "Uploaded {count} factors.", error: { noData: "No valid data found in CSV." } }, scope: { label: "Scope", globalDescription: "Editing Global Base Rates (Default)", countryDescription: "Editing Overrides for {country}" }, globalSettings: { title: "Global Settings", nonReturnUpliftHelp: "Extra margin for non-return" }, notifications: { title: "Notifications", description: "Configure email alerts" }, table: { categoryOsBrand: "Category / OS / Brand", termMonths: "{term} Months" }, allUsedAssets: "All Used Assets" },
+    branding: { title: "Branding", appLogo: "Application Logo", currentLogo: "Current Logo", uploadNewLabel: "Upload New Logo", uploadButton: "Upload", uploadHint: "Recommended: PNG or SVG, max 2MB", confirmRemoveLogo: "Are you sure you want to remove the custom logo?" },
+    workflow: { title: "Workflow Settings", primaryEmail: { title: "Primary Credit Approval Email", description: "Default recipient for credit requests" }, currentRecipient: "Current Active Recipient", substitutes: { title: "Substitute Approvers", description: "Temporary overrides for out-of-office periods", add: "Add Substitute", email: "Email", startDate: "Start Date", endDate: "End Date", addButton: "Add", confirmRemove: "Remove this substitute?", statuses: { active: "Active", past: "Past", upcoming: "Upcoming" }, error: { allFieldsRequired: "All fields are required" } } },
+    industryWacc: { title: "Industry WACC", description: "Manage Weighted Average Cost of Capital by industry", newIndustry: "New Industry", wacc: "WACC (%)", add: "Add", confirmDelete: "Delete industry {industry}?" },
+    loginHistory: { title: "Login History", table: { date: "Date", user: "User", status: "Status", attemptedEmail: "Attempted Email" }, statuses: { Success: "Success", Failure: "Failure" }, noHistory: "No login history found." },
+    activityLog: { title: "Activity Log", table: { date: "Date", user: "User", activity: "Activity", details: "Details" }, noActivity: "No activity recorded.", activities: { CreditRequestSent: "Credit Request Sent", UserCreated: "User Created", UserUpdated: "User Updated", UserDeleted: "User Deleted", RatesUpdated: "Rates Updated", AgreementsAccepted: "Agreements Accepted" } },
+    creditInbox: { title: "Credit Inbox", noPending: "No pending credit requests.", table: { date: "Date", partner: "Partner", customer: "Customer", value: "Value", actions: "Actions" }, modal: { title: "Credit Request Decision", notesLabel: "Decision Notes", notesPlaceholder: "Add notes about the decision...", reject: "Reject", approve: "Approve", requestInfo: "Request More Info" } }
   },
+  calculation: {
+      customerName: "Customer Name",
+      customerNamePlaceholder: "e.g. Acme Corp",
+      projectName: "Project Name",
+      projectNamePlaceholder: "e.g. IT Refresh 2024",
+      expectedStartDate: "Expected Start Date",
+      priceView: { label: "Price View", detailed: "Detailed", bundled: "Bundled" },
+      buttons: { dashboard: "Dashboard", new: "New Quote", exportQuotePdf: "Export PDF", saveTemplate: "Save Template", addItemTo: "Add Item to {optionName}", requestCreditApproval: "Request Approval", generatePdf: "Generate PDF", addOption: "Add Option" },
+      removeOption: "Remove Option",
+      confirm: { deleteOption: "Are you sure you want to delete this option?" },
+      error: { cannotDeleteLastOption: "Cannot delete the last option.", templateNameAndItemsRequired: "Template name and items are required." },
+      templateModal: { title: "Save as Template", nameLabel: "Template Name", namePlaceholder: "e.g. Standard Developer Setup", saveButton: "Save Template" },
+      exportQuote: { title: "Quotation", date: "Date", quoteId: "Quote ID" },
+      table: { asset: "Asset", details: "Details", term: "Term", qty: "Qty", monthlyCost: "Monthly Cost", totalCost: "Total Cost", monthlyBundled: "Monthly (Bundled)", totalBundled: "Total (Bundled)", actions: "Actions", country: "Country", os: "OS", condition: "Condition", nonReturn: "Non-Return", servicesLabel: "Services", unit: "unit" },
+      packingService: "Packing Service",
+      packingServiceOption: "Packing Service",
+      disclaimer: "Figures are indicative estimates only.",
+      exchangeRateDisclaimer: "Values converted to quote currency.",
+      actions: { duplicate: "Duplicate", edit: "Edit", remove: "Remove" },
+      empty: { description: "No items in this option. Add items to get started." },
+      wizard: { title: "Add Item", step1: { title: "Asset Selection" }, step2: { title: "Services & Config", description: "Add services and configuration", supportHelpText: "24h swap support included", otherServiceDescription: "Other / Custom Service", otherServicePlaceholder: "Service Description" }, step3: { title: "Lease Terms", summaryTitle: "Item Summary", asset: "Asset", quantity: "Quantity", totalUnitCost: "Total Unit Cost (One-time)", leaseTerm: "Lease Term" }, assetType: "Asset Type", brand: "Brand", os: "Operating System", condition: "Condition", country: "Country", selectCountry: "Select Country", customDescriptionLabel: "Description", customDescriptionPlaceholder: "Item details", hardwareCost: "Hardware Cost ({currency})", quantity: "Quantity", nonReturnOption: "Non-Return Option (5%)", packingServiceOption: "Packing Service", submitButton: "Add to Quote", leaseTerm: "Lease Term" },
+      editModal: { title: "Edit Item" },
+      creditRequestAdminTooltip: "Admins cannot submit credit requests."
+  },
+  dashboard: { title: "Quote Dashboard", tabs: { quotes: "Quotes", templates: "Templates" }, refreshTooltip: "Refresh Data", searchPlaceholder: "Search...", allStatuses: "All Statuses", loadByIdPlaceholder: "Quote ID", loadButton: "Load", table: { customerProject: "Customer / Project", lastUpdated: "Last Updated", assets: "Assets", value: "Value", status: "Status", actions: "Actions" }, untitledCustomer: "Untitled Customer", untitledProject: "Untitled Project", decisionNote: "View Decision Note", actions: { open: "Open", copy: "Copy", delete: "Delete" }, useTemplateButton: "Use Template", noQuotesFound: "No quotes found.", noTemplatesFound: "No templates found.", confirmDeleteQuote: "Are you sure you want to delete this quote?", confirmDeleteTemplate: "Are you sure you want to delete this template?", projectFromTemplate: "{templateName} Project" },
+  tco: { title: "TCO Analysis", tuning: { button: "Tune Assumptions", modalTitle: "AI Tuning Suggestions", description: "Select suggestions to apply to your TCO settings.", noSuggestions: "No suggestions available.", applyButton: "Apply {count} Suggestions", table: { parameter: "Parameter", current: "Current", suggested: "Suggested", reasoning: "Reasoning" } }, empty: { title: "No Data", description: "Add items to the quote to see TCO analysis." }, chart: { title: "Cost Comparison", purchaseCostLabel: "Purchase", leaseCostLabel: "Lease", bestValue: "Best Value" }, savingsWithLease: "Savings with Lease", wacc: { title: "WACC Settings", industry: "Industry", industryAverage: "Industry Average", applyIndividual: "Use Custom WACC", individualWacc: "Custom WACC (%)" }, assumptions: { title: "Cost Assumptions", deploymentCost: "Deployment Cost", eoldCost: "EOL Disposal Cost", supportHours: "IT Support (Hours/Year)", staffRate: "IT Staff Rate (/hr)", failures: "Failures (per Year)", downtimeHours: "Downtime (Hours/Failure)", employeeCost: "Employee Cost (/hr)", residualValue: "Residual Value (%)" }, breakdown: { title: "Detailed Breakdown" }, table: { category: "Cost Category", purchase: "Purchase", lease: "Lease", hardwareCost: "Hardware / Lease", leasePayments: "Lease Payments", capitalCost: "Cost of Capital", deployment: "Deployment", support: "Support & Maintenance", downtime: "Downtime Productivity Loss", eold: "End of Life Disposal", residualValue: "Residual Value", totalTco: "Total TCO" }, industries: { Technology: "Technology", Automotive: "Automotive", Banking: "Banking", HealthcarePharma: "Healthcare & Pharma", Industrialproduction: "Industrial Production", RetailConsumerGoods: "Retail & Consumer Goods", Realestate: "Real Estate", Media: "Media", SoftwareIndustry: "Software Industry", Telecommunication: "Telecommunication", TransportLogistics: "Transport & Logistics", Insurance: "Insurance", Utilities: "Utilities", Materialsindustry: "Materials Industry", PublicSector: "Public Sector" }, liability: { title: "Lease Liability Projection", description: "Estimated future lease payments by year." } },
+  aiSummary: { button: "AI Summary", modalTitle: "Quote Summary", loadingText: "Generating summary with Gemini AI...", copyButton: "Copy to Clipboard", copied: "Copied!" },
+  creditModal: { multiCountryTitle: "Credit Approval Request", modeIndividual: "Individual Requests", modeConsolidated: "Consolidated Request", selectPrimary: "Select Primary Entity", consolidatedNote: "The request will be filed under {country}. All items are included.", hub: { description_consolidated: "Manage details for each country below.", noCountryWarning: "Some items have no country assigned.", itemSummary: "{count} items - {value}", statusComplete: "Ready", statusNeeded: "Details Needed", editDetailsButton: "Edit Details", enterDetailsButton: "Enter Details", rightsConfirmation: "I confirm the accuracy of this data.", consolidatedButton: "Submit Consolidated Request", consolidatedButtonTooltip: "Complete all country details first." }, form: { title: "Customer Details - {country}" }, ai: { label: "AI Auto-Fill", placeholder: "Paste customer details here...", button: "Auto-Fill" }, error: { missingFields: "Missing fields: {fields}" }, companyName: "Company Name", vatId: "VAT ID", address: "Address", city: "City", postalCode: "Postal Code", contactPerson: "Contact Person", contactName: "Name", contactEmail: "Email", contactPhone: "Phone", creditType: "Credit Type", creditTypeNew: "New Customer", creditTypeExisting: "Existing Customer" },
+  enums: { AssetType: { Laptop: "Laptop", Mobile: "Mobile", Tablet: "Tablet", Desktop: "Desktop", OtherIT: "Other IT", Accessory: "Accessory" }, Brand: { HP: "HP", Lenovo: "Lenovo", Dell: "Dell", Acer: "Acer", Apple: "Apple", Samsung: "Samsung", Microsoft: "Microsoft", Other: "Other" }, Condition: { New: "New", Used: "Used" }, OperatingSystem: { Windows: "Windows", MacOS: "MacOS", Chrome: "Chrome", iOS: "iOS", Android: "Android", Other: "Other" }, AdditionalService: { ProcurementPortal: "Procurement Portal", Logistics: "Logistics", PreConfiguration: "Pre-configuration", Deployment: "Deployment", Support: "Support" } },
+  aiPrompt: { summary: { personaSales: "You are a sales assistant.", task: "Summarize this quote.", customer: "Customer", project: "Project", notSpecified: "Not specified", optionsSummary: "Options", instructionsTitle: "Instructions", instructionSales1: "Focus on value.", instructionSales2: "Highlight key hardware.", instruction3WithTco: "Mention TCO savings.", instruction3WithoutTco: "Mention flexibility.", instruction4WithTco: "Keep it professional.", instruction6: "No markdown.", instruction7: "Be concise.", languageInstruction: "Respond in {languageName} ({languageCode})." }, assistant: { persona: "You are a helpful assistant.", appDescription: "This app calculates IT leasing quotes.", goal: "Help the user.", languageInstruction: "Use {languageName}." } },
+  pdf: { customerDetails: { title: "Customer Details" }, standardServices: { title: "Included Standard Services", invoice: { title: "Single Invoice", desc: "One consolidated invoice." }, tesma: { title: "Asset Management", desc: "Online portal access." }, eol: { title: "Secure EOL", desc: "Certified data erasure." } }, tco: { benefitsDescription: "Leasing provides financial flexibility and lifecycle services." }, serviceDescriptions: { title_benefits: "Benefits" } },
+  summary: {
+      totalMonthlyBundled: "Total Monthly (Bundled)",
+      totalBundledCost: "Total Bundled Cost",
+      hardwareValue: "Hardware Value",
+      oneTimeServices: "One-Time Services",
+      totalMonthlyCost: "Total Monthly Cost",
+      totalLeaseCost: "Total Lease Cost"
+  },
+  app: {
+      copyright: "© {year} CHG-MERIDIAN. All rights reserved."
+  },
+  password: {
+      changeTitle: "Change Password",
+      changeSubtitle: "You must change your password.",
+      newPassword: "New Password",
+      confirmNewPassword: "Confirm New Password",
+      updatePasswordButton: "Update Password",
+      error: {
+          mismatch: "Passwords do not match.",
+          minLength: "Minimum 10 characters.",
+          lowercase: "One lowercase letter required.",
+          uppercase: "One uppercase letter required.",
+          number: "One number required.",
+          specialChar: "One special character required."
+      },
+      recoveryTitle: "Recover Password",
+      recoverySubtitle: "Set a new password.",
+      resetAndLogin: "Reset & Login",
+      resetSuccess: "Password reset successful."
+  },
+  // --- EXTENSIVE LEGAL TEXTS (Fallback for all languages) ---
+  legal: {
+      termsLink: "Terms & Conditions",
+      checkboxLabel: "I agree to the",
+      viewDocument: "Read Document",
+      modal: { title: "Terms and Conditions of Use", close: "Close" },
+      terms: {
+          header: "General Terms and Conditions of Use",
+          lastUpdated: "Last Updated: October 2024",
+          intro: { 
+              p1: "These General Terms and Conditions of Use ('Terms') constitute a legally binding agreement between you ('User', 'you') and CHG-MERIDIAN ('Company', 'we', 'us') regarding your access to and use of the Partner Portal application.", 
+              list: "By accessing the Service, you confirm your authority to bind your entity.|You agree to comply with all applicable laws.|Access is conditional upon acceptance.", 
+              p2: "If you do not agree to these Terms, you are strictly prohibited from using the Service." 
+          },
+          sections: {
+              definitions: {
+                  title: "1. Definitions",
+                  content: [
+                      {type: 'p', text: "\"Content\" refers to text, data, lease rate factors, pricing models, algorithms, and software code."},
+                      {type: 'p', text: "\"Service\" means the web application and all associated backend systems."}
+                  ]
+              },
+              license: { 
+                  title: "2. Use License", 
+                  content: [
+                      {type: 'p', text: "The Company grants you a limited, non-exclusive, non-transferable, revocable license to use the Service solely for internal business purposes related to authorized leasing activities."},
+                      {type: 'ul', items: "Do not modify, copy, or create derivative works.|Do not use for unauthorized commercial purposes.|Do not reverse engineer the source code."}
+                  ] 
+              },
+              confidentiality: {
+                  title: "3. Confidentiality",
+                  content: [
+                      {type: 'p', text: "You acknowledge that the Portal contains Confidential Information including Lease Rate Factors (LRFs), pricing algorithms, and customer data."},
+                      {type: 'p', text: "You agree to hold all such information in strict confidence and not to disclose it to third parties without prior written consent."}
+                  ]
+              },
+              financial: {
+                  title: "4. Financial Disclaimer",
+                  content: [
+                      {type: 'p', text: "All calculations, quotes, and analyses are estimates for informational purposes only and do not constitute a binding offer."},
+                      {type: 'ul', items: "Final binding offers require formal credit approval.|Rates are subject to market fluctuation.|Figures exclude VAT unless stated."}
+                  ]
+              },
+              security: {
+                  title: "5. Account Security",
+                  content: [
+                      {type: 'p', text: "You are responsible for maintaining the confidentiality of your login credentials. You must notify us immediately of any unauthorized use of your account."}
+                  ]
+              },
+              liability: {
+                  title: "6. Limitation of Liability",
+                  content: [
+                      {type: 'p', text: "In no event shall the Company be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of the Service."}
+                  ]
+              },
+              termination: {
+                  title: "7. Termination",
+                  content: [
+                      {type: 'p', text: "We may terminate or suspend your access immediately, without prior notice, for any conduct that we, in our sole discretion, believe breaches these Terms."}
+                  ]
+              },
+              governing: {
+                  title: "8. Governing Law",
+                  content: [
+                      {type: 'p', text: "These Terms shall be governed by the laws of the jurisdiction in which the Company is headquartered."}
+                  ]
+              },
+              changes: {
+                  title: "9. Changes to Terms",
+                  content: [
+                      {type: 'p', text: "We reserve the right to modify these Terms at any time. Continued use of the Service constitutes acceptance of the new Terms."}
+                  ]
+              },
+              contact: {
+                  title: "10. Contact",
+                  content: [
+                      {type: 'p', text: "For questions regarding these Terms, please contact your account manager."}
+                  ]
+              }
+          },
+          confirmation: "By logging in, you acknowledge that you have read and understood these Terms."
+      },
+      superuser: { 
+          title: "Partner & Regional Management Agreement", 
+          intro: "As a Regional Manager, you have access to sensitive data. Please accept the compliance protocols.", 
+          privacyPolicy: "Data Privacy Policy", 
+          privacyPolicyText: "I agree to handle customer personal data (PII) in accordance with GDPR.", 
+          privacyPolicyFullText: "DATA PRIVACY POLICY\n\n1. SCOPE\nThis policy governs the handling of PII within the Partner Portal.\n\n2. OBLIGATIONS\nUsers must ensure data is processed lawfully, transparently, and for specific purposes only.\n\n3. SECURITY\nAppropriate technical measures must be taken to prevent unauthorized access.",
+          dpa: "Data Processing Agreement", 
+          dpaText: "I accept the terms of the Data Processing Agreement.", 
+          dpaFullText: "DATA PROCESSING AGREEMENT\n\n1. DEFINITIONS\nController vs Processor roles defined.\n\n2. PROCESSING\nData shall be processed only on documented instructions.",
+          logout: "Decline", 
+          acceptButton: "Accept" 
+      }
+  }
 };
 
+// 3. Language Specific Updates (Only overrides needed)
+// NOTE: We do NOT redefine the massive 'legal' object here to ensure fallback to English works.
+
+const deUpdates = {
+  common: { edit: "Bearbeiten", cancel: "Abbrechen", saving: "Speichern...", save: "Speichern", back: "Zurück", next: "Weiter", close: "Schließen", yes: "Ja", no: "Nein" },
+  login: { title: "Anmelden", emailPlaceholder: "E-Mail", passwordPlaceholder: "Passwort", signInButton: "Anmelden" },
+  calculation: { title: "Kalkulation", customerName: "Kunde", projectName: "Projekt" }
+};
+
+const fiUpdates = {
+  common: { edit: "Muokkaa", cancel: "Peruuta", saving: "Tallennetaan...", save: "Tallenna", back: "Takaisin", next: "Seuraava", close: "Sulje", yes: "Kyllä", no: "Ei" },
+  login: { title: "Kirjaudu", emailPlaceholder: "Sähköposti", passwordPlaceholder: "Salasana", signInButton: "Kirjaudu" },
+  calculation: { title: "Laskelma", customerName: "Asiakas", projectName: "Projekti" }
+};
+
+const svUpdates = {
+  common: { edit: "Redigera", cancel: "Avbryt", saving: "Sparar...", save: "Spara", back: "Tillbaka", next: "Nästa", close: "Stäng", yes: "Ja", no: "Nej" },
+  login: { title: "Logga in", emailPlaceholder: "E-post", passwordPlaceholder: "Lösenord", signInButton: "Logga in" },
+  calculation: { title: "Kalkyl", customerName: "Kund", projectName: "Projekt" }
+};
+
+const noUpdates = {
+  common: { edit: "Rediger", cancel: "Avbryt", saving: "Lagrer...", save: "Lagre", back: "Tilbake", next: "Neste", close: "Lukk", yes: "Ja", no: "Nej" },
+  login: { title: "Logg inn", emailPlaceholder: "E-post", passwordPlaceholder: "Passord", signInButton: "Logg inn" },
+  calculation: { title: "Kalkyle", customerName: "Kunde", projectName: "Prosjekt" }
+};
+
+const daUpdates = {
+  common: { edit: "Rediger", cancel: "Annuller", saving: "Gemmer...", save: "Gem", back: "Tilbage", next: "Næste", close: "Luk", yes: "Ja", no: "Nej" },
+  login: { title: "Log ind", emailPlaceholder: "E-mail", passwordPlaceholder: "Adgangskode", signInButton: "Log ind" },
+  calculation: { title: "Beregning", customerName: "Kunde", projectName: "Projekt" }
+};
+
+const plUpdates = {
+  common: { edit: "Edytuj", cancel: "Anuluj", saving: "Zapisywanie...", save: "Zapisz", back: "Wstecz", next: "Dalej", close: "Zamknij", yes: "Tak", no: "Nie" },
+  login: { title: "Zaloguj", emailPlaceholder: "E-mail", passwordPlaceholder: "Hasło", signInButton: "Zaloguj" },
+  calculation: { title: "Kalkulacja", customerName: "Klient", projectName: "Projekt" }
+};
+
+const csUpdates = {
+  common: { edit: "Upravit", cancel: "Zrušit", saving: "Ukládání...", save: "Uložit", back: "Zpět", next: "Další", close: "Zavřít", yes: "Ano", no: "Ne" },
+  login: { title: "Přihlásit", emailPlaceholder: "E-mail", passwordPlaceholder: "Heslo", signInButton: "Přihlásit" },
+  calculation: { title: "Kalkulace", customerName: "Zákazník", projectName: "Projekt" }
+};
+
+// 4. Export the Merged Translations
 export const translations = {
-  en,
-  de,
-  fi,
-  sv,
-  no,
-  da,
-  pl,
-  cs,
+  en: baseEnglish,
+  de: deepMerge(baseEnglish, deUpdates),
+  fi: deepMerge(baseEnglish, fiUpdates),
+  sv: deepMerge(baseEnglish, svUpdates),
+  no: deepMerge(baseEnglish, noUpdates),
+  da: deepMerge(baseEnglish, daUpdates),
+  pl: deepMerge(baseEnglish, plUpdates),
+  cs: deepMerge(baseEnglish, csUpdates),
 };
