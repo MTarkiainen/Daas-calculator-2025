@@ -1,792 +1,725 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Session, User as SupabaseUser } from '@supabase/supabase-js';
-import { Profile, LeaseRateFactorsData, UserRole, Quote, TcoSettings, Template, QuoteStatus, ActivityLogEntry, ActivityType, LoginAttempt, BrandingSettings, WorkflowSettings } from './types';
+import React, { useState, useEffect } from 'react';
+import Login from './components/Login';
 import CalculationSheet from './components/calculation/CalculationSheet';
 import AdminSheet from './components/admin/AdminSheet';
 import TcoSheet from './components/tco/TcoSheet';
-import { Tabs, Tab } from './components/ui/Tabs';
-import Login from './components/Login';
-import ProfileModal from './components/profile/ProfileModal';
-import UserCircleIcon from './components/ui/icons/UserCircleIcon';
+import { supabase, supabaseUrl, supabaseAnonKey } from './supabaseClient';
+import { createClient } from '@supabase/supabase-js';
+import { Profile, Quote, LeaseRateFactorsData, TcoSettings, BrandingSettings, WorkflowSettings, PartnerOrganization, UserRole, PriceViewMode, ActivityType, QuoteStatus, LegalDocument, ExchangeRatesDb } from './types';
 import { v4 as uuidv4 } from 'uuid';
-import { supabase, isSupabaseConfigured } from './supabaseClient';
-import ForcePasswordChangeModal from './components/profile/ForcePasswordChangeModal';
-import { useLanguage } from './i18n/LanguageContext';
+import AiAssistant from './components/ai/AiAssistant';
+import ProfileModal from './components/profile/ProfileModal';
+import MenuIcon from './components/ui/icons/MenuIcon';
 import LanguageSwitcher from './components/ui/LanguageSwitcher';
+import CurrencySwitcher from './components/ui/CurrencySwitcher';
+import QuestionMarkCircleIcon from './components/ui/icons/QuestionMarkCircleIcon';
+import BellIcon from './components/ui/icons/BellIcon';
 import { Dropdown, DropdownItem } from './components/ui/Dropdown';
 import LogoutIcon from './components/ui/icons/LogoutIcon';
-import AiAssistant from './components/ai/AiAssistant';
-import SparklesIcon from './components/ui/icons/SparklesIcon';
-import { Button } from './components/ui/Button';
-import { INITIAL_LEASE_RATE_FACTORS_DATA, INITIAL_TCO_SETTINGS, INITIAL_WORKFLOW_SETTINGS } from './constants';
-
-const mapQuoteFromDb = (dbQuote: any): Quote => ({
-  id: dbQuote.id,
-  customerName: dbQuote.customer_name,
-  projectName: dbQuote.project_name,
-  expectedStartDate: dbQuote.expected_start_date,
-  options: dbQuote.options,
-  status: dbQuote.status,
-  createdAt: dbQuote.created_at,
-  updatedAt: dbQuote.updated_at,
-  createdByUserId: dbQuote.created_by_user_id,
-  customerAddress: dbQuote.customer_address,
-  customerCity: dbQuote.customer_city,
-  customerPostalCode: dbQuote.customer_postal_code,
-  customerCountry: dbQuote.customer_country,
-  customerContactName: dbQuote.customer_contact_name,
-  customerContactEmail: dbQuote.customer_contact_email,
-  customerContactPhone: dbQuote.customer_contact_phone,
-  customerVatId: dbQuote.customer_vat_id,
-  creditType: dbQuote.credit_type,
-  currency: dbQuote.currency,
-  countrySpecificDetails: dbQuote.country_specific_details || {},
-});
-
-const mapTemplateFromDb = (dbTemplate: any): Template => ({
-  id: dbTemplate.id,
-  name: dbTemplate.name,
-  items: dbTemplate.items,
-  userId: dbTemplate.user_id,
-});
-
-const mapProfileFromDb = (dbProfile: any): Profile => ({
-  id: dbProfile.id,
-  name: dbProfile.name,
-  email: dbProfile.email,
-  role: dbProfile.role,
-  companyName: dbProfile.company_name,
-  phone: dbProfile.phone,
-  logoBase64: dbProfile.logo_base_64,
-  commissionPercentage: dbProfile.commission_percentage,
-  country: dbProfile.country,
-  mustChangePasswordOnNextLogin: dbProfile.must_change_password_on_next_login,
-});
-
-const mapActivityLogFromDb = (dbLog: any): ActivityLogEntry => ({
-  id: dbLog.id,
-  timestamp: dbLog.timestamp,
-  userId: dbLog.user_id,
-  type: dbLog.type,
-  details: dbLog.details,
-  quoteId: dbLog.quote_id,
-  customerName: dbLog.customer_name,
-});
-
-const mapLoginAttemptFromDb = (dbAttempt: any): LoginAttempt => ({
-  id: dbAttempt.id,
-  userId: dbAttempt.user_id,
-  emailAttempt: dbAttempt.email_attempt,
-  timestamp: dbAttempt.timestamp,
-  status: dbAttempt.status,
-});
-
+import UserCircleIcon from './components/ui/icons/UserCircleIcon';
+import { INDUSTRIES_WACC } from './constants';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'calculator' | 'tco' | 'admin'>('calculator');
-  const [session, setSession] = useState<Session | null>(null);
-  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
-  const [profileError, setProfileError] = useState<string | null>(null);
-  
-  // Data state
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [lrfData, setLrfData] = useState<LeaseRateFactorsData | null>(null);
+  const [session, setSession] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<Profile | null>(null);
+  const [activeView, setActiveView] = useState<'calculator' | 'tco' | 'admin'>('calculator');
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Data State
+  const [quote, setQuote] = useState<Quote>({
+    id: uuidv4(),
+    customerName: '',
+    projectName: '',
+    status: QuoteStatus.Draft,
+    options: [{ id: uuidv4(), name: 'Option A', items: [] }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    createdByUserId: '',
+    currency: 'EUR',
+    countrySpecificDetails: {}
+  });
+
   const [savedQuotes, setSavedQuotes] = useState<Quote[]>([]);
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [brandingSettings, setBrandingSettings] = useState<BrandingSettings>({ appLogoBase64: null });
-  const [workflowSettings, setWorkflowSettings] = useState<WorkflowSettings | null>(null);
-  const [activityLog, setActivityLog] = useState<ActivityLogEntry[]>([]);
-  const [loginHistory, setLoginHistory] = useState<LoginAttempt[]>([]);
-  const [tcoSettings, setTcoSettings] = useState<TcoSettings | null>(null);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [lrfData, setLrfData] = useState<LeaseRateFactorsData>({
+    factors: {},
+    lastUpdatedAt: new Date().toISOString(),
+    updatedByUserId: 'system',
+    updateLog: [],
+    serviceCosts: {},
+    notificationAdminId: '',
+    countryFactors: {},
+    countryServiceCosts: {},
+    countrySettings: {}
+  });
+  
+  // TCO Settings with defaults populated from constants
+  const [tcoSettings, setTcoSettings] = useState<TcoSettings>({
+    selectedIndustry: 'Technology',
+    useCustomWacc: false,
+    customWacc: 10,
+    deploymentCostPerDevice: 50,
+    itSupportHoursPerDeviceYear: 2,
+    itStaffHourlyRate: 60,
+    failuresPerDeviceYear: 0.5,
+    downtimeHoursPerFailure: 4,
+    employeeCostPerHour: 40,
+    eoldCostPerDevice: 30,
+    residualValuePercentage: 5,
+    industryWaccs: INDUSTRIES_WACC // Initialize with full list
+  });
 
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [brandingSettings, setBrandingSettings] = useState<BrandingSettings>({});
+  const [workflowSettings, setWorkflowSettings] = useState<WorkflowSettings>({ primaryCreditApprovalEmail: '', substitutes: [] });
+  const [organizations, setOrganizations] = useState<PartnerOrganization[]>([]);
+  const [activityLog, setActivityLog] = useState<any[]>([]);
+  const [loginHistory, setLoginHistory] = useState<any[]>([]);
+  const [legalDocuments, setLegalDocuments] = useState<LegalDocument[]>([]);
+  const [priceViewMode, setPriceViewMode] = useState<PriceViewMode>('detailed');
   
-  // Lock to prevent auth state changes from triggering data fetch during user creation
-  const isRestoringSession = useRef(false);
-  
-  const { t } = useLanguage();
-
-  const createNewQuote = (): Quote => {
-    return {
-      id: uuidv4(),
-      customerName: '',
-      projectName: '',
-      expectedStartDate: new Date().toISOString(),
-      options: [{ id: uuidv4(), name: 'Option A', items: [] }],
-      status: QuoteStatus.Draft,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      currency: 'EUR', // Always default to EUR
-      countrySpecificDetails: {},
-    };
-  };
-  
-  const [quote, setQuote] = useState<Quote>(createNewQuote());
-  
-  // Render a blocking error if Supabase is not configured.
-  if (!isSupabaseConfigured) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-lg w-full bg-white p-8 rounded-xl shadow-lg text-center space-y-6">
-          <div>
-            <svg className="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <h2 className="mt-4 text-2xl font-bold text-red-600">Configuration Error</h2>
-          </div>
-          <div className="bg-red-50 p-3 rounded-lg border border-red-200">
-            <p className="text-sm font-medium text-red-800">
-              Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) are not set.
-            </p>
-          </div>
-          <p className="text-sm text-slate-500">
-            This application requires a connection to a Supabase project to function. Please create a <code>.env</code> file in the project root and provide your Supabase credentials.
-            <br/><br/>
-            Refer to the <strong>README.md</strong> file for detailed setup instructions.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Exchange Rates State
+  const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({ EUR: 1, USD: 1.1, GBP: 0.85 });
+  const [exchangeRatesMeta, setExchangeRatesMeta] = useState<Partial<ExchangeRatesDb>>({});
 
   useEffect(() => {
-    // Safety Timeout: If loading takes longer than 8 seconds, force stop loading and show error/fallback
-    const timeoutId = setTimeout(() => {
-      if (isLoading) {
-        console.warn("Data fetching timed out. Forcing loading to stop.");
-        setIsLoading(false);
-        
-        // If we still don't have a profile after timeout, it's a critical failure
-        if (!currentProfile && session) {
-            setProfileError("Connection timed out. Please check your internet connection or try refreshing.");
-        }
-        
-        // Force defaults for settings if they failed to load
-        if (!lrfData) setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
-        if (!tcoSettings) setTcoSettings(INITIAL_TCO_SETTINGS);
-        if (!workflowSettings) setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
-      }
-    }, 8000);
-
-    return () => clearTimeout(timeoutId);
-  }, [isLoading, session, currentProfile]); // Added currentProfile dependency to check if we need to error out
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Ignore auth changes if we are manually restoring the admin session
-      if (isRestoringSession.current) {
-        console.log("Ignoring auth change due to manual session restoration.");
-        return;
-      }
-
-      setSession(session);
-
-      if (session?.user) {
-        await fetchData(session.user);
-      } else {
-        setCurrentProfile(null);
-        setIsLoading(false);
-      }
-    });
-
+    // Fetch branding immediately for login screen
     fetchBrandingSettings();
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) fetchUserData(session.user.id);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) fetchUserData(session.user.id);
+      else setCurrentUser(null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const fetchData = async (user: SupabaseUser) => {
-    setIsLoading(true);
+  const fetchUserData = async (userId: string) => {
     try {
-      let { data: profileData, error: profileErrorFromDb } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      if (!profileData) {
-          const { count, error: countError } = await supabase
+        const { data: profileData } = await supabase
             .from('profiles')
-            .select('*', { count: 'exact', head: true });
+            .select('*')
+            .eq('id', userId)
+            .single();
 
-          if (countError === null) {
-            const isFirstUser = count === 0;
-            const userMetaData = user.user_metadata;
-            const roleToAssign = userMetaData?.role || (isFirstUser ? UserRole.Admin : UserRole.Partner);
-            const nameToAssign = userMetaData?.name || user.email || 'Unknown User';
-            const emailToAssign = user.email || `no-email-${user.id}@placeholder.com`;
-
-            const newProfilePayload = {
-              id: user.id,
-              email: emailToAssign,
-              name: nameToAssign,
-              role: roleToAssign,
-              company_name: userMetaData?.company_name,
-              phone: userMetaData?.phone,
-              logo_base_64: userMetaData?.logo_base_64,
-              commission_percentage: userMetaData?.commission_percentage,
-              country: userMetaData?.country,
-            };
-
-            const { data: newProfile, error: insertError } = await supabase
-              .from('profiles')
-              .insert(newProfilePayload)
-              .select()
-              .single();
+        if (profileData) {
+            setCurrentUser({
+                id: profileData.id,
+                email: profileData.email,
+                name: profileData.name,
+                role: profileData.role,
+                phone: profileData.phone,
+                country: profileData.country,
+                partnerOrganizationId: profileData.partner_organization_id,
+                managedCountries: profileData.managed_countries
+            });
+        } else {
+            const email = session?.user?.email || '';
+            const name = email.split('@')[0];
+            const newId = userId;
             
-            if (!insertError && newProfile) {
-              profileData = newProfile;
-              profileErrorFromDb = null; 
-            } else if (insertError) {
-              console.error("Failed to auto-create profile:", insertError);
-              profileErrorFromDb = insertError; 
+            const dbProfile = {
+                id: newId,
+                email: email,
+                name: name,
+                role: UserRole.Partner,
+            };
+            
+            const { error: insertError } = await supabase.from('profiles').insert(dbProfile);
+            
+            if (!insertError) {
+                setCurrentUser({
+                    id: newId,
+                    email: email,
+                    name: name,
+                    role: UserRole.Partner
+                });
+            } else {
+                console.error("Failed to create profile record:", insertError);
+                setCurrentUser({
+                    id: newId,
+                    email: email,
+                    name: name,
+                    role: UserRole.Partner
+                });
             }
+        }
+
+        // Fetch Application Data
+        fetchProfiles();
+        fetchLegalDocuments();
+        fetchOrganizations();
+        fetchExchangeRates(); 
+        fetchQuotes(); 
+        fetchBrandingSettings(); 
+        fetchTcoSettings();
+        fetchLrfData(); // NEW: Fetch LRF settings
+
+    } catch (e) {
+        console.error("Error loading user data:", e);
+    }
+  };
+
+  const fetchProfiles = async () => {
+      const { data, error } = await supabase.from('profiles').select('*');
+      if (data) {
+          const mappedProfiles = data.map(p => ({
+              id: p.id,
+              email: p.email,
+              name: p.name,
+              role: p.role,
+              phone: p.phone,
+              country: p.country,
+              partnerOrganizationId: p.partner_organization_id,
+              managedCountries: p.managed_countries
+          }));
+          setProfiles(mappedProfiles);
+      }
+  };
+
+  const fetchLegalDocuments = async () => {
+      try {
+          const { data } = await supabase.from('legal_documents').select('*');
+          if (data) {
+              setLegalDocuments(data.map(d => ({
+                  id: d.id,
+                  title: d.title,
+                  content: d.content,
+                  updatedAt: d.updated_at
+              })));
+          }
+      } catch (err) {
+          console.error("Failed to fetch legal docs", err);
+      }
+  };
+
+  const fetchOrganizations = async () => {
+      const { data } = await supabase.from('partner_organizations').select('*');
+      if (data) setOrganizations(data.map(o => ({
+          id: o.id,
+          name: o.name,
+          commissionPercentage: o.commission_percentage,
+          country: o.country,
+          logoBase64: o.logo_base_64
+      })));
+  };
+
+  const fetchExchangeRates = async () => {
+      try {
+          const { data } = await supabase.from('exchange_rates').select('*').eq('id', 1).single();
+          if (data && data.rates) {
+              setExchangeRates(data.rates);
+              setExchangeRatesMeta({ last_updated: data.last_updated, updated_by: data.updated_by });
+          }
+      } catch (err) {
+          console.error("Exception fetching rates:", err);
+      }
+  };
+
+  const fetchBrandingSettings = async () => {
+      try {
+          const { data, error } = await supabase.from('branding_settings').select('*').single();
+          if (data) {
+              setBrandingSettings({
+                  appLogoBase64: data.app_logo_base64,
+                  subLogoBase64: data.sub_logo_base64
+              });
+          } else if (error) {
+              // Fallback to local storage if DB fetch fails
+              const local = localStorage.getItem('branding_settings_backup');
+              if (local) setBrandingSettings(JSON.parse(local));
+          }
+      } catch (err) {
+          console.error("Failed to fetch branding settings, using local backup:", err);
+          const local = localStorage.getItem('branding_settings_backup');
+          if (local) setBrandingSettings(JSON.parse(local));
+      }
+  };
+
+  const fetchTcoSettings = async () => {
+      try {
+          const { data, error } = await supabase.from('tco_settings').select('*').single();
+          if (data && data.settings) {
+              setTcoSettings(prev => ({ ...prev, ...data.settings }));
+          } else if (error) {
+              const local = localStorage.getItem('tco_settings_backup');
+              if (local) setTcoSettings(prev => ({ ...prev, ...JSON.parse(local) }));
+          }
+      } catch (err) {
+          console.error("Failed to fetch TCO settings, using local backup:", err);
+          const local = localStorage.getItem('tco_settings_backup');
+          if (local) setTcoSettings(prev => ({ ...prev, ...JSON.parse(local) }));
+      }
+  };
+
+  // NEW: Fetch LRF Data from Supabase
+  const fetchLrfData = async () => {
+      try {
+          const { data, error } = await supabase.from('lrf_settings').select('*').single();
+          if (data && data.settings) {
+              setLrfData(data.settings);
+          } else if (error) {
+              console.warn("LRF fetch error (using local backup):", error.message);
+              const local = localStorage.getItem('lrf_data_backup');
+              if (local) setLrfData(JSON.parse(local));
+          }
+      } catch (err) {
+          console.error("Failed to fetch LRF data:", err);
+          const local = localStorage.getItem('lrf_data_backup');
+          if (local) setLrfData(JSON.parse(local));
+      }
+  };
+
+  const fetchQuotes = async () => {
+      const { data } = await supabase.from('quotes').select('*');
+      if (data) {
+          const mappedQuotes = data.map(q => ({
+              id: q.id,
+              customerName: q.customer_name,
+              projectName: q.project_name,
+              status: q.status,
+              options: q.options || [],
+              createdAt: q.created_at,
+              updatedAt: q.updated_at,
+              createdByUserId: q.created_by_user_id,
+              currency: q.currency,
+              creditDecisionNotes: q.credit_decision_notes,
+              creditRequestSubmittedAt: q.credit_request_submitted_at,
+              countrySpecificDetails: q.country_specific_details,
+              deploymentStartDate: q.deployment_start_date
+          }));
+          setSavedQuotes(mappedQuotes);
+      }
+  };
+
+  const handleSaveBrandingSettings = async (settings: BrandingSettings) => {
+      setBrandingSettings(settings);
+      localStorage.setItem('branding_settings_backup', JSON.stringify(settings));
+      try {
+          const { error } = await supabase.from('branding_settings').upsert({
+              id: 1,
+              app_logo_base64: settings.appLogoBase64,
+              sub_logo_base64: settings.subLogoBase64,
+              updated_at: new Date().toISOString()
+          });
+          if (error) throw error;
+      } catch (err) {
+          console.error("Database save failed for branding (persisting locally):", err);
+          throw err; 
+      }
+  };
+
+  const handleSaveTcoSettings = async (settings: TcoSettings) => {
+      setTcoSettings(settings);
+      localStorage.setItem('tco_settings_backup', JSON.stringify(settings));
+      try {
+          const { error } = await supabase.from('tco_settings').upsert({
+              id: 1,
+              settings: settings,
+              updated_at: new Date().toISOString(),
+              updated_by: currentUser?.id
+          });
+          if (error) throw error;
+      } catch (err) {
+          console.error("Database save failed for TCO settings (persisting locally):", err);
+          throw err;
+      }
+  };
+
+  // NEW: Save LRF Data to Supabase
+  const handleSaveLrfData = async (data: LeaseRateFactorsData) => {
+      setLrfData(data);
+      localStorage.setItem('lrf_data_backup', JSON.stringify(data));
+      try {
+          const { error } = await supabase.from('lrf_settings').upsert({
+              id: 1,
+              settings: data,
+              updated_at: new Date().toISOString(),
+              updated_by: currentUser?.id
+          });
+          if (error) throw error;
+      } catch (err) {
+          console.error("Database save failed for LRF settings (persisting locally):", err);
+          throw err;
+      }
+  };
+
+  // --- User Management Actions ---
+
+  const handleUserCreate = async (profileData: Partial<Profile>, password: string) => {
+      const tempClient = createClient(supabaseUrl, supabaseAnonKey, {
+          auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+      });
+
+      const { data: authData, error: authError } = await tempClient.auth.signUp({
+          email: profileData.email!,
+          password: password,
+          options: { data: { name: profileData.name } }
+      });
+
+      if (authError) {
+          alert(`Error creating Auth user: ${authError.message}`);
+          return;
+      }
+
+      if (authData.user) {
+          const newId = authData.user.id;
+          const dbProfile = {
+              id: newId,
+              email: profileData.email!,
+              name: profileData.name!,
+              role: profileData.role || UserRole.Partner,
+              country: profileData.country,
+              phone: profileData.phone,
+              partner_organization_id: profileData.partnerOrganizationId,
+              managed_countries: profileData.managedCountries
+          };
+
+          const { error: profileError } = await supabase.from('profiles').insert(dbProfile);
+          if (profileError) {
+              alert(`Auth user created, but Profile creation failed: ${profileError.message}`);
+          } else {
+              alert("User successfully created. They can now log in.");
+              fetchProfiles();
           }
       }
-      
-      if (profileErrorFromDb || !profileData) {
-        console.error("User profile not found or creation failed.", profileErrorFromDb);
-        const detailedError = profileErrorFromDb?.message || "Unknown database error";
-        setProfileError(`${t('app.error.profileMissing')} (${detailedError})`);
-        await supabase.auth.signOut();
-        setIsLoading(false);
-        return;
-      }
-
-      const mappedProfile = mapProfileFromDb(profileData);
-      setCurrentProfile(mappedProfile);
-
-      if (mappedProfile.role === UserRole.Admin) {
-        await fetchAllAdminData();
-      } else {
-        await fetchPartnerData(user.id);
-      }
-      
-      await fetchTcoSettings();
-      await fetchBrandingSettings();
-    } catch (error: any) {
-      console.error("Error fetching data:", error);
-      setProfileError(`Unexpected error: ${error?.message || error}`);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
-  const fetchAllAdminData = async () => {
-    const [profilesRes, quotesRes, lrfRes, templatesRes, workflowRes, activityRes, loginHistoryRes] = await Promise.all([
-      supabase.from('profiles').select('*'),
-      supabase.from('quotes').select('*'),
-      supabase.from('lease_rate_factors').select('data').single(),
-      supabase.from('templates').select('*'),
-      supabase.from('workflow_settings').select('data').single(),
-      supabase.from('activity_log').select('*').order('timestamp', { ascending: false }),
-      supabase.from('login_history').select('*').order('timestamp', { ascending: false }),
-    ]);
+  const handleUserUpdate = async (updatedProfile: Profile, newPasswordEntered: boolean) => {
+      const { error } = await supabase
+          .from('profiles')
+          .update({
+              name: updatedProfile.name,
+              role: updatedProfile.role,
+              country: updatedProfile.country,
+              phone: updatedProfile.phone,
+              partner_organization_id: updatedProfile.partnerOrganizationId,
+              managed_countries: updatedProfile.managedCountries
+          })
+          .eq('id', updatedProfile.id);
 
-    if (profilesRes.error) console.error('Error fetching profiles:', profilesRes.error);
-    else setProfiles((profilesRes.data || []).map(mapProfileFromDb));
-    
-    if (quotesRes.error) console.error('Error fetching quotes:', quotesRes.error);
-    else setSavedQuotes((quotesRes.data || []).map(mapQuoteFromDb));
-    
-    if (lrfRes.error || !lrfRes.data || !lrfRes.data.data) {
-        console.warn('Error fetching LRF data or no data found, using defaults:', lrfRes.error);
-        setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
-    } else {
-        const loadedLrf = lrfRes.data.data as Partial<LeaseRateFactorsData>;
-        setLrfData({
-            ...INITIAL_LEASE_RATE_FACTORS_DATA,
-            ...loadedLrf,
-            factors: loadedLrf.factors || INITIAL_LEASE_RATE_FACTORS_DATA.factors
-        });
-    }
-
-    if (templatesRes.error) console.error('Error fetching templates:', templatesRes.error);
-    else setTemplates((templatesRes.data || []).map(mapTemplateFromDb));
-    
-    if (workflowRes.error || !workflowRes.data || !workflowRes.data.data) {
-        console.warn('Error fetching workflow settings or no data found, using defaults:', workflowRes.error);
-        setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
-    } else {
-        const raw = workflowRes.data.data as Partial<WorkflowSettings>;
-        setWorkflowSettings({
-            primaryCreditApprovalEmail: raw.primaryCreditApprovalEmail || INITIAL_WORKFLOW_SETTINGS.primaryCreditApprovalEmail,
-            substitutes: Array.isArray(raw.substitutes) ? raw.substitutes : []
-        });
-    }
-
-    if (activityRes.error) console.error('Error fetching activity log:', activityRes.error);
-    else setActivityLog((activityRes.data || []).map(mapActivityLogFromDb));
-    
-    if (loginHistoryRes.error) console.error('Error fetching login history:', loginHistoryRes.error);
-    else setLoginHistory((loginHistoryRes.data || []).map(mapLoginAttemptFromDb));
-  };
-
-  const fetchPartnerData = async (userId: string) => {
-    const [quotesRes, templatesRes, lrfRes, workflowRes] = await Promise.all([
-      supabase.from('quotes').select('*').eq('created_by_user_id', userId),
-      supabase.from('templates').select('*').eq('user_id', userId),
-      supabase.from('lease_rate_factors').select('data').single(),
-      supabase.from('workflow_settings').select('data').single(),
-    ]);
-
-    if (quotesRes.error) console.error('Error fetching quotes:', quotesRes.error);
-    else setSavedQuotes((quotesRes.data || []).map(mapQuoteFromDb));
-
-    if (templatesRes.error) console.error('Error fetching templates:', templatesRes.error);
-    else setTemplates((templatesRes.data || []).map(mapTemplateFromDb));
-    
-    if (lrfRes.error || !lrfRes.data || !lrfRes.data.data) {
-        console.warn("Error fetching LRF data or no data found, using defaults", lrfRes.error);
-        setLrfData(INITIAL_LEASE_RATE_FACTORS_DATA);
-    } else {
-        const loadedLrf = lrfRes.data.data as Partial<LeaseRateFactorsData>;
-        setLrfData({
-            ...INITIAL_LEASE_RATE_FACTORS_DATA,
-            ...loadedLrf,
-            factors: loadedLrf.factors || INITIAL_LEASE_RATE_FACTORS_DATA.factors
-        });
-    }
-    
-    if (workflowRes.error || !workflowRes.data || !workflowRes.data.data) {
-        console.warn("Error fetching workflow settings or no data found, using defaults", workflowRes.error);
-        setWorkflowSettings(INITIAL_WORKFLOW_SETTINGS);
-    } else {
-        const raw = workflowRes.data.data as Partial<WorkflowSettings>;
-        setWorkflowSettings({
-            primaryCreditApprovalEmail: raw.primaryCreditApprovalEmail || INITIAL_WORKFLOW_SETTINGS.primaryCreditApprovalEmail,
-            substitutes: Array.isArray(raw.substitutes) ? raw.substitutes : []
-        });
-    }
-  };
-  
-  const fetchTcoSettings = async () => {
-     const { data, error } = await supabase.from('tco_settings').select('data').single();
-     if (error || !data || !data.data) {
-         console.warn("Error fetching TCO settings or no data found, using defaults", error);
-         setTcoSettings(INITIAL_TCO_SETTINGS);
-     } else {
-         // SAFE MERGE: Ensure all required numeric fields are present
-         setTcoSettings({
-             ...INITIAL_TCO_SETTINGS,
-             ...(data.data as Partial<TcoSettings>),
-             industryWaccs: (data.data as Partial<TcoSettings>).industryWaccs || INITIAL_TCO_SETTINGS.industryWaccs
-         });
-     }
-  };
-  
-  const fetchBrandingSettings = async () => {
-      const { data, error } = await supabase.from('branding_settings').select('data').single();
       if (error) {
-        console.error("Error fetching branding settings", error);
-        setBrandingSettings({ appLogoBase64: null });
+          alert(`Error updating profile: ${error.message}`);
       } else {
-        const settings = data?.data as BrandingSettings;
-        setBrandingSettings({ appLogoBase64: settings?.appLogoBase64 || null });
+          fetchProfiles();
+      }
+      if (newPasswordEntered) {
+          alert("Note: Password updates via this panel are limited. The user should reset their own password via 'Forgot Password'.");
       }
   };
 
-  const handleQuoteSave = async (quoteToSave: Quote) => {
-    if (!currentProfile) return;
-
-    const {
-      customerName, projectName, expectedStartDate, createdByUserId, 
-      customerAddress, customerCity, customerPostalCode, customerCountry, 
-      customerContactName, customerContactEmail, customerContactPhone, 
-      customerVatId, creditType, currency, countrySpecificDetails, ...restOfQuote
-    } = quoteToSave;
-    
-    const quotePayload = {
-      ...restOfQuote,
-      customer_name: customerName,
-      project_name: projectName,
-      expected_start_date: expectedStartDate,
-      created_by_user_id: createdByUserId || currentProfile.id,
-      customer_address: customerAddress,
-      customer_city: customerCity,
-      customer_postal_code: customerPostalCode,
-      customer_country: customerCountry,
-      customer_contact_name: customerContactName,
-      customer_contact_email: customerContactEmail,
-      customer_contact_phone: customerContactPhone,
-      customer_vat_id: customerVatId,
-      credit_type: creditType,
-      currency: currency,
-      country_specific_details: countrySpecificDetails,
-      updated_at: new Date().toISOString(),
-    };
-    
-    const { data, error } = await supabase.from('quotes').upsert(quotePayload).select().single();
-
-    if(error) {
-      console.error("Error saving quote", error);
-    } else if (data) {
-      const savedQuote = mapQuoteFromDb(data);
-      setSavedQuotes(prev => {
-        const index = prev.findIndex(q => q.id === savedQuote.id);
-        if (index > -1) {
-          const newQuotes = [...prev];
-          newQuotes[index] = savedQuote;
-          return newQuotes;
-        }
-        return [...prev, savedQuote];
-      });
-       if (quote.id === savedQuote.id) {
-          setQuote(savedQuote);
+  const handleUserDelete = async (userId: string) => {
+      const { error } = await supabase.from('profiles').delete().eq('id', userId);
+      if (error) {
+          alert(`Error deleting profile: ${error.message}`);
+      } else {
+          fetchProfiles();
       }
-    }
-  };
-  
-    const handlePasswordChanged = async (userId: string, newPass: string) => {
-    const { error: authError } = await supabase.auth.updateUser({ password: newPass });
-    if (authError) {
-      alert(`Error updating password: ${authError.message}`);
-      return;
-    }
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({ must_change_password_on_next_login: false })
-      .eq('id', userId);
-    
-    if (profileError) {
-      alert(`Password updated, but failed to update profile status: ${profileError.message}`);
-      return;
-    }
-    
-    alert("Password successfully updated!");
-    // Refetch profile to update UI state
-    if(session?.user) await fetchData(session.user);
   };
 
-  const addActivityLog = async (type: ActivityType, details: string, quoteContext?: Quote) => {
-    if (!currentProfile) return;
-    const newEntry = {
-      user_id: currentProfile.id,
-      type,
-      details,
-      quote_id: quoteContext?.id,
-      customer_name: quoteContext?.customerName,
-    };
-    const { data, error } = await supabase.from('activity_log').insert(newEntry).select().single();
-    if (error) {
-      console.error('Error adding activity log:', error);
-    } else if (data) {
-      setActivityLog(prev => [mapActivityLogFromDb(data), ...prev]);
-    }
+  const handleOrganizationsUpdate = async () => {
+      await fetchOrganizations();
   };
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error logging out:", error.message);
-      alert(`Failed to log out: ${error.message}`);
-    }
+    await supabase.auth.signOut();
+    setSession(null);
+    setCurrentUser(null);
   };
 
-  if (profileError) {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg text-center space-y-6">
-                <div>
-                    <svg className="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                    <h2 className="mt-4 text-2xl font-bold text-red-600">Authentication Error</h2>
-                </div>
-                
-                <div className="bg-red-50 p-3 rounded-lg border border-red-200">
-                    <p className="text-sm font-medium text-red-800">{profileError}</p>
-                </div>
-                
-                <p className="text-sm text-slate-500">
-                    This error typically occurs when the user account exists for login, but its corresponding profile data is missing from the database.
-                    <br/><br/>
-                    Please ensure you have followed the setup steps in the <strong>README.md</strong> file, specifically the section on creating both an authentication user and its associated `profiles` entry.
-                </p>
-                
-                <Button onClick={() => setProfileError(null)} className="w-full mt-6">
-                    Return to Login
-                </Button>
-            </div>
-        </div>
-    );
-  }
+  const createNewQuote = () => ({
+    id: uuidv4(),
+    customerName: '',
+    projectName: '',
+    status: QuoteStatus.Draft,
+    options: [{ id: uuidv4(), name: 'Option A', items: [] }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    createdByUserId: currentUser?.id || '',
+    currency: 'EUR',
+    countrySpecificDetails: {}
+  });
 
-  if (!session) {
+  const handleSaveQuote = async (q: Quote) => {
+      const updated = { 
+          ...q, 
+          updatedAt: new Date().toISOString(),
+          createdByUserId: currentUser?.id 
+      };
+      
+      const { error } = await supabase.from('quotes').upsert({
+          id: updated.id,
+          customer_name: updated.customerName,
+          project_name: updated.projectName,
+          status: updated.status,
+          options: updated.options,
+          currency: updated.currency,
+          created_at: updated.createdAt,
+          updated_at: updated.updatedAt,
+          created_by_user_id: updated.createdByUserId,
+          country_specific_details: updated.countrySpecificDetails,
+          credit_request_notes: updated.creditRequestNotes,
+          credit_request_submitted_at: updated.creditRequestSubmittedAt,
+          deployment_start_date: updated.deploymentStartDate
+      });
+
+      if (error) {
+          console.error("Save Error:", error);
+          alert("Failed to save quote: " + error.message);
+      } else {
+          setSavedQuotes(prev => {
+              const exists = prev.find(sq => sq.id === q.id);
+              if (exists) return prev.map(sq => sq.id === q.id ? updated : sq);
+              return [...prev, updated];
+          });
+          setQuote(updated);
+          alert("Quote saved successfully.");
+      }
+  };
+
+  const handleDeleteQuote = async (id: string) => {
+      const { error } = await supabase.from('quotes').delete().eq('id', id);
+      if (error) {
+          alert("Error deleting quote: " + error.message);
+      } else {
+          setSavedQuotes(prev => prev.filter(q => q.id !== id));
+      }
+  };
+
+  const handleAddActivityLog = async (type: ActivityType, details: string) => {
+      const newLog = {
+          type,
+          details,
+          timestamp: new Date().toISOString(),
+          userId: currentUser?.id,
+      };
+      const { error } = await supabase.from('activity_log').insert({
+          type: newLog.type,
+          details: newLog.details,
+          user_id: newLog.userId
+      });
+      if (!error) {
+          setActivityLog(prev => [newLog, ...prev]);
+      }
+  };
+
+  if (!session || !currentUser) {
     return <Login brandingSettings={brandingSettings} />;
   }
 
-  if (isLoading || !currentProfile || !lrfData || !tcoSettings || !workflowSettings) {
-    return <div className="flex h-screen w-screen items-center justify-center">Loading...</div>;
-  }
+  const currentOrg = organizations.find(o => o.id === currentUser.partnerOrganizationId) || null;
+
+  const isAdminOrTreasury = currentUser.role === UserRole.Admin || currentUser.role === UserRole.Treasury;
   
-  if (currentProfile.mustChangePasswordOnNextLogin) {
-    return <ForcePasswordChangeModal user={currentProfile} onPasswordChanged={handlePasswordChanged} />;
+  let notificationCount = 0;
+  let notifications: { id: string, text: string, time: string }[] = [];
+
+  if (isAdminOrTreasury) {
+      const pendingQuotes = savedQuotes.filter(q => q.status === QuoteStatus.CreditPending);
+      notificationCount = pendingQuotes.length;
+      notifications = pendingQuotes.slice(0, 5).map(q => ({
+          id: q.id,
+          text: `Approval needed: ${q.customerName}`,
+          time: q.creditRequestSubmittedAt || q.updatedAt
+      }));
+  } else {
+      const recentDecisions = savedQuotes.filter(q => {
+          if (q.createdByUserId !== currentUser.id) return false;
+          if (q.status !== QuoteStatus.Accepted && q.status !== QuoteStatus.Rejected) return false;
+          const updated = new Date(q.updatedAt);
+          const threeDaysAgo = new Date();
+          threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+          return updated > threeDaysAgo;
+      });
+      notificationCount = recentDecisions.length;
+      notifications = recentDecisions.slice(0, 5).map(q => ({
+          id: q.id,
+          text: `Quote ${q.status}: ${q.customerName}`,
+          time: q.updatedAt
+      }));
   }
 
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
-       <ProfileModal
-          isOpen={isProfileModalOpen}
-          onClose={() => setIsProfileModalOpen(false)}
-          user={currentProfile}
-          setUser={async (updatedProfile) => {
-             const { error } = await supabase.from('profiles').update({
-                name: updatedProfile.name,
-                company_name: updatedProfile.companyName,
-                phone: updatedProfile.phone,
-                logo_base_64: updatedProfile.logoBase64
-             }).eq('id', updatedProfile.id);
-             if (error) alert("Failed to update profile.");
-             else setCurrentProfile(updatedProfile);
-          }}
-          onPasswordChange={async (newPass) => {
-              const { error } = await supabase.auth.updateUser({ password: newPass });
-              if (error) {
-                alert(`Error: ${error.message}`);
-                return false;
-              }
-              alert("Password changed successfully.");
-              return true;
-          }}
-        />
-
-      <header className="max-w-7xl mx-auto mb-6">
-        <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
-          <div className="flex items-center gap-4">
-             {brandingSettings.appLogoBase64 ? (
-                <img src={brandingSettings.appLogoBase64} alt="Company Logo" className="h-10 w-auto object-contain" />
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+      <nav className="bg-white shadow-sm border-b border-slate-200 z-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center gap-4">
+              {brandingSettings.appLogoBase64 ? (
+                  <img src={brandingSettings.appLogoBase64} alt="Logo" className="h-8 w-auto" />
               ) : (
-                <h1 className="text-2xl font-bold text-chg-blue">Rental Portal</h1>
+                  <span className="text-xl font-bold text-slate-800 tracking-tight">Calc.ai</span>
               )}
-          </div>
-          <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <Dropdown
-                trigger={
-                  <div className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-chg-active-blue" role="button" tabIndex={0} aria-haspopup="true">
-                      <span>{currentProfile.name}</span>
-                      <UserCircleIcon className="w-8 h-8 text-slate-500" />
-                  </div>
-                }
-              >
-                <DropdownItem onClick={() => setIsProfileModalOpen(true)}>
-                  <UserCircleIcon className="w-5 h-5 text-slate-500" />
-                  <span>{t('app.myProfile')}</span>
-                </DropdownItem>
-                <DropdownItem onClick={handleLogout}>
-                  <LogoutIcon className="w-5 h-5 text-slate-500" />
-                  <span>{t('app.logout')}</span>
-                </DropdownItem>
-              </Dropdown>
+              
+              <div className="hidden md:flex space-x-1 ml-8">
+                <button onClick={() => setActiveView('calculator')} className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeView === 'calculator' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>Calculator</button>
+                <button onClick={() => setActiveView('tco')} className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeView === 'tco' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>TCO Analysis</button>
+                {currentUser.role !== UserRole.Partner && (
+                    <button onClick={() => setActiveView('admin')} className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeView === 'admin' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>Admin</button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+               <div className="hidden md:block">
+                   <CurrencySwitcher currentCurrency={quote.currency || 'EUR'} onCurrencyChange={c => setQuote({...quote, currency: c})} />
+               </div>
+               <div className="hidden md:block"><LanguageSwitcher /></div>
+               
+               <Dropdown trigger={
+                   <div className="relative p-2 text-slate-500 hover:text-slate-700 transition-colors">
+                       <BellIcon className="w-6 h-6" />
+                       {notificationCount > 0 && (
+                           <span className="absolute top-1 right-1 h-4 w-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center font-bold border border-white">{notificationCount}</span>
+                       )}
+                   </div>
+               }>
+                   <div className="px-4 py-2 border-b border-gray-100 font-semibold text-xs text-gray-500 uppercase tracking-wide">Notifications</div>
+                   {notifications.length > 0 ? (
+                       notifications.map(n => (
+                           <DropdownItem key={n.id} onClick={() => {}}>
+                               <div><p className="text-sm font-medium text-gray-800">{n.text}</p><p className="text-xs text-gray-400">{new Date(n.time).toLocaleDateString()}</p></div>
+                           </DropdownItem>
+                       ))
+                   ) : (<div className="px-4 py-3 text-sm text-gray-500 italic">No new notifications</div>)}
+               </Dropdown>
+
+               <div className="relative">
+                   <Dropdown trigger={
+                       <button className="flex items-center space-x-2 text-sm focus:outline-none group">
+                            <span className="hidden md:block font-medium text-slate-700 group-hover:text-slate-900">{currentUser.name}</span>
+                            <div className="h-8 w-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold border border-brand-200 group-hover:bg-brand-200 transition-colors">{currentUser.name.charAt(0)}</div>
+                       </button>
+                   }>
+                       <div className="px-4 py-3 border-b border-gray-100"><p className="text-sm font-bold text-gray-900">{currentUser.name}</p><p className="text-xs text-gray-500 truncate">{currentUser.email}</p></div>
+                       <DropdownItem onClick={() => setIsProfileOpen(true)}><UserCircleIcon className="w-4 h-4 text-gray-400" /><span>My Profile</span></DropdownItem>
+                       <DropdownItem onClick={handleLogout}><LogoutIcon className="w-4 h-4 text-red-400" /><span className="text-red-600">Sign Out</span></DropdownItem>
+                   </Dropdown>
+               </div>
+               
+               <div className="md:hidden flex items-center">
+                  <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-500 hover:text-slate-700"><MenuIcon /></button>
+               </div>
+            </div>
           </div>
         </div>
-      </header>
+        
+        {isMobileMenuOpen && (
+            <div className="md:hidden bg-white border-t border-slate-100 p-2 space-y-1">
+                <button onClick={() => { setActiveView('calculator'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">Calculator</button>
+                <button onClick={() => { setActiveView('tco'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">TCO Analysis</button>
+                {currentUser.role !== UserRole.Partner && (
+                    <button onClick={() => { setActiveView('admin'); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">Admin</button>
+                )}
+                <div className="border-t pt-2 mt-2">
+                    <button onClick={() => { setIsProfileOpen(true); setIsMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50">My Profile</button>
+                    <button onClick={handleLogout} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">Sign Out</button>
+                </div>
+            </div>
+        )}
+      </nav>
 
-      <main className="max-w-7xl mx-auto">
-        <Tabs>
-          <Tab isActive={activeTab === 'calculator'} onClick={() => setActiveTab('calculator')}>
-            {t('tabs.calculator')}
-          </Tab>
-          <Tab isActive={activeTab === 'tco'} onClick={() => setActiveTab('tco')}>
-            {t('tabs.tco')}
-          </Tab>
-          {currentProfile.role === UserRole.Admin && (
-            <Tab isActive={activeTab === 'admin'} onClick={() => setActiveTab('admin')}>
-              {t('tabs.admin')}
-            </Tab>
-          )}
-        </Tabs>
-        <div className="mt-6">
-          {activeTab === 'calculator' && (
-            <CalculationSheet
-              lrfData={lrfData}
-              quote={quote}
-              setQuote={setQuote}
-              savedQuotes={savedQuotes}
-              onQuoteSave={handleQuoteSave}
-              onQuoteDelete={async (id) => { 
-                  const { error } = await supabase.from('quotes').delete().eq('id', id);
-                  if (error) console.error("Error deleting quote", error);
-                  else setSavedQuotes(prev => prev.filter(q => q.id !== id));
-              }}
-              createNewQuote={createNewQuote}
-              currentUser={currentProfile}
-              profiles={profiles}
-              tcoSettings={tcoSettings}
-              templates={templates}
-              onTemplateSave={async (template) => {
-                  const { userId, ...rest } = template;
-                  const { data, error } = await supabase.from('templates').insert({ ...rest, user_id: userId }).select().single();
-                  if (error) console.error("Error saving template", error);
-                  else if (data) setTemplates(prev => [...prev, mapTemplateFromDb(data)]);
-              }}
-               onTemplateDelete={async (id) => {
-                  const { error } = await supabase.from('templates').delete().eq('id', id);
-                  if (error) console.error("Error deleting template", error);
-                  else setTemplates(prev => prev.filter(t => t.id !== id));
-              }}
-              workflowSettings={workflowSettings}
-              addActivityLog={addActivityLog}
+      <main className="flex-grow p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+        {activeView === 'calculator' && (
+            <CalculationSheet 
+                quote={quote}
+                setQuote={setQuote}
+                lrfData={lrfData}
+                savedQuotes={savedQuotes}
+                onQuoteSave={handleSaveQuote}
+                onQuoteDelete={handleDeleteQuote}
+                createNewQuote={createNewQuote}
+                currentUser={currentUser}
+                profiles={profiles}
+                tcoSettings={tcoSettings}
+                templates={[]}
+                onTemplateSave={async () => {}}
+                onTemplateDelete={() => {}}
+                workflowSettings={workflowSettings}
+                addActivityLog={handleAddActivityLog}
+                currentOrganization={currentOrg}
+                onRefreshQuotes={fetchQuotes}
+                exchangeRates={exchangeRates}
+                priceViewMode={priceViewMode}
+                setPriceViewMode={setPriceViewMode}
+                brandingSettings={brandingSettings}
             />
-          )}
-          {activeTab === 'tco' && (
-              <TcoSheet 
-                  quote={quote}
-                  lrfData={lrfData}
-                  tcoSettings={tcoSettings}
-                  setTcoSettings={async (settings) => {
-                      const { error } = await supabase.from('tco_settings').update({ data: settings }).eq('id', 1);
-                      if (error) console.error("Error saving TCO settings", error);
-                      else setTcoSettings(settings);
-                  }}
-                  currentUser={currentProfile}
-              />
-          )}
-          {activeTab === 'admin' && session?.user && (
-              <AdminSheet
-                  profiles={profiles}
-                  onUserUpdate={async (profile, passChanged) => {
-                      const {id, ...rest} = profile;
-                      const payload = {
-                          name: rest.name,
-                          company_name: rest.companyName,
-                          phone: rest.phone,
-                          logo_base_64: rest.logoBase64,
-                          commission_percentage: rest.commissionPercentage,
-                          country: rest.country,
-                          role: rest.role,
-                          must_change_password_on_next_login: passChanged,
-                      };
-                      const { error } = await supabase.from('profiles').update(payload).eq('id', id);
-                      if (error) {
-                        console.error("Error updating profile", error);
-                        alert(`Failed to update profile: ${error.message}`);
-                      } else {
-                        await fetchAllAdminData();
-                      }
-                  }}
-                  onUserCreate={async (profileData, password) => {
-                      // Lock to prevent auth state change handler from interfering
-                      isRestoringSession.current = true;
-                      
-                      // 1. Get admin's current session to restore it later
-                      const { data: { session: adminSession } } = await supabase.auth.getSession();
-                      if (!adminSession) {
-                          alert(t('app.error.sessionExpired'));
-                          await supabase.auth.signOut();
-                          return;
-                      }
-
-                      // 2. Create the new user. This will sign out the admin in the client.
-                      const { data: signUpData, error: authError } = await supabase.auth.signUp({
-                          email: profileData.email!,
-                          password: password,
-                          options: {
-                              data: {
-                                  name: profileData.name,
-                                  role: profileData.role,
-                                  company_name: profileData.companyName,
-                                  phone: profileData.phone,
-                                  logo_base_64: profileData.logoBase64,
-                                  commission_percentage: profileData.commissionPercentage,
-                                  country: profileData.country,
-                              }
-                          }
-                      });
-
-                      // 3. Restore the admin's session immediately.
-                      const { error: sessionError } = await supabase.auth.setSession({
-                          access_token: adminSession.access_token,
-                          refresh_token: adminSession.refresh_token,
-                      });
-                      
-                      // Unlock after session restore
-                      isRestoringSession.current = false;
-
-                      if (sessionError) {
-                          alert(t('app.error.sessionRestoreFailed'));
-                          await supabase.auth.signOut();
-                          return;
-                      }
-
-                      // 4. Handle signUp result
-                      if (authError) {
-                          alert(`${t('admin.users.error.createUserFailed')}: ${authError.message}`);
-                      } else if (signUpData.user) {
-                          const { error: profileInsertError } = await supabase.from('profiles').insert({
-                              id: signUpData.user.id,
-                              name: profileData.name!,
-                              email: profileData.email!,
-                              role: profileData.role!,
-                              company_name: profileData.companyName,
-                              phone: profileData.phone,
-                              logo_base_64: profileData.logoBase64,
-                              commission_percentage: profileData.commissionPercentage,
-                              country: profileData.country,
-                              must_change_password_on_next_login: true 
-                          });
-
-                          if (profileInsertError) {
-                              console.error("Failed to create profile for new user:", profileInsertError);
-                              alert(`${t('admin.users.error.createProfileFailed')}: ${profileInsertError.message}`);
-                          } else {
-                              alert(t('admin.users.userCreationNote'));
-                              await fetchAllAdminData();
-                          }
-                      }
-                  }}
-                  lrfData={lrfData}
-                  setLrfData={async (data) => {
-                      const { error } = await supabase.from('lease_rate_factors').update({ data }).eq('id', 1);
-                      if (error) console.error("Error saving LRF data", error);
-                      else setLrfData(data);
-                  }}
-                  currentUser={currentProfile}
-                  loginHistory={loginHistory}
-                  brandingSettings={brandingSettings}
-                  setBrandingSettings={async (settings) => {
-                      const { error } = await supabase.from('branding_settings').update({ data: settings }).eq('id', 1);
-                      if (error) console.error("Error saving branding settings", error);
-                      else setBrandingSettings(settings);
-                  }}
-                  savedQuotes={savedQuotes}
-                  workflowSettings={workflowSettings}
-                  setWorkflowSettings={async (settings) => {
-                       const { error } = await supabase.from('workflow_settings').update({ data: settings }).eq('id', 1);
-                       if (error) console.error("Error saving workflow settings", error);
-                       else setWorkflowSettings(settings);
-                  }}
-                  activityLog={activityLog}
-                  tcoSettings={tcoSettings}
-                  setTcoSettings={async (settings) => {
-                      const { error } = await supabase.from('tco_settings').update({ data: settings }).eq('id', 1);
-                      if (error) console.error("Error saving TCO settings", error);
-                      else setTcoSettings(settings);
-                  }}
-              />
-          )}
-        </div>
+        )}
+        {activeView === 'tco' && (
+            <TcoSheet 
+                quote={quote}
+                lrfData={lrfData}
+                tcoSettings={tcoSettings}
+                setTcoSettings={setTcoSettings}
+                currentUser={currentUser}
+                organization={currentOrg}
+                exchangeRates={exchangeRates}
+                priceViewMode={priceViewMode}
+                brandingSettings={brandingSettings}
+            />
+        )}
+        {activeView === 'admin' && currentUser.role !== UserRole.Partner && (
+            <AdminSheet 
+                profiles={profiles}
+                onUserUpdate={handleUserUpdate}
+                onUserCreate={handleUserCreate}
+                onUserDelete={handleUserDelete}
+                lrfData={lrfData}
+                setLrfData={setLrfData}
+                onSaveLrfData={handleSaveLrfData} // NEW PROP
+                currentUser={currentUser}
+                loginHistory={loginHistory}
+                brandingSettings={brandingSettings}
+                onSaveBrandingSettings={handleSaveBrandingSettings}
+                savedQuotes={savedQuotes}
+                workflowSettings={workflowSettings}
+                setWorkflowSettings={setWorkflowSettings}
+                activityLog={activityLog}
+                tcoSettings={tcoSettings}
+                setTcoSettings={setTcoSettings}
+                onSaveTcoSettings={handleSaveTcoSettings}
+                organizations={organizations}
+                onOrganizationsUpdate={handleOrganizationsUpdate}
+                addActivityLog={handleAddActivityLog}
+                legalDocuments={legalDocuments}
+                onLegalDocsUpdate={fetchLegalDocuments}
+                exchangeRates={exchangeRates}
+                exchangeRatesMeta={exchangeRatesMeta}
+                onExchangeRatesUpdate={fetchExchangeRates}
+            />
+        )}
       </main>
 
-       <div className="fixed bottom-6 right-6 z-40">
-            <Button 
-                variant="primary"
-                size="lg"
-                onClick={() => setIsAssistantOpen(true)}
-                leftIcon={<SparklesIcon />}
-            >
-                AI Assistant
-            </Button>
-        </div>
+      <div className="fixed bottom-6 right-6 z-40">
+        <button
+          onClick={() => setIsAiAssistantOpen(true)}
+          className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center group"
+          title="AI Assistant"
+        >
+          <QuestionMarkCircleIcon className="w-6 h-6 group-hover:animate-pulse" />
+        </button>
+      </div>
 
-        <AiAssistant 
-            isOpen={isAssistantOpen}
-            onClose={() => setIsAssistantOpen(false)}
-        />
+      <AiAssistant 
+        isOpen={isAiAssistantOpen} 
+        onClose={() => setIsAiAssistantOpen(false)} 
+        currentUser={currentUser}
+        activeView={activeView}
+      />
+
+      <ProfileModal 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)}
+        user={currentUser}
+        setUser={setCurrentUser}
+      />
     </div>
   );
 };
